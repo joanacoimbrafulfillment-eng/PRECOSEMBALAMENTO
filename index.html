@@ -649,7 +649,7 @@
           </div>
           <div>
             <label>Refunds (€/mês)</label>
-            <input id="wh_moRefundsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+            <input id="wh_moRefundsMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
           <div>
             <label>Recover (€/mês)</label>
@@ -657,7 +657,7 @@
           </div>
           <div>
             <label>Inbound (€/mês)</label>
-            <input id="wh_moInboundMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+            <input id="wh_moInboundMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
         </div>
 
@@ -720,7 +720,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Refunds/mês</label>
-            <input id="wh_refundsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
+            <input id="wh_refundsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
             <div class="muted" style="font-size:12px; margin-top:6px;">Processamento administrativo de reembolso (se existir na tua operação).</div>
           </div>
           <div>
@@ -757,7 +757,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Inbound (paletes recebidas)/mês</label>
-            <input id="wh_inboundPalletsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
+            <input id="wh_inboundPalletsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
           </div>
           <div>
             <label>Stock médio (paletes)</label>
@@ -805,11 +805,11 @@
             <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Refunds (€/evento)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund">—</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund" style="display:none">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/evento)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRecover">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Inbound (€/palete)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn">—</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn" style="display:none">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Overhead operação (€/encomenda)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uOhOrder">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Armazenagem (€/palete/mês)</div>
@@ -845,7 +845,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Refunds/mês (cliente)</label>
-            <input id="wh_simRefunds" type="number" step="1" min="0" placeholder="ex.: 60">
+            <input id="wh_simRefunds" style="display:none" type="number" step="1" min="0" placeholder="ex.: 60">
           </div>
           <div>
             <label>Recover/mês (cliente)</label>
@@ -858,7 +858,7 @@
 <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Inbound paletes/mês (cliente)</label>
-            <input id="wh_simInboundPallets" type="number" step="1" min="0" placeholder="ex.: 40">
+            <input id="wh_simInboundPallets" style="display:none" type="number" step="1" min="0" placeholder="ex.: 40">
           </div>
           <div>
             <label>Stock médio (paletes) (cliente)</label>
@@ -904,9 +904,9 @@
                             <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
 
               <div><div class="muted" style="font-size:12px;">Returns</div><div class="mono" id="wh_simReturnsMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost" style="display:none">—</div></div>
               <div><div class="muted" style="font-size:12px;">Recover</div><div class="mono" id="wh_simRecoverMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost" style="display:none">—</div></div>
               <div><div class="muted" style="font-size:12px;">Overhead operação</div><div class="mono" id="wh_simOhOpsMonthly">—</div></div>
 
               <div><div class="muted" style="font-size:12px;">Armazenagem</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
@@ -1026,7 +1026,7 @@
     <div class="hr"></div>
 
     <h2 style="margin-top:0;">Unidades vendidas por produto</h2>
-    <div class="muted" style="font-size:12px; margin-top:-6px;">A coluna “Consumíveis €/unid” é calculada pelo teu sistema de produto (não é editável aqui).</div>
+    <div class="muted" style="font-size:12px; margin-top:-6px;" id="sales_hint_consumables">A coluna “Consumíveis €/unid” é calculada a partir do separador “Tudo” (receita/materiais + variáveis). Se estiver a 0, confirma que tens receita/variáveis definidas para esse produto.</div>
 
     <div style="overflow:auto; margin-top:10px;">
       <table class="tbl" id="sales_table" style="min-width:800px;">
@@ -1672,6 +1672,8 @@ function n(v) {
       mixM: whNum("wh_mixM") ?? 40,
       mixL: whNum("wh_mixL") ?? 10
     };
+      // Preservar linhas de custos gerais (tabela) ao guardar outros inputs
+    try { op.costLines = (warehouse && warehouse.op && Array.isArray(warehouse.op.costLines)) ? warehouse.op.costLines : (op.costLines || []); } catch(e) { op.costLines = op.costLines || []; }
     return { op, sim };
   }
 
@@ -1725,31 +1727,27 @@ function n(v) {
   function whComputeUnitCosts(op){
     const sold = whClamp0(op.soldMonthly ?? 0);
     const rets  = whClamp0(op.returnsMonthly ?? 0);
-    const refunds = whClamp0(op.refundsMonthly ?? 0);
     const recover = whClamp0(op.recoverMonthly ?? 0);
-    const inbound = whClamp0(op.inboundPalletsMonthly ?? 0);
     const stock = whClamp0(op.avgStockPallets ?? 0);
 
     const moPickPack = whClamp0(op.moPickPackMonthly ?? 0);
     const moReturns  = whClamp0(op.moReturnsMonthly ?? 0);
-    const moRefunds  = whClamp0(op.moRefundsMonthly ?? 0);
     const moRecover  = whClamp0(op.moRecoverMonthly ?? 0);
-    const moInbound  = whClamp0(op.moInboundMonthly ?? 0);
 
     const oh = whClamp0(op.ohMonthly ?? 0);
     const office = whClamp0(op.officeMonthly ?? 0);
-    const sections = 5;
+
+    // Só usamos 3 secções: Pick+Pack, Returns, Recover
+    const sections = 3;
     const sharedPerSection = (oh + office) / sections;
 
     const uPickPack = sold>0 ? (moPickPack/sold + sharedPerSection/sold) : NaN;
     const uRet      = rets>0 ? (moReturns/rets + sharedPerSection/rets) : NaN;
-    const uRefund   = refunds>0 ? (moRefunds/refunds + sharedPerSection/refunds) : NaN;
     const uRecover  = recover>0 ? (moRecover/recover + sharedPerSection/recover) : NaN;
-    const uIn       = inbound>0 ? (moInbound/inbound + sharedPerSection/inbound) : NaN;
 
     const uStorage  = stock>0 ? (oh/stock) : NaN;
 
-    return {uPickPack,uRet,uRefund,uRecover,uIn,uStorage};
+    return {uPickPack,uRet,uRecover,uStorage};
   }
 
   function whComputeScenario(w){
@@ -1757,30 +1755,31 @@ function n(v) {
     const sim = w.sim || {};
     const u = whComputeUnitCosts(op);
 
+    const safeMul = (vol, unit) => {
+      const v = Number(vol||0);
+      if (!(v > 0)) return 0;
+      return Number.isFinite(unit) ? (v * unit) : NaN;
+    };
+
     const sold = whClamp0(sim.sold ?? 0);
     const rets = whClamp0(sim.returns ?? 0);
-    const refunds = whClamp0(sim.refunds ?? 0);
     const recover = whClamp0(sim.recover ?? 0);
-    const inbound = whClamp0(sim.inboundPallets ?? 0);
     const stock = whClamp0(sim.avgStock ?? 0);
 
-    const pickPackMonthly = Number.isFinite(u.uPickPack) ? sold*u.uPickPack : NaN;
-    const retMonthly      = Number.isFinite(u.uRet) ? rets*u.uRet : NaN;
-    const refundMonthly   = Number.isFinite(u.uRefund) ? refunds*u.uRefund : NaN;
-    const recoverMonthly  = Number.isFinite(u.uRecover) ? recover*u.uRecover : NaN;
-    const inboundMonthly  = Number.isFinite(u.uIn) ? inbound*u.uIn : NaN;
-    const storageMonthly  = Number.isFinite(u.uStorage) ? stock*u.uStorage : NaN;
-
-    // Consumíveis: vêm do Produto + Vendas (mês), apenas para VENDIDOS
     const monthKey = (document.getElementById("wh_linkMonth")?.value) || (new Date().toISOString().slice(0,7));
     const cons = whGetConsumablesPerUnitFromSalesMonth(monthKey);
     const packMatPerUnit = cons.perUnit;
-    const packMatMonthly  = sold*packMatPerUnit;
+    const packMatMonthly = (Number(sold||0)>0) ? (sold*packMatPerUnit) : 0;
 
-    const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + refundMonthly + recoverMonthly + inboundMonthly + storageMonthly;
+    const pickPackMonthly = safeMul(sold, u.uPickPack);
+    const retMonthly = safeMul(rets, u.uRet);
+    const recoverMonthly = safeMul(recover, u.uRecover);
+    const storageMonthly = safeMul(stock, u.uStorage);
+
+    const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + recoverMonthly + storageMonthly;
     const costPerUnit = sold>0 ? totalMonthly/sold : NaN;
 
-    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, refundMonthly, recoverMonthly, inboundMonthly, storageMonthly};
+    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, recoverMonthly, storageMonthly};
   }
 
   function whRender(){
@@ -1797,22 +1796,14 @@ function n(v) {
       setTxt("wh_consFromProductsTotalKPI", whFmtEUR(cons.total));
     } catch(e) {}
     setTxt("wh_uPickPack", whFmtEUR(u.uPickPack));
-        setTxt("wh_uRet",  whFmtEUR(u.uRet));
-    setTxt("wh_uRefund", whFmtEUR(u.uRefund));
-    setTxt("wh_uRecover", whFmtEUR(u.uRecover));
-    setTxt("wh_uIn",   whFmtEUR(u.uIn));
-    setTxt("wh_uStorage", whFmtEUR(u.uStorage));
+        setTxt("wh_uRet",  whFmtEUR(u.uRet));    setTxt("wh_uRecover", whFmtEUR(u.uRecover));    setTxt("wh_uStorage", whFmtEUR(u.uStorage));
 
     const s = whComputeScenario(w);
     setTxt("wh_simTotalMonthly", whFmtEUR(s.totalMonthly));
     setTxt("wh_simCostPerOrder", whFmtEUR(s.costPerUnit));
     setTxt("wh_simPickMonthly", whFmtEUR(s.pickPackMonthly));
         setTxt("wh_simPackMatMonthly", whFmtEUR(s.packMatMonthly));
-    setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));
-    setTxt("wh_simRefundsMonthlyCost", whFmtEUR(s.refundMonthly));
-    setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));
-    setTxt("wh_simInboundMonthlyCost", whFmtEUR(s.inboundMonthly));
-        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
+    setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));    setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
   }
 
   
@@ -1851,8 +1842,8 @@ function n(v) {
 
     const idx = new Map();
     (Array.isArray(products)?products:[]).forEach(p=>{
-      const nm = String(p.name||p.nome||"").trim();
-      if (nm) idx.set(nm.toLowerCase(), getProductId(p));
+      const nm = String(p.product||p.name||p.nome||"").trim();
+      if (nm) idx.set(nm.toLowerCase().replace(/\s+/g," "), getProductId(p));
     });
 
     const unknown = [];
@@ -1861,7 +1852,7 @@ function n(v) {
     let totalValue = 0;
 
     for (const it of items){
-      const pid = idx.get(it.name.toLowerCase());
+      const pid = idx.get(String(it.name||"").trim().toLowerCase().replace(/\s+/g," "));
       if (!pid){ unknown.push(it.name); continue; }
       mapped.push({pid, name: it.name, qty: it.qty, value: it.value});
       totalUnits += it.qty;
@@ -1874,6 +1865,8 @@ function n(v) {
 
     const inp = document.getElementById("wh_recoverMonthly");
     if (inp) inp.value = String(totalUnits);
+    const simInp = document.getElementById("wh_simRecover");
+    if (simInp) simInp.value = String(totalUnits);
 
     const k1 = document.getElementById("wh_recoverUnitsKPI");
     const k2 = document.getElementById("wh_recoverValueKPI");
@@ -1901,22 +1894,35 @@ function n(v) {
 
   // Consumíveis: puxar automaticamente do módulo Produto + Vendas (mês)
   function whProductConsumables(p){
-    // Tenta vários campos comuns; ajusta se no teu modelo usares outro nome
-    const candidates = [
-      p?.consumables,
-      p?.consumiveis,
-      p?.consumiveis_total,
-      p?.packagingCost,
-      p?.custoEmbalagem,
-      p?.custo_consumiveis,
-      p?.consumiveisPorUnidade
-    ];
-    for (const v of candidates){
-      if (typeof v === "number" && Number.isFinite(v)) return v;
-      const n = Number(String(v ?? "").replace(",", "."));
-      if (Number.isFinite(n)) return n;
+    // Consumíveis por produto: usa exatamente o que está no separador "Tudo"
+    // = custo de materiais/linhas da receita (packaging/consumíveis) + variáveis ativas
+    try{
+      const name = String(p?.product || p?.name || p?.nome || "").trim();
+      if (!name) return 0;
+
+      // Receitas/linhas por produto (definidas no "Tudo")
+      const rec = (typeof loadRecipes === "function") ? loadRecipes() : (typeof recipes === "object" ? recipes : {});
+      const lines = (rec && Array.isArray(rec[name])) ? rec[name] : [];
+
+      let matTotal = 0;
+      for (const ln of lines){
+        // computeRecipeLineCost existe no teu sistema e já considera compras/preço unitário
+        matTotal += (typeof computeRecipeLineCost === "function") ? (computeRecipeLineCost(ln).cost || 0) : 0;
+      }
+
+      // Variáveis ativas (também usadas no "Tudo")
+      let varsTotal = 0;
+      if (Array.isArray(vars)){
+        for (const v of vars){
+          if (v && v.enabled) varsTotal += n(v.value);
+        }
+      }
+
+      const total = (Number(matTotal) || 0) + (Number(varsTotal) || 0);
+      return Number.isFinite(total) ? total : 0;
+    }catch(e){
+      return 0;
     }
-    return 0;
   }
 
   function whGetConsumablesPerUnitFromSalesMonth(monthKey){
@@ -1925,27 +1931,40 @@ function n(v) {
       const monthMap = sales.months[monthKey];
       if (!monthMap || typeof monthMap !== "object") return {perUnit: 0, total: 0, units: 0};
 
-      // index products by id
-      const pIndex = new Map();
+      // Index products by id AND by name (normalized)
+      const byId = new Map();
+      const byName = new Map();
       (Array.isArray(products)?products:[]).forEach(p=>{
         const pid = getProductId(p);
-        if (pid) pIndex.set(String(pid), p);
+        const nm = String(p.product || p.name || p.nome || "").trim();
+        if (pid) byId.set(String(pid), p);
+        if (nm) byName.set(nm.toLowerCase().replace(/\s+/g," "), p);
       });
 
       let totalUnits = 0;
-      let totalCons = 0;
+      let totalCost = 0;
 
-      for (const [pid, v] of Object.entries(monthMap)){
-        const sold = (v && typeof v === "object") ? Number(v.sold ?? 0) : Number(v ?? 0);
+      for (const [key, v] of Object.entries(monthMap)){
+        // sold can be stored as number or {sold,returns,refunds}
+        const soldRaw = (v && typeof v === "object") ? v.sold : v;
+        const sold = Number(soldRaw ?? 0);
         const u = Number.isFinite(sold) ? sold : 0;
         if (u <= 0) continue;
+
+        // Try resolve product by id key, else by name key
+        let p = byId.get(String(key));
+        if (!p){
+          const nk = String(key||"").trim().toLowerCase().replace(/\s+/g," ");
+          p = byName.get(nk);
+        }
+
+        const unitCost = p ? whProductConsumables(p) : 0;
         totalUnits += u;
-        const p = pIndex.get(String(pid));
-        const cons = p ? whProductConsumables(p) : 0;
-        totalCons += u * (Number.isFinite(cons) ? cons : 0);
+        totalCost += u * (Number.isFinite(unitCost) ? unitCost : 0);
       }
-      const perUnit = totalUnits > 0 ? (totalCons / totalUnits) : 0;
-      return {perUnit, total: totalCons, units: totalUnits};
+
+      const perUnit = totalUnits > 0 ? totalCost/totalUnits : 0;
+      return {perUnit, total: totalCost, units: totalUnits};
     }catch(e){
       return {perUnit: 0, total: 0, units: 0};
     }
@@ -1985,10 +2004,15 @@ function whAutoFillFromSales(){
       set("wh_soldMonthly", soldTotal);
       set("wh_returnsMonthly", returnsTotal);
       set("wh_refundsMonthly", refundsTotal);
+
+      // Também preencher o simulador com os totais do mês (para o breakdown não ficar a 0)
+      set("wh_simSold", soldTotal);
+      set("wh_simReturns", returnsTotal);
       try{
         const rm = (warehouse && warehouse.recoverMonths) ? warehouse.recoverMonths[monthKey] : null;
         if (rm && typeof rm.totalUnits === "number") {
           set("wh_recoverMonthly", rm.totalUnits);
+          set("wh_simRecover", rm.totalUnits);
           const k1=document.getElementById("wh_recoverUnitsKPI"); const k2=document.getElementById("wh_recoverValueKPI");
           if (k1) k1.textContent = String(rm.totalUnits.toLocaleString("pt-PT"));
           if (k2) k2.textContent = whFmtEUR(rm.totalValue||0);
@@ -2075,23 +2099,38 @@ function whAutoFillFromSales(){
     });
 
     tb.querySelectorAll("[data-cli]").forEach(el=>{
-      const handler = ()=>{
+      const applyChange = (rebuildTable) => {
         const i = Number(el.getAttribute("data-cli"));
         const c = el.getAttribute("data-clc");
         if (i < 0 || i >= warehouse.op.costLines.length) return;
+
         if (c === "value"){
           const num = Number(String(el.value||"").replace(",", "."));
           warehouse.op.costLines[i][c] = Number.isFinite(num) ? Math.max(0, num) : 0;
         } else {
           warehouse.op.costLines[i][c] = (el.tagName === "SELECT") ? el.value : el.value;
         }
+
+        // Atualiza totais e resultados sem reconstruir a tabela (evita cursor a saltar)
         whComputeCostTotals();
-        saveWarehouse(warehouse);
-        whRender();
-        whRenderCostLines();
+        clearTimeout(window.__whCostSaveT);
+        window.__whCostSaveT = setTimeout(()=>{ try { saveWarehouse(warehouse); } catch(e){} }, 400);
+        clearTimeout(window.__whCostRenderT);
+        window.__whCostRenderT = setTimeout(()=>{ try { whRender(); } catch(e){} }, 150);
+
+        if (rebuildTable) {
+          // só reconstruir quando muda o grupo (select) ou em casos específicos
+          setTimeout(()=>{ try { whRenderCostLines(); } catch(e){} }, 10);
+        }
       };
-      el.addEventListener("input", handler);
-      el.addEventListener("change", handler);
+
+      // Escrever "corrido": no input não reconstruímos tabela
+      el.addEventListener("input", ()=> applyChange(false));
+      // Em mudanças de SELECT (grupo), reconstruir para refletir seleção
+      el.addEventListener("change", ()=> {
+        const c = el.getAttribute("data-clc");
+        applyChange(c === "group");
+      });
     });
 
     tb.querySelectorAll("[data-delcl]").forEach(btn=>{
@@ -2146,7 +2185,7 @@ function whBind(){
     if (!root) return;
     const monthEl = document.getElementById("wh_linkMonth");
     const chk = document.getElementById("wh_autoFromSales");
-    if (monthEl) monthEl.addEventListener("change", ()=>{ whAutoFillFromSales(); });
+    if (monthEl) monthEl.addEventListener("change", ()=>{ whAutoFillFromSales(); whRender(); });
     if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
     // primeiro preenchimento (se aplicável)
     setTimeout(()=>{ whAutoFillFromSales(); }, 50);
@@ -2199,14 +2238,18 @@ function whBind(){
   }
 
   function getProductId(p){
-    // Prefer stable id if exists; fallback to name
-    return (p && (p.id || p.sku || p.name || p.nome || p.title)) ? String(p.id || p.sku || p.name || p.nome || p.title) : "";
+    // Prefer a stable identifier; in this system the product name is stored in p.product
+    return (p && (p.id || p.sku || p.product || p.name || p.nome || p.title)) ? String(p.id || p.sku || p.product || p.name || p.nome || p.title) : "";
   }
 
   function getConsumablesForProduct(p){
-    // Try common fields used in your system; fallback 0
-    // "fixedVars" / "variaveisFixas" are already added elsewhere; consumables is the per-unit packaging/consumables component.
-    // We try multiple names to be robust.
+    // Consumíveis €/unid devem vir do separador "Tudo" (receita/materiais + variáveis)
+    try{
+      if (typeof whProductConsumables === "function") {
+        return whProductConsumables(p);
+      }
+    }catch(e){}
+    // Fallback antigo (caso algo falhe)
     const candidates = [
       p?.consumables,
       p?.consumiveis,
@@ -2217,8 +2260,8 @@ function whBind(){
     ];
     for (const v of candidates){
       if (typeof v === "number" && Number.isFinite(v)) return v;
-      const n = Number(String(v ?? "").replace(",", "."));
-      if (Number.isFinite(n)) return n;
+      const n2 = Number(String(v ?? "").replace(",", "."));
+      if (Number.isFinite(n2)) return n2;
     }
     return 0;
   }
@@ -2282,10 +2325,10 @@ function whBind(){
     const map = new Map();
     const list = Array.isArray(products) ? products : [];
     for (const p of list){
-      const nm = String(p.name || p.nome || "").trim();
+      const nm = String(p.product || p.name || p.nome || "").trim();
       if (!nm) continue;
-      // Index by exact name
       map.set(nm, getProductId(p));
+      map.set(nm.toLowerCase().replace(/\s+/g," "), getProductId(p));
     }
     return map;
   }
@@ -2306,10 +2349,12 @@ function whBind(){
 
     for (const it of parsed){
       if (!it.ok){ bad.push(`${it.line}  → ${it.reason}`); continue; }
-      const pid = idx.get(it.name);
+      const key1 = it.name;
+      const key2 = String(it.name||"").trim().toLowerCase().replace(/\s+/g," ");
+      const pid = idx.get(key1) || idx.get(key2);
       if (!pid){ unknown.push(it.name); continue; }
       // When using per-section bulk, the second column is the value; we map it to the chosen section
-      const val = (section === "sold") ? (it.sold ?? it.units ?? 0) : (section === "returns" ? (it.returns ?? it.sold ?? 0) : (it.refunds ?? it.sold ?? 0));
+      const val = (section === "sold") ? (it.sold ?? it.units ?? 0) : (it.sold ?? it.units ?? 0);
       const vv = Math.max(0, Math.round(Number(val) || 0));
       updates[pid] = (updates[pid] || 0) + vv;
     }
@@ -2349,7 +2394,9 @@ function salesApplyBulk(){
 
     for (const it of parsed){
       if (!it.ok){ bad.push(`${it.line}  → ${it.reason}`); continue; }
-      const pid = idx.get(it.name);
+      const key1 = it.name;
+      const key2 = String(it.name||"").trim().toLowerCase().replace(/\s+/g," ");
+      const pid = idx.get(key1) || idx.get(key2);
       if (!pid){
         unknown.push(it.name);
         continue;
@@ -2460,7 +2507,9 @@ function salesRender(){
       const name = String(p.name || p.nome || pid || "Produto");
       const cons = getConsumablesForProduct(p);
 
-      const raw = monthMap[pid];
+      const nameKey = String(p.product || p.name || p.nome || pid || "").trim();
+      const normKey = nameKey.toLowerCase().replace(/\s+/g," ");
+      const raw = monthMap[pid] ?? monthMap[nameKey] ?? monthMap[normKey];
       const soldVal = (raw && typeof raw === "object") ? raw.sold : raw;
       const retVal  = (raw && typeof raw === "object") ? raw.returns : 0;
       const refVal  = (raw && typeof raw === "object") ? raw.refunds : 0;
@@ -3207,35 +3256,49 @@ for (const k of Object.keys(recipes)) {
     }
 
   function exportAllCostsCsv() {
-    const recipes = loadRecipes();
-    const all = products.map(p => {
-      const name = p.product;
-      const lines = Array.isArray(recipes[name]) ? recipes[name] : [];
-      let matTotal = 0;
-      for (const ln of lines) matTotal += computeRecipeLineCost(ln).cost;
-      let varsTotal = 0;
-      for (const v of vars) if (v.enabled) varsTotal += n(v.value);
-      const total = matTotal + varsTotal;
-      return { name, matTotal, varsTotal, total };
-    }).sort((a,b) => b.total - a.total);
+    try{
+      const recipes = (typeof loadRecipes === "function") ? loadRecipes() : {};
+      const list = Array.isArray(products) ? products : [];
+      const all = list.map(p => {
+        const name = String(p?.product || p?.name || p?.nome || "").trim();
+        const lines = (name && recipes && Array.isArray(recipes[name])) ? recipes[name] : [];
+        let matTotal = 0;
+        for (const ln of lines){
+          if (typeof computeRecipeLineCost === "function") matTotal += (computeRecipeLineCost(ln).cost || 0);
+        }
+        let varsTotal = 0;
+        if (Array.isArray(vars)){
+          for (const v of vars) if (v && v.enabled) varsTotal += n(v.value);
+        }
+        const total = matTotal + varsTotal;
+        return { name, matTotal, varsTotal, total };
+      }).filter(r => r.name).sort((a,b) => b.total - a.total);
 
-    const fmt = (x) => {
-      const v = Math.round((Number(x)||0)*100)/100;
-      return v.toFixed(2).replace(".", ",");
-    };
+      const fmt = (x) => {
+        const v = Math.round((Number(x)||0)*100)/100;
+        return v.toFixed(2).replace(".", ",");
+      };
 
-    const header = ["Produto","Materiais","Variáveis","Total"].join(";");
-    const rows = all.map(r => [r.name, fmt(r.matTotal), fmt(r.varsTotal), fmt(r.total)].join(";"));
-    const csv = [header, ...rows].join("\n");
+      const header = ["Produto","Materiais","Variáveis","Total"].join(";");
+      const rows = all.map(r => [r.name, fmt(r.matTotal), fmt(r.varsTotal), fmt(r.total)].join(";"));
+      const csv = [header, ...rows].join("\n");
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "custos_por_produto.csv";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      // download
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      a.href = url;
+      a.download = "custos_por_produto.csv";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
+    }catch(err){
+      console.error("Export CSV falhou:", err);
+      alert("Export CSV falhou. Abre a consola (F12) para ver o erro.");
+    }
   }
+
 
   }
   $("calcAll").addEventListener("click", calcAllProducts);
