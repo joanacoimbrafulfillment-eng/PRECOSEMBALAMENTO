@@ -1,0 +1,3410 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fulfillment — Custo por Produto (4 separadores)</title>
+  <style>
+    :root {
+      --gap: 12px;
+      --radius: 14px;
+      --border: #d7dbe7;
+      --bg: #f6f7fb;
+      --card: #fff;
+      --text: #111;
+      --muted: rgba(17,17,17,.72);
+      --shadow: 0 8px 22px rgba(0,0,0,.07);
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0; background: var(--bg); color: var(--text);
+    }
+    header {
+      padding: 16px; background: #111; color: #fff;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 6px 18px rgba(0,0,0,.22);
+    }
+    header h1 { margin: 0; font-size: 16px; }
+    header .sub { margin-top: 6px; font-size: 12px; opacity: .85; line-height: 1.35; }
+
+    main { padding: 14px; max-width: 1180px; margin: 0 auto; }
+    .topbar {
+      display:flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .tabs { display:flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .tabbtn {
+      border: 2px solid #9AA7C2;
+      background: #EEF2FF;
+      color: #111;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .tabbtn:hover {
+      background: #E2E8FF;
+      border-color: #6F84B5;
+    }
+    .tabbtn:focus {
+      outline: 3px solid rgba(79, 70, 229, .25);
+      outline-offset: 2px;
+    }
+    .tabbtn[aria-selected="true"] {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+      box-shadow: 0 6px 18px rgba(0,0,0,.22);
+    }
+
+    .summary {
+      flex: 1;
+      min-width: 280px;
+      display:flex;
+      gap: 10px;
+      align-items: stretch;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .sumcard {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      min-width: 210px;
+    }
+    .sumcard.product { background: #E8F1FF; border-color: #B8D2FF; }
+    .sumcard.materials { background: #EAFBF1; border-color: #BFEAD0; }
+    .sumcard.total { background: #FFF1E6; border-color: #FFD0AA; }
+    .sumlabel { font-size: 11px; color: var(--muted); opacity: .95; }
+    .sumvalue { font-size: 14px; font-weight: 900; margin-top: 4px; color:#111; }
+    .sumvalue.big { font-size: 18px; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      border: 1px solid rgba(215,219,231,.55);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 15px; }
+    .muted { color: var(--muted); }
+    .mono { font-variant-numeric: tabular-nums; }
+
+    label { display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input, select, button {
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 14px;
+    }
+    input[type="number"] { text-align: right; }
+    button {
+      cursor: pointer;
+      border: none;
+      background: #111;
+      color: #fff;
+      font-weight: 900;
+      width: auto;
+      padding: 10px 12px;
+    }
+    button.secondary {
+      background: #eef1f9;
+      color: #111;
+      border: 1px solid var(--border);
+    }
+    .btns { display:flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .row { display:grid; grid-template-columns: 1fr; gap: var(--gap); }
+    @media (min-width: 820px){
+      .row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .row.cols-2 { grid-template-columns: 2fr 1fr; }
+    }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding: 9px 6px; border-bottom: 1px solid #eef1f5; font-size: 13px; vertical-align: top; }
+    th { text-align:left; font-size: 12px; color: var(--muted); }
+    td.num { text-align:right; font-variant-numeric: tabular-nums; }
+    .hr { height:1px; background:#eef1f5; margin: 12px 0; }
+
+    details {
+      border: 1px solid rgba(215,219,231,.65);
+      border-radius: 14px;
+      background: #fff;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    details > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 12px;
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      user-select: none;
+    }
+    details > summary::-webkit-details-marker { display:none; }
+    details > summary .hint { font-size: 12px; font-weight: 700; color: var(--muted); }
+    details .content { padding: 12px; border-top: 1px solid #eef1f5; }
+
+    [data-panel] { display:none; }
+    [data-panel].active { display:block; }
+
+    .note {
+      background:#fff7cc;
+      border: 1px solid #ffe08a;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .pill {
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+  
+    /* Firebase loading overlay */
+    #loadingOverlay{
+      position: fixed; inset: 0; background: rgba(246,247,251,.92);
+      display:flex; align-items:center; justify-content:center; z-index: 9999;
+      font-weight: 900; color:#111;
+    }
+    #loadingOverlay .box{
+      background:#fff; border:1px solid var(--border); border-radius: 16px;
+      padding: 14px 16px; box-shadow: var(--shadow);
+    }
+    #loadingOverlay[hidden]{ display:none; }
+
+  
+
+    /* Firebase login form */
+    #loginBox{ display:flex; flex-direction:column; gap:10px; min-width: min(420px, 92vw); }
+    #loginBox input{ width:100%; }
+    #loginErr{ color:#b91c1c; font-size:12px; font-weight:800; }
+    #logoutBtn{ background:#eef1f9; color:#111; border:1px solid var(--border); }
+
+</style>
+</head>
+
+<body>
+<div id="loadingOverlay">
+  <div class="box">
+    <div id="overlayMsg">A ligar à Firebase…</div>
+    <div id="loginBox" hidden>
+      <div style="font-size:14px; font-weight:900;">Login</div>
+      <div class="muted" style="font-size:12px;">Acesso apenas para contas <strong>@admin.com</strong>.</div>
+      <div>
+        <label style="margin:0 0 6px;">Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="nome@admin.com">
+      </div>
+      <div>
+        <label style="margin:0 0 6px;">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <div id="loginErr" hidden></div>
+      <div class="btns" style="justify-content:flex-end;">
+        <button type="button" id="loginBtn">Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header>
+  <h1>Custo por Produto — 4 separadores</h1>
+  <div class="sub">Separadores: <strong>Tudo</strong> (produto+receita+variáveis+resultado) · <strong>Materiais</strong> · <strong>Compras</strong> · <strong>Upload</strong>.</div>
+  <div style="margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <button type="button" id="logoutBtn" hidden>Sair</button>
+    <span class="pill" id="authStatus" style="background:#111; color:#fff; border-color:#333;" hidden>—</span>
+  </div>
+</header>
+
+<main>
+  <div class="topbar">
+    <div class="tabs" role="tablist" aria-label="Separadores">
+      <button class="tabbtn" type="button" data-tab="tab-tudo" aria-selected="false">Tudo</button>
+      <button class="tabbtn" type="button" data-tab="tab-materiais" aria-selected="false">Materiais</button>
+      <button class="tabbtn" type="button" data-tab="tab-compras" aria-selected="false">Compras</button>
+      <button class="tabbtn" type="button" data-tab="tab-upload" aria-selected="false">Upload</button>
+      <button class="tabbtn" type="button" data-tab="tab-armazem" aria-selected="false">Armazém</button>
+      <button class="tabbtn" type="button" data-tab="tab-vendas" aria-selected="false">Vendas (mês)</button>
+    </div>
+
+    <div class="summary" aria-label="Resumo">
+      <div class="sumcard product">
+        <div class="sumlabel">Produto</div>
+        <div class="sumvalue mono" id="selectedProductTop">—</div>
+      </div>
+      <div class="sumcard materials">
+        <div class="sumlabel">Custo materiais</div>
+        <div class="sumvalue big mono" id="materialsCostTop">€ 0,00</div>
+      </div>
+      <div class="sumcard total">
+        <div class="sumlabel">Total</div>
+        <div class="sumvalue big mono" id="totalCostTop">€ 0,00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUDO -->
+  <section class="card" data-panel id="tab-tudo">
+    <h2>Tudo (produto + receita + variáveis + resultado)</h2>
+
+    <details open>
+      <summary>
+        <span>Produto + Receita</span>
+        <span class="hint">vários materiais por produto</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-3">
+          <div>
+            <label>Selecionar produto</label>
+            <input id="productSearch" list="productsList" placeholder="Começa a escrever…">
+            <datalist id="productsList"></datalist>
+          </div>
+          <div class="note" style="grid-column: span 2;">
+            Dica: Se precisares atualizar a lista de produtos, vai ao separador <strong>Upload</strong>.
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th class="num">Qtd usada</th>
+              <th>Un usada</th>
+              <th class="num">Custo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="recipeTbody"></tbody>
+        </table>
+
+        <div class="btns" style="margin-top:10px;">
+          <button type="button" id="addRecipeLine">Adicionar linha</button>
+          <button type="button" class="secondary" id="clearRecipe">Limpar receita</button>
+          <button type="button" class="secondary" id="exportRecipes">Exportar receitas</button>
+          <input id="importRecipes" type="file" accept=".json,application/json" />
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>Variáveis fixas (opcional)</span>
+        <span class="hint">ex.: taxa, etiqueta, etc.</span>
+      </summary>
+      <div class="content">
+        <table>
+          <thead><tr><th>Variável</th><th class="num">€/produto</th><th>Ativo</th><th></th></tr></thead>
+          <tbody id="varsTbody"></tbody>
+        </table>
+
+        <div class="btns" style="margin-top:10px;">
+          <button type="button" class="secondary" id="addVar">Adicionar variável</button>
+          <button type="button" class="secondary" id="exportVars">Exportar variáveis</button>
+          <input id="importVars" type="file" accept=".json,application/json" />
+        </div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>
+        <span>Resultado</span>
+        <span class="hint">materiais + variáveis</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-3">
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div class="muted" style="font-size:12px;">Custo materiais</div>
+            <div class="mono" style="font-size:22px; font-weight:900;" id="materialsCost">€ 0,00</div>
+          </div>
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div class="muted" style="font-size:12px;">Variáveis</div>
+            <div class="mono" style="font-size:22px; font-weight:900;" id="varsCost">€ 0,00</div>
+          </div>
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div class="muted" style="font-size:12px;">Total</div>
+            <div class="mono" style="font-size:22px; font-weight:900;" id="totalCost">€ 0,00</div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0;">Detalhe</h2>
+        <table>
+          <thead><tr><th>Item</th><th class="num">Custo</th></tr></thead>
+          <tbody id="breakdownTbody"></tbody>
+        </table>
+
+        <div class="hr"></div>
+
+        <div class="btns">
+          <button type="button" class="secondary" id="calcAll">Gerar tabela (todos os produtos)</button>
+        <button type="button" class="secondary" id="exportAllCostsCsv">Exportar custos CSV (;)</button>
+        </div>
+
+        <div style="height:10px;"></div>
+
+        <table>
+          <thead><tr><th>Produto</th><th class="num">Total</th></tr></thead>
+          <tbody id="allProductsTbody"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <!-- MATERIAIS -->
+  <section class="card" data-panel id="tab-materiais">
+    <h2>Materiais</h2>
+
+    <details open>
+      <summary>
+        <span>Definição de materiais</span>
+        <span class="hint">nome + unidade base</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-2" style="align-items:end;">
+          <div>
+            <label>Método de custo usado nas receitas</label>
+            <select id="costMethod" style="max-width: 360px;">
+              <option value="latest">Última compra (preço mais recente)</option>
+              <option value="wavg">Média ponderada (todas as compras)</option>
+            </select>
+          </div>
+          <div class="btns" style="justify-content:flex-end;">
+            <button type="button" class="secondary" id="addMaterial">Adicionar material</button>
+            <button type="button" class="secondary" id="exportMaterials">Exportar materiais</button>
+            <input id="importMaterials" type="file" accept=".json,application/json" />
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>Unidade base</th>
+              <th class="num">€/un (derivado)</th>
+              <th class="num">Última compra</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="materialsTbody"></tbody>
+        </table>
+
+        <div class="note" style="margin-top:12px;">
+          O campo <strong>€/un</strong> não é editado aqui — vem do separador <strong>Compras</strong> (histórico).
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- COMPRAS -->
+  <section class="card" data-panel id="tab-compras">
+    <h2>Compras (histórico de preços)</h2>
+
+    <details open>
+      <summary>
+        <span>Adicionar compra</span>
+        <span class="hint">guarda preços por data</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-4">
+          <div>
+            <label>Material</label>
+            <select id="purchaseMaterial"></select>
+          </div>
+          <div>
+            <label>Data</label>
+            <input id="purchaseDate" type="date">
+          </div>
+          <div>
+            <label>Preço (€)</label>
+            <input id="purchasePrice" type="number" step="0.01" min="0" value="0.00">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Se escolheres “por m” ou “por m²”, a unidade da compra deve ser m ou m².</div>
+          </div>
+          <div>
+            <label>Tipo de preço</label>
+            <select id="purchasePriceMode">
+              <option value="total">Total da compra</option>
+              <option value="per_unit">Preço por unidade (un)</option>
+              <option value="per_m">Preço por metro (m)</option>
+              <option value="per_m2">Preço por m² (m²)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Quantidade comprada</label>
+            <input id="purchaseQty" type="number" step="0.01" min="0" value="0.00">
+          </div>
+          <div>
+            <label>Unidade (da compra)</label>
+            <select id="purchaseUnit"></select>
+          </div>
+          <div>
+            <label>Notas (opcional)</label>
+            <input id="purchaseNote" type="text" placeholder="Fornecedor, lote, etc.">
+          </div>
+        </div>
+
+        <div class="btns" style="margin-top:10px;">
+          <button type="button" id="addPurchase">Adicionar compra</button>
+          <button type="button" class="secondary" id="exportPurchases">Exportar compras</button>
+          <input id="importPurchases" type="file" accept=".json,application/json" />
+        </div>
+
+        <div class="note" style="margin-top:10px;">
+          Conversões: <strong>m↔cm</strong>, <strong>m²↔cm²</strong>, <strong>un</strong>. Se unidades forem incompatíveis, a linha fica com ⚠ e custo 0.
+        </div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>
+        <span>Lista de compras</span>
+        <span class="hint">editar / apagar</span>
+      </summary>
+      <div class="content">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Material</th>
+              <th class="num">Preço (€)</th>
+              <th class="num">Qtd</th>
+              <th>Un</th>
+              <th class="num">€/un base</th>
+              <th>Notas</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="purchasesTbody"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <!-- UPLOAD -->
+  <section class="card" data-panel id="tab-upload">
+    <h2>Upload</h2>
+
+    <details open>
+      <summary>
+        <span>Lista de produtos (CSV)</span>
+        <span class="hint">substitui a base</span>
+      </summary>
+      <div class="content">
+        <div class="muted" style="font-size:12px; margin-bottom:10px;">
+          Upload CSV (Col A Produto | B Dimensões | C Peso | D Volume). Substitui a lista atual.
+        </div>
+
+        <div class="row cols-3">
+          <div>
+            <label>Upload CSV de produtos</label>
+            <input id="prodUpload" type="file" accept=".csv,text/csv" />
+          </div>
+          <div>
+            <label>Ações</label>
+            <div class="btns">
+              <button type="button" class="secondary" id="exportProducts">Exportar produtos CSV</button>
+              <button type="button" class="secondary" id="resetProducts">Repor produtos</button>
+            </div>
+          </div>
+          <div>
+            <label>Estado</label>
+            <span class="pill" id="prodStatus">—</span>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        <span>Backup rápido (JSON)</span>
+        <span class="hint">exportar / importar tudo</span>
+      </summary>
+      <div class="content">
+        <div class="note" style="margin-bottom:10px;">
+          Isto cria um único ficheiro JSON com: produtos, materiais, compras, receitas, variáveis e settings.
+        </div>
+        <div class="btns">
+          <button type="button" class="secondary" id="exportAll">Exportar tudo (JSON)</button>
+          <input id="importAll" type="file" accept=".json,application/json" />
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ARMAZÉM -->
+  <section class="card" data-panel id="tab-armazem">
+    <h2>Armazém (Fulfillment) — Custos operacionais</h2>
+    <div class="muted" style="margin-top:6px; line-height:1.35;">
+      Aqui inseres <b>custos mensais</b> e <b>volumes</b>. O sistema calcula automaticamente custos unitários (€/linha, €/encomenda, etc.)
+      e permite simular um cliente/cenário. <b>Não inclui callcenter</b>.
+    </div>
+
+    <details open>
+      <summary>
+        <span>Operação (inputs mensais)</span>
+        <span class="hint">mão de obra + overhead + volumes + consumíveis S/M/L</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-4">
+          <div>
+            <label style="display:none;">Mão de obra total (legacy — podes deixar vazio)</label>
+            <input id="wh_moMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 20000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Equipa de armazém (pick/pack/inbound/returns).</div>
+          </div>
+          <div>
+            <label>Overhead armazém (€/mês)</label>
+            <input id="wh_ohMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 10000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Renda, energia, WMS, seguros, manutenção, amortizações…</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Renda, energia, WMS, seguros, manutenção, amortizações…</div>
+          </div>
+          <div>
+            <label>Office / Backoffice (€/mês)</label>
+            <input id="wh_officeMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 3000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Este custo é diluído igualmente por todas as secções operacionais.</div>
+          </div>
+          <div class="note" style="display:none;">
+            <b>Consumíveis S/M/L</b>: insere o custo médio do material de embalagem por encomenda, por tamanho.
+          </div>
+        </div>
+
+        
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0;">Mão de obra por secção (€/mês)</h2>
+        <div class="muted" style="font-size:12px; margin-top:-6px;">
+          Insere o custo mensal (salários+encargos) de cada equipa/secção. O sistema divide cada um pelo respetivo volume.
+          <b>Não usamos percentagens</b>.
+        </div>
+
+        
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0;">Custos gerais (linhas) — o sistema soma automaticamente</h2>
+        <div class="muted" style="font-size:12px; margin-top:-6px;">
+          Adiciona linhas para <b>Renda</b>, <b>Energia</b>, <b>WMS</b>, <b>Limpezas</b>, etc. Escolhe se é <b>Overhead</b> ou <b>Office</b>.
+          O total de cada grupo é calculado e usado nas contas do armazém.
+        </div>
+
+        <div class="row cols-3" style="margin-top:10px;">
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div style="font-weight:900; margin-bottom:8px;">Totais</div>
+            <div class="muted" style="font-size:12px;">Overhead (€/mês)</div>
+            <div class="mono" style="font-size:20px; font-weight:900;" id="wh_overheadTotalKPI">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Office (€/mês)</div>
+            <div class="mono" style="font-size:20px; font-weight:900;" id="wh_officeTotalKPI">—</div>
+          </div>
+
+          <div style="grid-column: span 2;">
+            <div id="wh_costLinesWrap" style="overflow:auto; width:100%; max-width:100%;">
+            <table class="tbl" style="min-width:980px; width:100%;">
+              <thead>
+                <tr>
+                  <th style="text-align:left; min-width:260px;">Descrição</th>
+                  <th style="text-align:left; min-width:160px;">Grupo</th>
+                  <th style="text-align:right; min-width:260px;">Valor (€/mês)</th>
+                  <th style="text-align:right;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="wh_costLines"></tbody>
+            </table>
+          </div>
+
+            <div class="btns" style="margin-top:10px;">
+              <button type="button" id="wh_addCostLine">+ Adicionar linha</button>
+              <button type="button" class="secondary" id="wh_addDefaults">Adicionar defaults</button>
+            </div>
+
+            <div class="muted" style="font-size:12px; margin-top:8px;">
+              Nota: estes totais substituem os inputs antigos “Overhead armazém” e “Office/Backoffice”.
+            </div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+<div class="row cols-5" style="margin-top:10px;">
+          <div>
+            <label>Pick+Pack (€/mês)</label>
+            <input id="wh_moPickPackMonthly" type="number" step="0.01" min="0" placeholder="ex.: 14000">
+          </div>
+          <div>
+            <label>Returns (€/mês)</label>
+            <input id="wh_moReturnsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 3000">
+          </div>
+          <div>
+            <label>Refunds (€/mês)</label>
+            <input id="wh_moRefundsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+          </div>
+          <div>
+            <label>Recover (€/mês)</label>
+            <input id="wh_moRecoverMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+          </div>
+          <div>
+            <label>Inbound (€/mês)</label>
+            <input id="wh_moInboundMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+          </div>
+        </div>
+
+        <div class="hr"></div>
+<div class="row cols-3" style="margin-top:10px; display:none;">
+          <div>
+            <label>S (€/encomenda)</label>
+            <input id="wh_packS" type="number" step="0.01" min="0" placeholder="ex.: 0.25">
+          </div>
+          <div>
+            <label>M (€/encomenda)</label>
+            <input id="wh_packM" type="number" step="0.01" min="0" placeholder="ex.: 0.40">
+          </div>
+          <div>
+            <label>L (€/encomenda)</label>
+            <input id="wh_packL" type="number" step="0.01" min="0" placeholder="ex.: 0.65">
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0;">Volumes do mês</h2>
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Usar mês de “Vendas (mês)”</label>
+            <input id="wh_linkMonth" type="month">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês para puxar automaticamente Vendidos/Returns/Refunds.</div>
+          </div>
+          <div class="note">
+            <b>Ligação automática</b>:<br>
+            Vendidos → Pick+Pack (por unidade)<br>
+            Returns → custos Returns<br>
+            Refunds → custos Refunds
+          </div>
+          <div>
+            <label style="display:flex; align-items:center; gap:10px;">
+              <input id="wh_autoFromSales" type="checkbox" checked style="width:auto;">
+              Auto-preencher volumes do Armazém a partir de Vendas (mês)
+            </label>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Quando ativo, os campos abaixo são preenchidos pelos totais do mês.</div>
+          </div>
+        </div>
+
+        <div class="row cols-3">
+          <div>
+            <label>Vendidos (unidades)/mês</label>
+            <input id="wh_soldMonthly" type="number" step="1" min="0" placeholder="ex.: 10000">
+          </div>
+          <div>
+            <label>Linhas totais/mês</label>
+            <input id="wh_linesMonthly" type="number" step="1" min="0" placeholder="ex.: 18000">
+          </div>
+          <div>
+            <label>Returns/mês</label>
+            <input id="wh_returnsMonthly" type="number" step="1" min="0" placeholder="ex.: 500">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento físico do retorno (receber/triagem/QC).</div>
+          </div>
+        </div>
+
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Refunds/mês</label>
+            <input id="wh_refundsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento administrativo de reembolso (se existir na tua operação).</div>
+          </div>
+          <div>
+            <label>Recover/mês</label>
+            <input id="wh_recoverMonthly" type="number" step="1" min="0" placeholder="ex.: 150">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Recuperação/recondicionamento (repack, reetiquetar, voltar ao stock).</div>
+          </div>
+          <div class="note">
+            Se não usares um destes processos, deixa 0.
+          </div>
+        </div>
+        <div class="row cols-3" style="margin-top:10px;">
+          <div style="grid-column: span 2;">
+            <label>Recover — bulk (produto + quantidade + valor opcional)</label>
+            <textarea id="wh_recoverBulk" rows="6" spellcheck="false" placeholder="Produto A	2	10.50&#10;Produto B	1	5.00"></textarea>
+            <div class="muted" style="font-size:12px; margin-top:6px;">
+              Formatos: <span class="mono">Nome[TAB]Qtd[TAB]Valor</span> ou <span class="mono">Nome[TAB]Qtd</span> ou só <span class="mono">Nome</span> (assume 1).
+              O nome tem de existir nos Produtos.
+            </div>
+          </div>
+          <div>
+            <label>Ações Recover</label>
+            <button type="button" id="wh_applyRecoverBulk">Aplicar Recover ao mês</button>
+            <button type="button" class="secondary" id="wh_clearRecoverBulk" style="margin-top:8px;">Limpar</button>
+            <div class="muted" style="font-size:12px; margin-top:10px;">
+              Totais do mês:
+              <div><b id="wh_recoverUnitsKPI">—</b> unidades</div>
+              <div><b id="wh_recoverValueKPI">—</b> valor</div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Inbound (paletes recebidas)/mês</label>
+            <input id="wh_inboundPalletsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
+          </div>
+          <div>
+            <label>Stock médio (paletes)</label>
+            <input id="wh_avgStockPallets" type="number" step="1" min="0" placeholder="ex.: 150">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Dica: (início + fim)/2</div>
+          </div>
+          <div class="note">
+            <b>Stock</b> serve para calcular custo de armazenagem (€/palete/mês).
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0; display:none;">Rateio simples (desativado)</h2>
+        <div class="muted" style="margin-top:-6px; font-size:12px;">
+          Se não tens produtividades (linhas/hora), usa percentagens. Se não derem 100%, o sistema ajusta automaticamente.
+        </div>
+
+        <div class="row cols-3" style="margin-top:10px; display:none;">
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div style="font-weight:900; margin-bottom:8px;">% Mão de Obra</div>
+            <label>Pick+Pack (%)</label><input id="wh_pMoPickPack" style="display:none" type="number" step="0.1" min="0" value="70">
+            <label style="margin-top:8px;">Returns (%)</label><input id="wh_pMoRet" style="display:none" type="number" step="0.1" min="0" value="15">
+            <label style="margin-top:8px;">Refunds (%)</label><input id="wh_pMoRefund" style="display:none" type="number" step="0.1" min="0" value="5">
+            <label style="margin-top:8px;">Recover (%)</label><input id="wh_pMoRecover" style="display:none" type="number" step="0.1" min="0" value="5">
+            <label style="margin-top:8px;">Inbound (%)</label><input id="wh_pMoIn" style="display:none" type="number" step="0.1" min="0" value="5">
+</div>
+
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div style="font-weight:900; margin-bottom:8px;">% Overhead</div>
+            <label>Armazenagem (%)</label><input id="wh_pOhStorage" style="display:none" type="number" step="0.1" min="0" value="60">
+            <label style="margin-top:8px;">Operação (%)</label><input id="wh_pOhOps" style="display:none" type="number" step="0.1" min="0" value="40">
+          </div>
+
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div style="font-weight:900; margin-bottom:8px;">Resultados unitários</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">
+              Consumíveis (auto Produto/Vendas): <span class="mono" id="wh_consFromProductsKPI">—</span> €/unid · Total mês: <span class="mono" id="wh_consFromProductsTotalKPI">—</span>
+            </div>
+
+            <div class="muted" style="font-size:12px;">Pick+Pack (€/unidade)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uPickPack">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Refunds (€/evento)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/evento)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRecover">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Inbound (€/palete)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Overhead operação (€/encomenda)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uOhOrder">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Armazenagem (€/palete/mês)</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uStorage">—</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>
+        <span>Simulador (cliente / cenário)</span>
+        <span class="hint">custo mensal + custo por encomenda</span>
+      </summary>
+      <div class="content">
+        <div class="row cols-3">
+          <div>
+            <label>Vendidos (unidades)/mês (cliente)</label>
+            <input id="wh_simSold" type="number" step="1" min="0" placeholder="ex.: 2000">
+          </div>
+          <div>
+            <label>Linhas por encomenda (média)</label>
+            <input id="wh_simLinesPerOrder" type="number" step="0.01" min="0" placeholder="ex.: 2">
+          </div>
+          <div>
+            <label>Returns/mês (cliente)</label>
+            <input id="wh_simReturns" type="number" step="1" min="0" placeholder="ex.: 120">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento físico do retorno.</div>
+          </div>
+        </div>
+
+        
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Refunds/mês (cliente)</label>
+            <input id="wh_simRefunds" type="number" step="1" min="0" placeholder="ex.: 60">
+          </div>
+          <div>
+            <label>Recover/mês (cliente)</label>
+            <input id="wh_simRecover" type="number" step="1" min="0" placeholder="ex.: 50">
+          </div>
+          <div class="note">
+            Se não aplicável ao cliente, deixa 0.
+          </div>
+        </div>
+<div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Inbound paletes/mês (cliente)</label>
+            <input id="wh_simInboundPallets" type="number" step="1" min="0" placeholder="ex.: 40">
+          </div>
+          <div>
+            <label>Stock médio (paletes) (cliente)</label>
+            <input id="wh_simAvgStock" type="number" step="1" min="0" placeholder="ex.: 30">
+          </div>
+          <div class="note">
+            O simulador usa o teu custo unitário “médio do mês” e aplica ao cliente.
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2 style="margin-top:0;">Mix de embalagens (desativado)</h2>
+        <div class="row cols-3" style="display:none;">
+          <div>
+            <label>S (%)</label>
+            <input id="wh_mixS" style="display:none" type="number" step="0.1" min="0" value="50">
+          </div>
+          <div>
+            <label>M (%)</label>
+            <input id="wh_mixM" style="display:none" type="number" step="0.1" min="0" value="40">
+          </div>
+          <div>
+            <label>L (%)</label>
+            <input id="wh_mixL" style="display:none" type="number" step="0.1" min="0" value="10">
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row cols-3">
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div class="muted" style="font-size:12px;">Custo total mensal (cliente)</div>
+            <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simTotalMonthly">—</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Custo por unidade</div>
+            <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simCostPerOrder">—</div>
+          </div>
+
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border); grid-column: span 2;">
+            <div style="font-weight:900; margin-bottom:8px;">Breakdown mensal</div>
+            <div class="row cols-3">
+              <div><div class="muted" style="font-size:12px;">Pick+Pack</div><div class="mono" id="wh_simPickMonthly">—</div></div>
+                            <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
+
+              <div><div class="muted" style="font-size:12px;">Returns</div><div class="mono" id="wh_simReturnsMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Recover</div><div class="mono" id="wh_simRecoverMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Overhead operação</div><div class="mono" id="wh_simOhOpsMonthly">—</div></div>
+
+              <div><div class="muted" style="font-size:12px;">Armazenagem</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="muted" style="font-size:12px; margin-top:10px;">
+          Fórmula por encomenda: linhas×€/linha_pick + €/enc_pack + consumíveis + overhead_op/enc + (returns/enc)×€/return + (inbound/enc)×€/palete_in + (stock/enc)×€/palete/mês (aprox.)
+        </div>
+      </div>
+    </details>
+  </section>
+
+
+  <!-- VENDAS (MÊS) -->
+  <section class="card" data-panel id="tab-vendas">
+    <h2>Vendas por mês (unidades) — Média ponderada de consumíveis</h2>
+    <div class="muted" style="margin-top:6px; line-height:1.35;">
+      Introduz as <b>unidades vendidas por produto</b> num mês. O sistema calcula a <b>média ponderada</b> do custo de consumíveis por unidade
+      e o <b>total de consumíveis do mês</b>. Tudo fica guardado (local + Firebase).
+    </div>
+
+    <div class="row cols-3" style="margin-top:10px;">
+      <div>
+        <label>Mês (YYYY-MM)</label>
+        <input id="sales_month" type="month">
+        <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês a preencher.</div>
+      </div>
+      <div class="note">
+        <b>Média ponderada</b> = Σ(unidades × consumíveis_produto) / Σ(unidades).<br>
+        O campo "consumíveis" vem do teu cálculo por produto (variáveis/embalagem).
+      </div>
+      <div class="note">
+        Dica: se não preencheres um produto, assume 0 unidades nesse mês.
+      </div>
+    </div>
+
+    
+        <div class="muted" style="font-size:12px; margin-top:6px;">
+          Podes colar em bulk no formato: <span class="mono">Nome do Produto[TAB]Unidades</span> (ou <span class="mono">Nome;Unidades</span> ou <span class="mono">Nome,Unidades</span>), 1 por linha.
+        </div>
+      </div>
+      <div class="note">
+        <b>Colagem em bulk</b>: nomes têm de ser <b>iguais</b> aos da lista de produtos (mesmo texto).
+      </div>
+      <div class="note">
+        <b>Exemplo</b><br>
+        Produto A	120<br>
+        Produto B	45
+      </div>
+    </div>
+
+    <div class="row cols-3" style="margin-top:10px;">
+      <div style="grid-column: span 2;">
+        <label>Bulk (colar aqui)</label>
+        <textarea id="sales_bulk_text" style="display:none" rows="6" spellcheck="false" placeholder="Produto A	120&#10;Produto B	45"></textarea>
+      </div>
+      <div>
+        <label>Ações</label>
+        <button type="button" id="sales_bulk_apply" style="display:none">Aplicar colagem ao mês</button>
+        <button type="button" class="secondary" id="sales_bulk_clear" style="display:none" style="margin-top:8px;">Limpar</button>
+        <div class="muted" style="font-size:12px; margin-top:10px;">
+          Resultado: atualiza as unidades na tabela e guarda (local + Firebase).
+        </div>
+        <div class="muted" style="font-size:12px; margin-top:6px;">
+          Linhas não reconhecidas ficam listadas num aviso.
+        </div>
+      
+    <div class="hr"></div>
+
+    <h2 style="margin-top:0;">Colagem em bulk (por secção)</h2>
+    <div class="muted" style="font-size:12px; margin-top:-6px;">
+      Cola 1 por linha: <span class="mono">Nome do Produto[TAB]Valor</span> (ou ; , |). O nome tem de ser igual ao da lista de produtos.
+    </div>
+
+    <div class="row cols-3" style="margin-top:10px;">
+      <div>
+        <label>Bulk — Vendidos (unidades)</label>
+        <textarea id="sales_bulk_sold" rows="6" spellcheck="false" placeholder="Produto A	120&#10;Produto B	45"></textarea>
+        <button type="button" id="sales_bulk_apply_sold" style="margin-top:8px;">Aplicar Vendidos</button>
+      </div>
+      <div>
+        <label>Bulk — Returns</label>
+        <textarea id="sales_bulk_returns" rows="6" spellcheck="false" placeholder="Produto A	8&#10;Produto B	2"></textarea>
+        <button type="button" class="secondary" id="sales_bulk_apply_returns" style="margin-top:8px;">Aplicar Returns</button>
+      </div>
+      <div>
+        <label>Bulk — Refunds</label>
+        <textarea id="sales_bulk_refunds" rows="6" spellcheck="false" placeholder="Produto A	5&#10;Produto B	1"></textarea>
+        <button type="button" class="secondary" id="sales_bulk_apply_refunds" style="margin-top:8px;">Aplicar Refunds</button>
+      </div>
+    </div>
+
+    <div class="btns" style="margin-top:10px;">
+      <button type="button" class="secondary" id="sales_bulk_clear_all">Limpar todos</button>
+    </div>
+</div>
+    </div>
+<div class="hr"></div>
+
+    <div class="row cols-3">
+      <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+        <div class="muted" style="font-size:12px;">Total unidades (mês)</div>
+        <div class="mono" style="font-size:20px; font-weight:900;" id="sales_total_units">—</div>
+      </div>
+      <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+        <div class="muted" style="font-size:12px;">Total consumíveis (mês)</div>
+        <div class="mono" style="font-size:20px; font-weight:900;" id="sales_total_consumables">—</div>
+      </div>
+      <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+        <div class="muted" style="font-size:12px;">Média consumíveis (€/unid)</div>
+        <div class="mono" style="font-size:20px; font-weight:900;" id="sales_avg_consumables">—</div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 style="margin-top:0;">Unidades vendidas por produto</h2>
+    <div class="muted" style="font-size:12px; margin-top:-6px;">A coluna “Consumíveis €/unid” é calculada pelo teu sistema de produto (não é editável aqui).</div>
+
+    <div style="overflow:auto; margin-top:10px;">
+      <table class="tbl" id="sales_table" style="min-width:800px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Produto</th>
+            <th style="text-align:right;">Consumíveis €/unid</th>
+            <th style="text-align:right;">Unidades vendidas (mês)</th>
+            <th style="text-align:right;">Returns (mês)</th>
+            <th style="text-align:right;">Refunds (mês)</th>
+            <th style="text-align:right;">Consumíveis do mês (€)</th>
+          </tr>
+        </thead>
+        <tbody id="sales_tbody">
+          <tr><td class="muted" colspan="4">Sem produtos ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+
+  // -------------------------------
+  // Firebase (Firestore) — Persistência na nuvem
+  // -------------------------------
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBD6lSvB4rEQ71M3372BUk5W7pq0shdvto",
+    authDomain: "valor-embalamento-sku.firebaseapp.com",
+    projectId: "valor-embalamento-sku",
+    storageBucket: "valor-embalamento-sku.firebasestorage.app",
+    messagingSenderId: "499018503050",
+    appId: "1:499018503050:web:eacb779de7ce97baa26e73"
+  };
+
+  const CLOUD_APP_ID = "custo-por-produto-4-separadores-v1";
+  let __fb = { app: null, auth: null, db: null, uid: null, ready: false, saveTimer: null, saving: false };
+
+  function __el(id){ return document.getElementById(id); }
+
+  function hideOverlay(msg) {
+    const ov = __el("loadingOverlay");
+    if (!ov) return;
+    if (msg) { const m = ov.querySelector("#overlayMsg"); if (m) m.textContent = msg; }
+    ov.hidden = true;
+  }
+
+  function showOverlay(msg) {
+    const ov = __el("loadingOverlay");
+    if (!ov) return;
+    if (msg) { const m = ov.querySelector("#overlayMsg"); if (m) m.textContent = msg; }
+    ov.hidden = false;
+  }
+
+  function showLogin(errMsg="") {
+    const ov = __el("loadingOverlay");
+    if (!ov) return;
+    const box = ov.querySelector("#loginBox");
+    const em = ov.querySelector("#loginErr");
+    const msg = ov.querySelector("#overlayMsg");
+    if (msg) msg.textContent = "Autenticação necessária";
+    if (box) box.hidden = false;
+    if (em) {
+      if (errMsg) { em.hidden = false; em.textContent = errMsg; }
+      else { em.hidden = true; em.textContent = ""; }
+    }
+    ov.hidden = false;
+  }
+
+  function hideLogin() {
+    const ov = __el("loadingOverlay");
+    if (!ov) return;
+    const box = ov.querySelector("#loginBox");
+    const em = ov.querySelector("#loginErr");
+    if (box) box.hidden = true;
+    if (em) { em.hidden = true; em.textContent = ""; }
+  }
+
+  function emailIsAdmin(email) {
+    const e = String(email || "").trim().toLowerCase();
+    return e.endsWith("@admin.com");
+  }
+
+
+  function safeParse(raw, fallback) {
+    try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+  }
+
+  function cloudRef() {
+    if (!__fb.db || !__fb.uid) return null;
+    return doc(__fb.db, "users", __fb.uid, "apps", CLOUD_APP_ID);
+  }
+
+  async function cloudHydrateToLocalStorage(storageKeys) {
+    const ref = cloudRef();
+    if (!ref) return false;
+
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return false;
+
+    const data = snap.data() || {};
+    // Se existir dados na nuvem, a nuvem passa a ser a fonte de verdade.
+    for (const { key, field } of storageKeys) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        localStorage.setItem(key, JSON.stringify(data[field]));
+      }
+    }
+    return true;
+  }
+
+  function collectLocalState(storageKeys) {
+    const state = {};
+    for (const { key, field } of storageKeys) {
+      const raw = localStorage.getItem(key);
+      state[field] = safeParse(raw, null);
+    }
+    return state;
+  }
+
+  function cloudRequestSave(storageKeys, immediate=false) {
+    if (!__fb.ready) return;
+
+    const doSave = async () => {
+      if (__fb.saving) return;
+      __fb.saving = true;
+      try {
+        const ref = cloudRef();
+        if (!ref) return;
+        const payload = {
+          ...collectLocalState(storageKeys),
+          updatedAt: Date.now(),
+          updatedAtServer: serverTimestamp()
+        };
+        await setDoc(ref, payload, { merge: true });
+      } catch (e) {
+        console.warn("Firebase save error:", e);
+      } finally {
+        __fb.saving = false;
+      }
+    };
+
+    if (immediate) {
+      clearTimeout(__fb.saveTimer);
+      __fb.saveTimer = null;
+      doSave();
+      return;
+    }
+
+    clearTimeout(__fb.saveTimer);
+    __fb.saveTimer = setTimeout(doSave, 700);
+  }
+
+  async function firebaseInit(storageKeys) {
+    showOverlay("A ligar à Firebase…");
+    try {
+      __fb.app = initializeApp(firebaseConfig);
+      __fb.auth = getAuth(__fb.app);
+      onAuthStateChanged(__fb.auth, () => updateAuthPill());
+      __fb.db = getFirestore(__fb.app);
+
+      
+      // Espera por login (Email/Password). Mostra formulário se não houver sessão.
+      const user = await new Promise((resolve) => {
+        const unsub = onAuthStateChanged(__fb.auth, (u) => { unsub(); resolve(u); });
+      });
+
+      if (!user) {
+        // Sem sessão — pedir login
+        hideOverlay();
+        showLogin();
+        await new Promise((resolve) => {
+          const btn = __el("loginBtn");
+          const emailEl = __el("loginEmail");
+          const passEl = __el("loginPassword");
+          const handler = async () => {
+            const email = String(emailEl?.value || "").trim();
+            const pass = String(passEl?.value || "");
+            if (!emailIsAdmin(email)) { showLogin("Email tem de terminar em @admin.com"); return; }
+            if (!pass) { showLogin("Indica a password."); return; }
+            try {
+              if (btn) btn.disabled = true;
+              await signInWithEmailAndPassword(__fb.auth, email, pass);
+              resolve(true);
+            } catch (err) {
+              console.warn("Firebase login error:", err);
+              showLogin("Login falhou. Confirma email/password e se o método Email/Password está ativo no Firebase.");
+            } finally {
+              if (btn) btn.disabled = false;
+            }
+          };
+          btn?.addEventListener("click", handler);
+          passEl?.addEventListener("keydown", (e) => { if (e.key === "Enter") handler(); });
+        });
+      }
+
+      // Já autenticado
+      const authed = __fb.auth.currentUser;
+      if (!authed) throw new Error("Sem utilizador autenticado.");
+      const email = authed.email || "";
+      if (!emailIsAdmin(email)) {
+        await signOut(__fb.auth);
+        throw new Error("Domínio não autorizado (precisa @admin.com).");
+      }
+      __fb.uid = authed.uid;
+
+      hideLogin();
+
+
+      await cloudHydrateToLocalStorage(storageKeys);
+
+      __fb.ready = true;
+      updateAuthPill();
+      hideOverlay();
+      return true;
+    } catch (e) {
+      console.warn("Firebase init error:", e);
+      // Continua a funcionar localmente (sem nuvem)
+      __fb.ready = false;
+      updateAuthPill();
+      hideOverlay("Sem ligação à Firebase — a guardar só no dispositivo.");
+      return false;
+    }
+  }
+
+  // Auth UI
+  const _logoutBtn = __el("logoutBtn");
+  const _authStatus = __el("authStatus");
+  if (_logoutBtn) {
+    _logoutBtn.addEventListener("click", async () => {
+      try { await signOut(__fb.auth); } catch {}
+      // Volta a pedir login
+      __fb.ready = false;
+      __fb.uid = null;
+      showLogin("Sessão terminada. Faz login novamente.");
+    });
+  }
+
+  function updateAuthPill() {
+    const u = __fb.auth?.currentUser;
+    if (_authStatus) {
+      if (u?.email) {
+        _authStatus.hidden = false;
+        _authStatus.textContent = u.email;
+      } else {
+        _authStatus.hidden = true;
+        _authStatus.textContent = "—";
+      }
+    }
+    if (_logoutBtn) _logoutBtn.hidden = !u;
+  }
+
+
+
+  const DEFAULT_PRODUCTS = [{"product":"SKU2072 CHRISTMAS TREE 220CM","dims_cm":"33x30x120","weight":"7,64","volume":"118800"},{"product":"SKU2118 MULTIF JUICER","dims_cm":"13,2x11,2x24","weight":"0,77","volume":"3548,16"},{"product":"SKU2226 TOURIST GRILL","dims_cm":"36x29x7,5","weight":"1,37","volume":"7830"},{"product":"SKU229 SEWING MACHINE","dims_cm":"21x13x21","weight":"1","volume":"5733"},{"product":"SKU4011 FIREPLACE","dims_cm":"25x15x38","weight":"2","volume":"14250"},{"product":"SKU414 DRONE","dims_cm":"7x19x18,5","weight":"0,45","volume":"2460,5"},{"product":"SKU428 MINI AIR CONDITIONER","dims_cm":"15,7x17,50x16","weight":"0,8","volume":"4396"},{"product":"SKU541 HEDGE TRIMMERS","dims_cm":"12,08x32,5x9,03","weight":"1","volume":"3545,178"},{"product":"SKU547 THERMOSTATIC WATER HEATER","dims_cm":"10,5x22x26,5","weight":"1","volume":"6121,5"},{"product":"SKU6062 COLUMN AIR CONDITIONER","dims_cm":"18x18x60","weight":"1,95","volume":"19440"},{"product":"SKUCR7021 STEAMER","dims_cm":"29x27x17","weight":"1,98","volume":"13311"},{"product":"SKU058 GARDEN SHEARS","dims_cm":"28x5x15","weight":"0,37","volume":"2100"},{"product":"SKU2132 SHOWER HEAD","dims_cm":"16,5x10,5x8","weight":"0,27","volume":"1386"},{"product":"SKU368 MINI SAW","dims_cm":"12x36x20","weight":"1,75","volume":"8640"},{"product":"SKU511 CAMPING COOKWARE","dims_cm":"18x18x12","weight":"0,71","volume":"3888"},{"product":"SKU517 ANTENNA","dims_cm":"33x33,5x1","weight":"0,18","volume":"1105,5"},{"product":"SKU006 SILICONE KITCHEN GLOVES","dims_cm":"4x7x12","weight":"0,58","volume":"336"},{"product":"SKU012 (X5) SOLAR LAMP SET","dims_cm":"14x10x6","weight":"0,14","volume":"840"},{"product":"SKU017 BATTERY POWERED TRIMMER","dims_cm":"10x3x19","weight":"0,1","volume":"570"},{"product":"SKU024 EMBROIDERY KIT","dims_cm":"32x3x32","weight":"0,15","volume":"3072"},{"product":"SKU028 (X2) RODENT REPELLENT","dims_cm":"5,5x9x6,5","weight":"0,05","volume":"321,75"},{"product":"SKU030 AIR FRESHNER","dims_cm":"","weight":"","volume":"0"},{"product":"SKU037 ELECTRONIC KITCHEN SCALE","dims_cm":"3,5x17x23,5","weight":"0,37","volume":"1398,25"},{"product":"SKU048 WARMING OINTMENT","dims_cm":"4x1,5x6","weight":"0,01","volume":"36"},{"product":"SKU059 FOOT MASSAGE SLIPPERS","dims_cm":"7,5x29x13","weight":"0,49","volume":"2827,5"},{"product":"SKU060 MAGNETIC CLEANER","dims_cm":"13x6,5x13","weight":"0,54","volume":"1098,5"},{"product":"SKU069 MINI WIRELESS CAMERA","dims_cm":"6x6,5x10","weight":"0,09","volume":"390"},{"product":"SKU085B MOSQUITO REPELLENT WATCH","dims_cm":"6x4,5x10","weight":"0,05","volume":"270"},{"product":"SKU094 SET SILICON","dims_cm":"12x6,5x41","weight":"0,94","volume":"3198"},{"product":"SKU113 AIR HUMIDIFIER DIFFUSER","dims_cm":"10x10x10","weight":"0,19","volume":"1000"},{"product":"SKU114 NECK MASSAGER","dims_cm":"17x6x19","weight":"0,23","volume":"1938"},{"product":"SKU117 BLUETOOTH GPS KEY DOG, CAT FINDER","dims_cm":"9x1,5x9","weight":"0,25","volume":"121,5"},{"product":"SKU130 MASSAGE GUN","dims_cm":"20x6,5x27","weight":"0,81","volume":"3510"},{"product":"SKU152 DRIVING RECORDER","dims_cm":"14x11x7","weight":"0,16","volume":"1078"},{"product":"SKU172 WIRELESS KEYBOARD","dims_cm":"10,5x2,5x18","weight":"0,11","volume":"472,5"},{"product":"SKU181 TEFLON MAT FOR GRILL OVEN BAKING","dims_cm":"4x4x35","weight":"0,18","volume":"560"},{"product":"SKU191 CAR MIRROR RECORDER","dims_cm":"6x34x12","weight":"0,51","volume":"2448"},{"product":"SKU1999 CASE","dims_cm":"16,5x5x16","weight":"0,04","volume":"1320"},{"product":"SKU2008 MEMORY CARD","dims_cm":"0,5x7,5x12,5","weight":"0,01","volume":"46,875"},{"product":"SKU201 GARDEN GLOVES","dims_cm":"16x5x15","weight":"0,07","volume":"1200"},{"product":"SKU2021 TWO CHAINS AND A GUIDE FOR A MINI SAW","dims_cm":"11x1x35","weight":"0,24","volume":"385"},{"product":"SKU2030 DRONE BATTERY","dims_cm":"2,5x1x7","weight":"0,016","volume":"17,5"},{"product":"SKU2035 JUICEMAKER","dims_cm":"34x27x19,5","weight":"2,472","volume":"17901"},{"product":"SKU2042 CAMERA PEN","dims_cm":"17x8,5x3","weight":"0,1","volume":"433,5"},{"product":"SKU2045 PHEROM ONE PLUS","dims_cm":"4x5x11","weight":"0,07","volume":"220"},{"product":"SKU2054 ELECTRIC LUNCHBOX","dims_cm":"19x12x25","weight":"0,78","volume":"5700"},{"product":"SKU2055 LEAF BLOWER","dims_cm":"30x17x15","weight":"1,45","volume":"7650"},{"product":"SKU2059 FEET WARMER","dims_cm":"33x11x37","weight":"1,25","volume":"13431"},{"product":"SKU2065 MEIAS TÉRMICAS COM TURMALINA","dims_cm":"11x1x18","weight":"0,04","volume":"198"},{"product":"SKU2067 REFIL FILTER FOR VACUUM CLEANER","dims_cm":"5x5x5","weight":"0,01","volume":"125"},{"product":"SKU2068 PORTABLE ELECTRIC HEATER","dims_cm":"11,5x18,5x11,5","weight":"0,45","volume":"2446,625"},{"product":"SKU2069 AIR CURTAIN","dims_cm":"55,5x11,5x21","weight":"1,75","volume":"13403,25"},{"product":"SKU2077 ELECTRIC FIREPLACE","dims_cm":"45x39x26,5","weight":"3,68","volume":"46507,5"},{"product":"SKU2078 CHRISTMAS CURTAIN","dims_cm":"8x7x13","weight":"0,14","volume":"728"},{"product":"SKU2079 HEATED VEST","dims_cm":"36x2,5x58","weight":"0,085","volume":"5220"},{"product":"SKU2081 HEATED GLOVES","dims_cm":"26,5x16x5","weight":"0,215","volume":"2120"},{"product":"SKU2082 ELECTRIC HEATER BLANKET","dims_cm":"28x9,5x30,5","weight":"1,1","volume":"8113"},{"product":"SKU2084 ELECTRIC WATER HEATER","dims_cm":"9x21x26,5","weight":"1,47","volume":"5008,5"},{"product":"SKU2090 MINI THERMAL PRINTER","dims_cm":"12x9x5","weight":"0,21","volume":"540"},{"product":"SKU2106 CLOTHES CHAVER","dims_cm":"10x4,5x7,5","weight":"0,09","volume":"337,5"},{"product":"SKU2111 GPS LOCATOR","dims_cm":"7x4x10","weight":"0,058","volume":"280"},{"product":"SKU2112 PAPER FOR A MINI PRINTER SET5","dims_cm":"6x3x13","weight":"0,09","volume":"234"},{"product":"SKU2113 HAND CRAFTING KIT","dims_cm":"22x3x15","weight":"0,22","volume":"990"},{"product":"SKU2116 AUTOMATIC HAIR CURLER","dims_cm":"7x8x22","weight":"0,41","volume":"1232"},{"product":"SKU2117 BATTERY FOR A TRIMMER","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2119 SILVER SLICER","dims_cm":"30x41x30","weight":"4,43","volume":"36900"},{"product":"SKU2121 MINI OVEN","dims_cm":"34x32x39","weight":"5,16","volume":"42432"},{"product":"SKU2122 TOPPER","dims_cm":"46x30x20","weight":"1,66","volume":"27600"},{"product":"SKU2124 BATTERY FOR A SCREWDRIVER","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2130 SMARTWATCH","dims_cm":"21x11,5x2","weight":"0,17","volume":"483"},{"product":"SKU2131 WAIST TRAINER","dims_cm":"21x4x30","weight":"0,23","volume":"2520"},{"product":"SKU2133 BATTERY FOR SCISSORS","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2149 SLICER SHREDDER","dims_cm":"28x10x11,5","weight":"0,65","volume":"3220"},{"product":"SKU2153 SUPHUM FOCUS MEMORY","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2154 SUPHUM HAIR GROWTH","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2155 SUPHUM WEIGHT LOSS","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2159 HAMMOCK","dims_cm":"30x14x15","weight":"1,08","volume":"6300"},{"product":"SKU2160 ELECTRIC GRILL BBQ","dims_cm":"36x9x47","weight":"2,3","volume":"15228"},{"product":"SKU2165 CLOTHES HANGER SET","dims_cm":"40x16,5x6,5","weight":"0,53","volume":"4290"},{"product":"SKU2169 SPORT BLENDER","dims_cm":"24x22x17","weight":"1,88","volume":"8976"},{"product":"SKU2170 GRASS TRIMMER BLADES","dims_cm":"19x1x17","weight":"0,19","volume":"323"},{"product":"SKU2171 LAMP WITH CHARGER","dims_cm":"14x7x35","weight":"0,7","volume":"3430"},{"product":"SKU2178 FOLDING FAN","dims_cm":"9x18x17","weight":"0,71","volume":"2754"},{"product":"SKU2183 THERMAL BAG","dims_cm":"","weight":"0,44","volume":"0"},{"product":"SKU2185 COOLING INSERT FOR AIR CONDITIONER","dims_cm":"8x4x14","weight":"0,1","volume":"448"},{"product":"SKU2195 3 IN 1 BREAKFAST MAKER","dims_cm":"50x23x25","weight":"3,41","volume":"28750"},{"product":"SKU2197 CAMPING HAMMOCK","dims_cm":"32x18x9","weight":"0,76","volume":"5184"},{"product":"SKU2199 BLOWER BATTERY 48V","dims_cm":"","weight":"0,49","volume":"0"},{"product":"SKU2202 SPARE SCISSOR BLADES","dims_cm":"11x1x13","weight":"0,06","volume":"143"},{"product":"SKU2205 CHRISTMAS LASER LIGHT","dims_cm":"21x12x27","weight":"0,51","volume":"6804"},{"product":"SKU2211 CHRISTMAS TRAIN","dims_cm":"30x5x37","weight":"0,55","volume":"5550"},{"product":"SKU2217 SEWING MACHINE TABLE","dims_cm":"26x13x21","weight":"0,95","volume":"7098"},{"product":"SKU2218 AIR HUMIDIFIER WITH FLAME EFECT","dims_cm":"10x8x18","weight":"0,35","volume":"1440"},{"product":"SKU2220 MATTRESS PUMP","dims_cm":"11x13x10","weight":"0,29","volume":"1430"},{"product":"SKU2221 USB CABLE","dims_cm":"10x2x15","weight":"0,05","volume":"300"},{"product":"SKU2228 TANKLESS ELECTRIC WATER HEATER","dims_cm":"28x12x27","weight":"1,21","volume":"9072"},{"product":"SKU2234 NAIL DRILL","dims_cm":"10x21x20","weight":"0,5","volume":"4200"},{"product":"SKU2237 PLASTIC WELDING MACHINE","dims_cm":"29x23x5","weight":"0,8","volume":"3335"},{"product":"SKU2238 KNIFE SHARPENER","dims_cm":"6,5x17,5x9,5","weight":"0,15","volume":"1080,625"},{"product":"SKU279 TRIMMER","dims_cm":"19x5x12","weight":"0,21","volume":"1140"},{"product":"SKU290 TACTICAL FLASHLIGHT","dims_cm":"20x13x4,5","weight":"0,24","volume":"1170"},{"product":"SKU294 ROTATING CAMERA","dims_cm":"18,5x18,5x12","weight":"0,7","volume":"4107"},{"product":"SKU301 CAR HANDSFREE BLUETOOTH V3.0","dims_cm":"12x4x17","weight":"0,15","volume":"816"},{"product":"SKU311 WATERPROOF SOLAR LAMP","dims_cm":"12,5x18,5x11,5","weight":"0,59","volume":"2659,375"},{"product":"SKU312 GLASSES ONE POWER","dims_cm":"6x16x9","weight":"0,04","volume":"864"},{"product":"SKU317 SWEEPING ROBOT","dims_cm":"23x23x8","weight":"0,48","volume":"4232"},{"product":"SKU329 FOOD QUICK DEFROSTING TRAY","dims_cm":"24x18x2","weight":"0,38","volume":"864"},{"product":"SKU350 DISK LIGHTS","dims_cm":"20x13x12","weight":"0,14","volume":"3120"},{"product":"SKU352 SOLAR POWER BANK","dims_cm":"4x3x19","weight":"0,1","volume":"228"},{"product":"SKU357 GRILLING TOOLS","dims_cm":"38x12x5","weight":"0,85","volume":"2280"},{"product":"SKU360 GARDEN FOUNTAIN","dims_cm":"17x17x4","weight":"0,24","volume":"1156"},{"product":"SKU361 VIDEODOMOFON","dims_cm":"14x9,5x3,5","weight":"0,108","volume":"465,5"},{"product":"SKU364 WIRELESS SCREW CAMERA","dims_cm":"17x8x7","weight":"0,23","volume":"952"},{"product":"SKU375 WIRELESS HEADPHONE","dims_cm":"10x3x10","weight":"0,08","volume":"300"},{"product":"SKU380 CORDLESS ELECTRIC CLEANING BRUSH","dims_cm":"55,5x13x10,5","weight":"0,7","volume":"7575,75"},{"product":"SKU384 STARTER KIT","dims_cm":"19x7,5x28","weight":"0,76","volume":"3990"},{"product":"SKU390 CAR CAMERA","dims_cm":"11x20x7","weight":"0,36","volume":"1540"},{"product":"SKU393 COOKWARE SET","dims_cm":"50x28x20","weight":"7","volume":"28000"},{"product":"SKU395 SCREWDRIVER","dims_cm":"34x30x10","weight":"2,7","volume":"10200"},{"product":"SKU4000 CONJUNTO DE 10 PANOS MICROFIBRA MULTIUSOS 30X30","dims_cm":"17x3x19","weight":"0,2","volume":"969"},{"product":"SKU4004 APARADOR DE NARIZ","dims_cm":"","weight":"0,07","volume":"0"},{"product":"SKU4005 CONJUNTO DE LÂMINAS","dims_cm":"16x3x26","weight":"0,15","volume":"1248"},{"product":"SKU4009 MOPA TRIANGULAR","dims_cm":"54x25x12","weight":"0,49","volume":"16200"},{"product":"SKU403 SILICONE BAG FOR DOUGH","dims_cm":"","weight":"0,09","volume":"0"},{"product":"SKU412 MINI LANTERNA DE BOLSO","dims_cm":"6x3x10","weight":"0,05","volume":"180"},{"product":"SKU413 POWERBANK SOLAR DE BOLSO","dims_cm":"9x4x17","weight":"0,08","volume":"612"},{"product":"SKU419 HEADLAMP","dims_cm":"11x12x10","weight":"0,27","volume":"1320"},{"product":"SKU421 BAGLESS VACUUM","dims_cm":"43x22x17","weight":"2,6","volume":"16082"},{"product":"SKU424 RETRO CONSOLE","dims_cm":"14x10x5","weight":"0,15","volume":"700"},{"product":"SKU430 ENERGY SAVER","dims_cm":"7x10x7","weight":"0,2","volume":"490"},{"product":"SKU431 PRESSURE WASHER","dims_cm":"38x27x12","weight":"2","volume":"12312"},{"product":"SKU435 VEGETABLE CHOPPER","dims_cm":"21x10,5x13","weight":"0,41","volume":"2866,5"},{"product":"SKU436 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU438 CAR VACUUM CLEANER","dims_cm":"22x16x7","weight":"0,45","volume":"2464"},{"product":"SKU439 BATTERY 21V","dims_cm":"5x8x12","weight":"0,3","volume":"480"},{"product":"SKU454 MOSQUITO NET 2X1","dims_cm":"27x18x5","weight":"0,24","volume":"2430"},{"product":"SKU456 GRASS TRIMMER","dims_cm":"84,5x18x7,5","weight":"2,3","volume":"11407,5"},{"product":"SKU460 GRINDER AND DRILL","dims_cm":"28x29,5x7,5","weight":"2,9","volume":"6195"},{"product":"SKU461 LIQUID SEALING SPRAY","dims_cm":"3,5x3x10","weight":"0,04","volume":"105"},{"product":"SKU464 DESIGN PORTABLE BLENDER","dims_cm":"25x10x9","weight":"0,45","volume":"2250"},{"product":"SKU466 CORDLESS SCISSORS","dims_cm":"32x8x24","weight":"2","volume":"6144"},{"product":"SKU470 INTEX INFLATABLE MATTRESS","dims_cm":"37x19x45,5","weight":"6,36","volume":"31986,5"},{"product":"SKU474 MULTICOOKER","dims_cm":"30x29,5x29","weight":"3,2","volume":"25665"},{"product":"SKU475 S POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 M POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 L POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XXL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XXXL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU484 ADAPTER","dims_cm":"12x5x12","weight":"0,08","volume":"720"},{"product":"SKU486 CORDLESS IRON","dims_cm":"35x17x15","weight":"1,07","volume":"8925"},{"product":"SKU497 CONSOLE","dims_cm":"17x10x11","weight":"0,33","volume":"1870"},{"product":"SKU498 WI-FI SIGNAL BOOSTER","dims_cm":"11x7x10","weight":"0,14","volume":"770"},{"product":"SKU503 GAMEPAD COLOR","dims_cm":"18x6x15","weight":"0,23","volume":"1620"},{"product":"SKU506 ASTRONAUT PROJECTOR","dims_cm":"24x11x13","weight":"0,57","volume":"3432"},{"product":"SKU507 (X2) SOLAR STREET LAMP","dims_cm":"27x12x6","weight":"0,38","volume":"1944"},{"product":"SKU510 PORTABLE TRAVEL GRILL","dims_cm":"32x32x11","weight":"1,56","volume":"11264"},{"product":"SKU520 PASTA MACHINE","dims_cm":"19x221x14,8","weight":"2,6","volume":"62145,2"},{"product":"SKU521 SINK POPUP FILTER","dims_cm":"6x6x9","weight":"0,06","volume":"324"},{"product":"SKU523 SPRAYER","dims_cm":"38x19,5x47,5","weight":"5,45","volume":"35197,5"},{"product":"SKU532 INFLATABLE BED","dims_cm":"41x34x15","weight":"6","volume":"20910"},{"product":"SKU534 MAGNETIC BAND","dims_cm":"13x3x10","weight":"0,1","volume":"390"},{"product":"SKU537 SPRAY GUN","dims_cm":"20x26x19","weight":"1,37","volume":"9880"},{"product":"SKU546 COOLING AND HEATING AIR CONDITIONER","dims_cm":"28x24,5x76","weight":"4,69","volume":"52136"},{"product":"SKU552 TRANSLATOR","dims_cm":"13x6x3","weight":"0,13","volume":"234"},{"product":"SKU563 PROTECTIVE BAG FOR FOLDING GLASSES","dims_cm":"9x,5x17","weight":"0,002","volume":"76,5"},{"product":"SKU6014 LAUNDRY DRYER CABINET","dims_cm":"29,3x22,6x13","weight":"1,7","volume":"8608,34"},{"product":"SKU6071 GRAY SOCKET HEATER","dims_cm":"12x11x19","weight":"0,5","volume":"2508"},{"product":"SKU6073 BLACK HEATER IMITATING FIRE","dims_cm":"17x10x26","weight":"0,9","volume":"4420"},{"product":"SKU6093 SMARTWATCH V17","dims_cm":"17x7x3","weight":"0,13","volume":"357"},{"product":"SKU6093-1 SMARTWATCH FILMS","dims_cm":"12x,5x25","weight":"0,01","volume":"150"},{"product":"SKU7007 HEDGE TRIMMERS","dims_cm":"82x18x11","weight":"2,55","volume":"16236"},{"product":"SKU7019 SOLAR POWERBANK","dims_cm":"14x10x3","weight":"0,25","volume":"420"},{"product":"SKUAD1199 KARAOKE SPEAKER","dims_cm":"15,5x17,5x10","weight":"0,71","volume":"2712,5"},{"product":"SKUAD2943 HAIR RAZOR","dims_cm":"16x6x20","weight":"0,51","volume":"1920"},{"product":"SKUAD2944 HAIR CARE KIT","dims_cm":"19x8x24","weight":"0,55","volume":"3648"},{"product":"SKUAD4226 PLANETARY ROBOT","dims_cm":"37,5x22,5x31","weight":"4,1","volume":"26156,25"},{"product":"SKUAD7036.1 FILTER FOR HAND VACUUM CLEANER","dims_cm":"9x9x7","weight":"0,1","volume":"567"},{"product":"SKUAD7860 DEHUMIDIFIER","dims_cm":"34,5x24,5x15,5","weight":"2,7","volume":"13101,375"},{"product":"SKUCR4457 CHOCOLATE FOUNTAIN","dims_cm":"17,5x17,5x28,5","weight":"1,36","volume":"8728,125"},{"product":"SKUEKM 033 MEAT MINCER","dims_cm":"20x35x26","weight":"3,05","volume":"18200"},{"product":"SKUMS2152 FOOT CARE MASSAGER","dims_cm":"37,5x22,5x43","weight":"1,52","volume":"36281,25"},{"product":"SKURB9281 KITCHEN KNIVES","dims_cm":"22x3x37","weight":"0,46","volume":"2442"},{"product":"SKUZL7055 MARBLE POTS","dims_cm":"28x29x24","weight":"6,85","volume":"19488"},{"product":"SKU7015 BATTERY CHARGER","dims_cm":"15x5x10","weight":"0,2","volume":"750"},{"product":"SKU7021 FOLDING WASHING MACHINE","dims_cm":"31x31x16","weight":"1,42","volume":"15376"},{"product":"SKU2190 XL CAR PROTECTOR","dims_cm":"45x30x5","weight":"1,04","volume":"6750"},{"product":"SKU2190 L CAR PROTECTOR","dims_cm":"45x30x5","weight":"1,04","volume":"6750"},{"product":"SKU2175 AUTOMATIC SPRINKLER","dims_cm":"23x5x23","weight":"0,16","volume":"2645"},{"product":"SKU7055 WINDOW CLEANING ROBOT","dims_cm":"15x16x30","weight":"0,18","volume":"7200"},{"product":"SKU7017 TRANSLATOR EARBUDS","dims_cm":"10x4x14","weight":"0,14","volume":"560"},{"product":"SKU180 ANTI-CELLUITE MASSAGER","dims_cm":"29x9x24","weight":"0,54","volume":"6264"},{"product":"SKU7012 LASER HAIR REMOVAL KIT","dims_cm":"12x9x17","weight":"0,56","volume":"1836"},{"product":"SKU7032 LIQUID LAWN","dims_cm":"23,5x12,5x20","weight":"0,39","volume":"5875"},{"product":"SKU2134 EYE MASSAGER","dims_cm":"20x7x10","weight":"0,19","volume":"1400"},{"product":"SKU416-5 USB CAMERA","dims_cm":"12x4x13","weight":"0,12","volume":"624"},{"product":"SKU437 MOSQUITO LAMP","dims_cm":"11x11x17","weight":"0,2","volume":"2057"},{"product":"SKU354 SLICER","dims_cm":"13x12x33","weight":"0,79","volume":"5148"},{"product":"SKU7036 S SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"SKU7036 M SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"SKU7036 L SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"WARRANTY ES","dims_cm":"","weight":"","volume":"0"},{"product":"WARRANTY PT","dims_cm":"","weight":"","volume":"0"},{"product":"SKU7001 BODY MASSAGER","dims_cm":"29x18x13","weight":"1,274","volume":"6786"},{"product":"SKU2079 S/M HEATED VEST","dims_cm":"36x2,5x58","weight":"0,08","volume":"5220"},{"product":"SKU2079 L HEATED VEST","dims_cm":"36x2,5x58","weight":"0,082","volume":"5220"},{"product":"SKU2079 XL/XXL HEATED VEST","dims_cm":"36x2,5x58","weight":"0,085","volume":"5220"},{"product":"SKU436 +1,5 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +2 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +2,5 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +3 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU387 HAIR SET BRUSH CURLER DRYER","dims_cm":"24x6x30","weight":"0,67","volume":"4320"},{"product":"SKU083 ZOOM LENS TELESCOPE + TRIPOD","dims_cm":"17x7x10","weight":"0,4","volume":"1190"},{"product":"SKU533 BIG SOLAR LAMP","dims_cm":"52x52x11","weight":"2,85","volume":"29744"},{"product":"SKU551 PLANETARY MIXER","dims_cm":"37,5x23x30","weight":"3,8","volume":"25875"},{"product":"SKU327 MOSQUITO KILLER","dims_cm":"19x13x10,5","weight":"0,24","volume":"2593,5"},{"product":"SKU2129 FURNITURE ROLLERS","dims_cm":"26x20x10","weight":"0,88","volume":"5200"},{"product":"SKU2122-2 TOPPER 180x200","dims_cm":"42x25x12","weight":"1,79","volume":"12600"},{"product":"SKU125 POWERFUL GUN MASSAGER","dims_cm":"32x22x7,5","weight":"0,94","volume":"5280"},{"product":"SKU2248 SET OF LAMP AND CAMERA IN A BULB","dims_cm":"35x17x18","weight":"0,8","volume":"10710"},{"product":"SKU513 MEAT MINCER","dims_cm":"32,5x24x22","weight":"2,66","volume":"17160"},{"product":"SKUAD3223 TOASTER","dims_cm":"26,5x15x19,5","weight":"1,14","volume":"7751,25"},{"product":"SKU146 CAMERA MINI FULL HD","dims_cm":"10x10x3,5","weight":"0,05","volume":"350"},{"product":"SKU6094 AIR COMPRESOR","dims_cm":"6,5x12x20,5","weight":"0,54","volume":"1599"},{"product":"SKU2152 WELDING MACHINE","dims_cm":"28x17x20","weight":"2,76","volume":"9520"},{"product":"SKU7006 GLUE GUN","dims_cm":"22x8,5x21","weight":"1,05","volume":"3927"},{"product":"SKU422 ROTATING MOP","dims_cm":"","weight":"0,53","volume":"0"},{"product":"SKU2244 COVER FOR TRANSPORTING ANIMALS","dims_cm":"34x20x10","weight":"0,95","volume":"6800"},{"product":"SKU090 PET NAIL FILE","dims_cm":"26x14,5x5","weight":"0,21","volume":"1885"},{"product":"SKU016 PORTABLE DOG WATER BOTTLE","dims_cm":"23x8x8","weight":"0,2","volume":"1472"},{"product":"SKU7003 LED FACE MASK","dims_cm":"24x24x15","weight":"0,93","volume":"8640"},{"product":"SKU559 FLAT SPIN MOP INSERT","dims_cm":"","weight":"0,03","volume":"0"},{"product":"SKU7027 SET OF KEYS","dims_cm":"39x27x8","weight":"6,4","volume":"8424"},{"product":"SKU2053 REFIL FILTER FOR VACUUM CLEANER","dims_cm":"5x5x5","weight":"0,001","volume":"125"},{"product":"SKU7034 ELECTRIC WASHER","dims_cm":"88x17x10","weight":"2,67","volume":"14960"},{"product":"SKU6074 WHITE HEATER WITH IMITATION FIRE","dims_cm":"32x22x42","weight":"2,15","volume":"29568"},{"product":"SKU137 PORTABLE MINI HEATER","dims_cm":"14x12x14","weight":"0,38","volume":"2352"},{"product":"SKU6072 ELECTRIC NECK WARMER","dims_cm":"20x8x23","weight":"0,35","volume":"3680"},{"product":"SKU459 MASSAGER","dims_cm":"16x7x3","weight":"0,05","volume":"336"},{"product":"SKU441 FOOD SEALER","dims_cm":"36x7x9","weight":"0,52","volume":"2268"},{"product":"SKU2250 FLASHLIGHT+MINI SAW+PRECATEUR","dims_cm":"35x26x25","weight":"3,97","volume":"22750"},{"product":"SKU2138 MULTI-TOOL","dims_cm":"19x11x3,5","weight":"0,42","volume":"731,5"},{"product":"SKU457 TOURIST COOKER","dims_cm":"34,5x31x10","weight":"1,78","volume":"10695"},{"product":"SKU3002 SHOE INSERTS","dims_cm":"28x10x5","weight":"0,07","volume":"1400"},{"product":"SKU2210 SMART LIGHTS","dims_cm":"18x16x4","weight":"0,12","volume":"1152"},{"product":"SKU7028 SCOODIE - R - HOODED SCARF","dims_cm":"27x19x11","weight":"0,6","volume":"5643"},{"product":"SKU7028 SCOODIE - L - HOODED SCARF","dims_cm":"27x19x11","weight":"0,6","volume":"5643"},{"product":"SKU473 AUTOMATIC WASTE BIN","dims_cm":"","weight":"","volume":"0"},{"product":"SKU2057 FAN HEATER LED","dims_cm":"","weight":"","volume":"0"},{"product":"SKUEKA001 FAT-FREE FRYER","dims_cm":"","weight":"","volume":"0"}];
+
+  // Mantemos as mesmas chaves "v3" para não perder dados já guardados no browser
+  const STORAGE_PRODUCTS = "simple_cost_products_v3";
+  const STORAGE_MATERIALS = "simple_cost_materials_v3";
+  const STORAGE_PURCHASES = "simple_cost_purchases_v3";
+  const STORAGE_RECIPES = "simple_cost_recipes_v3";
+  const STORAGE_VARS = "simple_cost_vars_v3";
+  const STORAGE_SETTINGS = "simple_cost_settings_v3";
+  const STORAGE_UI = "simple_cost_ui_v4";
+  const STORAGE_WAREHOUSE = "simple_cost_warehouse_v1";
+  const STORAGE_SALES = "simple_cost_sales_v1";
+  const CLOUD_STORAGE_KEYS = [
+    { key: STORAGE_PRODUCTS, field: "products" },
+    { key: STORAGE_PRODUCTS + "_meta", field: "productsMeta" },
+    { key: STORAGE_MATERIALS, field: "materials" },
+    { key: STORAGE_PURCHASES, field: "purchases" },
+    { key: STORAGE_RECIPES, field: "recipes" },
+    { key: STORAGE_VARS, field: "vars" },
+    { key: STORAGE_SETTINGS, field: "settings" },
+    { key: STORAGE_UI, field: "ui" },
+    { key: STORAGE_WAREHOUSE, field: "warehouse" },
+    { key: STORAGE_SALES, field: "sales" }
+  ];
+ // UI pode mudar sem problema
+
+  const EUR = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" });
+  const $ = (id) => document.getElementById(id);
+
+  // Mantém foco e posição do cursor mesmo quando a UI é re-renderizada
+  function withFocusPreserved(cb) {
+    const ae = document.activeElement;
+    const canSel = ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA");
+    const selStart = canSel ? ae.selectionStart : null;
+    const selEnd = canSel ? ae.selectionEnd : null;
+
+    // cria um seletor baseado nos data-* do elemento ativo (ex.: data-mi/data-mc, data-pi/data-pc, etc.)
+    let selector = null;
+    if (ae) {
+      const attrs = Array.from(ae.attributes || []).filter(a => a.name.startsWith("data-"));
+      if (attrs.length) {
+        const esc = (s) => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/"/g, '\"');
+        selector = ae.tagName.toLowerCase() + attrs.map(a => `[${a.name}="${esc(a.value)}"]`).join("");
+      }
+    }
+
+    cb();
+
+    if (selector) {
+      const el = document.querySelector(selector);
+      if (el) {
+        el.focus();
+        if (canSel && typeof el.setSelectionRange === "function" && selStart !== null && selEnd !== null) {
+          try { el.setSelectionRange(selStart, selEnd); } catch {}
+        }
+      }
+    }
+  }
+function n(v) {
+    const x = Number(String(v ?? "").replace(",", "."));
+    return Number.isFinite(x) ? x : 0;
+  }
+  function nowIso() { return new Date().toISOString(); }
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (m) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  }
+  function uuid() {
+    if (window.crypto?.randomUUID) return crypto.randomUUID();
+    return "id-" + Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
+  }
+  function downloadJson(filename, obj) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+  async function importJsonFile(file) {
+    const text = await file.text();
+    return JSON.parse(text);
+  }
+
+  // Tabs
+  function loadUI() {
+    try {
+      const raw = localStorage.getItem(STORAGE_UI);
+      return raw ? JSON.parse(raw) : { activeTab: "tab-tudo" };
+    } catch {
+      return { activeTab: "tab-tudo" };
+    }
+  }
+  function saveUI(obj) { localStorage.setItem(STORAGE_UI, JSON.stringify(obj)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  let ui;
+
+  function showTab(panelId) {
+    document.querySelectorAll("[data-panel]").forEach(p => p.classList.remove("active"));
+    const panel = document.getElementById(panelId);
+    if (panel) panel.classList.add("active");
+
+    document.querySelectorAll(".tabbtn").forEach(b => {
+      const is = b.getAttribute("data-tab") === panelId;
+      b.setAttribute("aria-selected", is ? "true" : "false");
+    });
+
+    ui.activeTab = panelId;
+    saveUI(ui);
+
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  }
+  document.querySelectorAll(".tabbtn").forEach(btn => {
+    btn.addEventListener("click", () => showTab(btn.getAttribute("data-tab")));
+  });
+
+  // Units + conversions
+  const UNIT_TYPES = [
+    { value: "un", label: "un" },
+    { value: "m", label: "m" },
+    { value: "cm", label: "cm" },
+    { value: "mm", label: "mm" },
+    { value: "m2", label: "m²" },
+    { value: "cm2", label: "cm²" },
+    { value: "mm2", label: "mm²" },
+  ];
+  function unitLabel(u) { return (UNIT_TYPES.find(x => x.value === u)?.label) || u; }
+  function unitOptionsHtml(selected) {
+    return UNIT_TYPES.map(u => `<option value="${u.value}" ${u.value===selected?"selected":""}>${u.label}</option>`).join("");
+  }
+  function preferredUsedUnit(baseUnit) {
+    // Preferências para facilitar introdução em produtos:
+    // - se compras estão em m/m², é comum introduzir em cm/cm² nos produtos
+    if (baseUnit === "m") return "cm";
+    if (baseUnit === "m2") return "cm2";
+    return baseUnit || "un";
+  }
+  function convertQty(qty, fromUnit, toUnit) {
+    const q = n(qty);
+
+    // Normaliza unidades (importações/edições antigas podem ter 'm²', 'cm²', espaços, etc.)
+    const norm = (u) => {
+      if (!u) return "";
+      let s = String(u).trim().toLowerCase();
+      // variantes comuns
+      s = s.replace("²", "2");
+      s = s.replace("^2", "2");
+      // normaliza mm²/cm²/m² já tratado acima; mantém 'm2','cm2','mm2'
+      return s;
+    };
+
+    const f = norm(fromUnit);
+    const t = norm(toUnit);
+
+    if (!f || !t) return null;
+    if (f === t) return q;
+
+    // Unidades lineares
+    const linear = { mm: 1, cm: 10, m: 1000 }; // em mm
+    if (linear[f] && linear[t]) {
+      return (q * linear[f]) / linear[t];
+    }
+
+    // Unidades de área
+    const area = { mm2: 1, cm2: 100, m2: 1000000 }; // em mm²
+    if (area[f] && area[t]) {
+      return (q * area[f]) / area[t];
+    }
+
+    // Unidades por peça
+    if (f === "un" && t === "un") return q;
+
+    return null;
+  }
+
+  // CSV parsing (produtos)
+  function detectDelimiter(text) {
+    const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+    const sample = (lines[0] || "");
+    const counts = { ",": (sample.match(/,/g) || []).length, ";": (sample.match(/;/g) || []).length, "\t": (sample.match(/\t/g) || []).length };
+    const best = Object.entries(counts).sort((a,b) => b[1]-a[1])[0][0];
+    return best === "\t" ? "\t" : best;
+  }
+  function parseCsv(text) {
+    const delim = detectDelimiter(text);
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+
+    for (let i=0; i<text.length; i++) {
+      const c = text[i];
+      const next = text[i+1];
+
+      if (c === '"') {
+        if (inQuotes && next === '"') { field += '"'; i++; }
+        else { inQuotes = !inQuotes; }
+        continue;
+      }
+      if (!inQuotes && c === delim) { row.push(field); field = ""; continue; }
+
+      if (!inQuotes && (c === "\n" || c === "\r")) {
+        if (c === "\r" && next === "\n") i++;
+        row.push(field); field = "";
+        if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+        row = []; continue;
+      }
+      field += c;
+    }
+    row.push(field);
+    if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+    return rows.map(r => r.map(cell => String(cell).trim()));
+  }
+  function looksLikeHeader(row0) {
+    const h = row0.map(x => String(x).toLowerCase());
+    return h.some(x => x.includes("produto") || x.includes("product") || x.includes("dimens"));
+  }
+
+  // Products
+  function loadProducts() {
+    try {
+      const raw = localStorage.getItem(STORAGE_PRODUCTS);
+      if (!raw) return DEFAULT_PRODUCTS;
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : DEFAULT_PRODUCTS;
+    } catch { return DEFAULT_PRODUCTS; }
+  }
+  function saveProducts(arr) {
+    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(arr));
+    localStorage.setItem(STORAGE_PRODUCTS+"_meta", JSON.stringify({ updatedAt: nowIso(), count: arr.length }));
+  
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  function loadProductsMeta() {
+    try {
+      const raw = localStorage.getItem(STORAGE_PRODUCTS+"_meta");
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+  let products;
+  function refreshProductsUI() {
+    const dl = $("productsList");
+    dl.innerHTML = "";
+    for (const p of products) {
+      const opt = document.createElement("option");
+      opt.value = p.product;
+      dl.appendChild(opt);
+    }
+    const meta = loadProductsMeta();
+    const updated = meta?.updatedAt ? new Date(meta.updatedAt).toLocaleString("pt-PT") : "—";
+    $("prodStatus").textContent = `Produtos: ${products.length} · Atualizado: ${updated}`;
+  }
+  function findProductName(name) {
+    const q = String(name || "").trim().toLowerCase();
+    if (!q) return null;
+    const exact = products.find(p => String(p.product).toLowerCase() === q);
+    if (exact) return exact.product;
+    const start = products.find(p => String(p.product).toLowerCase().startsWith(q));
+    return start ? start.product : null;
+  }
+
+  // Settings
+  function loadSettings() {
+    try {
+      const raw = localStorage.getItem(STORAGE_SETTINGS);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return (parsed && typeof parsed === "object") ? parsed : { costMethod: "latest" };
+    } catch { return { costMethod: "latest" }; }
+  }
+  function saveSettings(obj) { localStorage.setItem(STORAGE_SETTINGS, JSON.stringify(obj)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  let settings;
+
+  // Materials
+  // Warehouse (Fulfillment)
+  function warehouseDefault(){
+    return {
+      op: {
+        moMonthly: null, ohMonthly: null,
+        packS: null, packM: null, packL: null,
+        soldMonthly: null, linesMonthly: null, returnsMonthly: null,
+        inboundPalletsMonthly: null, avgStockPallets: null,
+        pMoPickPack: 70, pMoRet: 15, pMoRefund: 5, pMoRecover: 5, pMoIn: 5,
+        pOhStorage: 60, pOhOps: 40
+      },
+      sim: {
+        orders: null, linesPerOrder: null, returns: null,
+        inboundPallets: null, avgStock: null,
+        mixS: 50, mixM: 40, mixL: 10
+      }
+    };
+  }
+  function loadWarehouse() {
+    try {
+      const raw = localStorage.getItem(STORAGE_WAREHOUSE);
+      const obj = raw ? JSON.parse(raw) : null;
+      return (obj && typeof obj === "object") ? obj : warehouseDefault();
+    } catch {
+      return warehouseDefault();
+    }
+  }
+  function saveWarehouse(obj) {
+    localStorage.setItem(STORAGE_WAREHOUSE, JSON.stringify(obj));
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+  }
+  let warehouse;
+
+  function whNum(id){
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const v = (el.value ?? "").toString().trim().replace(",", ".");
+    if (v === "") return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+  function whSet(id, v){
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = (v === null || v === undefined) ? "" : v;
+  }
+  function whClamp0(x){ return (typeof x === "number" && Number.isFinite(x)) ? Math.max(0, x) : 0; }
+
+  function whNormalize5(a,b,c,d,e){
+    const s = a+b+c+d+e;
+    if (s <= 0) return [0.2,0.2,0.2,0.2,0.2];
+    return [a/s,b/s,c/s,d/s,e/s];
+  }
+  function whNormalize4(a,b,c,d){
+    const s = a+b+c+d;
+    if (s <= 0) return [0.25,0.25,0.25,0.25];
+    return [a/s, b/s, c/s, d/s];
+  }
+  function whNormalize3(a,b,c){
+    const s = a+b+c;
+    if (s <= 0) return [1/3,1/3,1/3];
+    return [a/s,b/s,c/s];
+  }
+  function whNormalize2(a,b){
+    const s = a+b;
+    if (s <= 0) return [0.5,0.5];
+    return [a/s,b/s];
+  }
+  function whFmtEUR(v){
+    if (!Number.isFinite(v)) return "—";
+    const vv = Math.round(v*100)/100;
+    return vv.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+  }
+
+  function whReadFromUI(){
+    const op = {
+      moMonthly: whNum("wh_moMonthly"),
+      ohMonthly: whNum("wh_ohMonthly"),
+      officeMonthly: whNum("wh_officeMonthly"),
+      costLines: null,
+      moPickPackMonthly: whNum("wh_moPickPackMonthly"),
+      moReturnsMonthly: whNum("wh_moReturnsMonthly"),
+      moRefundsMonthly: whNum("wh_moRefundsMonthly"),
+      moRecoverMonthly: whNum("wh_moRecoverMonthly"),
+      moInboundMonthly: whNum("wh_moInboundMonthly"),
+      packS: whNum("wh_packS"),
+      packM: whNum("wh_packM"),
+      packL: whNum("wh_packL"),
+      soldMonthly: whNum("wh_soldMonthly"),
+      linesMonthly: whNum("wh_linesMonthly"),
+      returnsMonthly: whNum("wh_returnsMonthly"),
+      inboundPalletsMonthly: whNum("wh_inboundPalletsMonthly"),
+      avgStockPallets: whNum("wh_avgStockPallets"),
+      pMoPickPack: whNum("wh_pMoPickPack") ?? 70,
+      pMoRet: whNum("wh_pMoRet") ?? 15,
+      pMoRefund: whNum("wh_pMoRefund") ?? 5,
+      pMoRecover: whNum("wh_pMoRecover") ?? 5,
+      pMoIn: whNum("wh_pMoIn") ?? 5,
+      pOhStorage: whNum("wh_pOhStorage") ?? 60,
+      pOhOps: whNum("wh_pOhOps") ?? 40
+    };
+    const sim = {
+      sold: whNum("wh_simSold"),
+      linesPerOrder: whNum("wh_simLinesPerOrder"),
+      returns: whNum("wh_simReturns"),
+      refunds: whNum("wh_simRefunds"),
+      recover: whNum("wh_simRecover"),
+      inboundPallets: whNum("wh_simInboundPallets"),
+      avgStock: whNum("wh_simAvgStock"),
+      mixS: whNum("wh_mixS") ?? 50,
+      mixM: whNum("wh_mixM") ?? 40,
+      mixL: whNum("wh_mixL") ?? 10
+    };
+    return { op, sim };
+  }
+
+  function whWriteToUI(w){
+    if (!w) return;
+    const op = w.op || {};
+    const sim = w.sim || {};
+
+    whSet("wh_moMonthly", op.moMonthly);
+    whSet("wh_ohMonthly", op.ohMonthly);
+    whSet("wh_officeMonthly", op.officeMonthly);
+    whSet("wh_moPickPackMonthly", op.moPickPackMonthly);
+    whSet("wh_moReturnsMonthly", op.moReturnsMonthly);
+    whSet("wh_moRefundsMonthly", op.moRefundsMonthly);
+    whSet("wh_moRecoverMonthly", op.moRecoverMonthly);
+    whSet("wh_moInboundMonthly", op.moInboundMonthly);
+    whSet("wh_packS", op.packS);
+    whSet("wh_packM", op.packM);
+    whSet("wh_packL", op.packL);
+
+    whSet("wh_soldMonthly", op.soldMonthly);
+    whSet("wh_linesMonthly", op.linesMonthly);
+    whSet("wh_returnsMonthly", op.returnsMonthly);
+    whSet("wh_refundsMonthly", op.refundsMonthly);
+    whSet("wh_recoverMonthly", op.recoverMonthly);
+    whSet("wh_inboundPalletsMonthly", op.inboundPalletsMonthly);
+    whSet("wh_avgStockPallets", op.avgStockPallets);
+
+    whSet("wh_pMoPickPack", op.pMoPickPack ?? 70);
+    whSet("wh_pMoRet", op.pMoRet ?? 15);
+    whSet("wh_pMoRefund", op.pMoRefund ?? 5);
+    whSet("wh_pMoRecover", op.pMoRecover ?? 5);
+    whSet("wh_pMoIn", op.pMoIn ?? 5);
+
+    whSet("wh_pOhStorage", op.pOhStorage ?? 60);
+    whSet("wh_pOhOps", op.pOhOps ?? 40);
+
+    whSet("wh_simSold", sim.sold);
+    whSet("wh_simLinesPerOrder", sim.linesPerOrder);
+    whSet("wh_simReturns", sim.returns);
+    whSet("wh_simRefunds", sim.refunds);
+    whSet("wh_simRecover", sim.recover);
+    whSet("wh_simInboundPallets", sim.inboundPallets);
+    whSet("wh_simAvgStock", sim.avgStock);
+
+    whSet("wh_mixS", sim.mixS ?? 50);
+    whSet("wh_mixM", sim.mixM ?? 40);
+    whSet("wh_mixL", sim.mixL ?? 10);
+  }
+
+  function whComputeUnitCosts(op){
+    const sold = whClamp0(op.soldMonthly ?? 0);
+    const rets  = whClamp0(op.returnsMonthly ?? 0);
+    const refunds = whClamp0(op.refundsMonthly ?? 0);
+    const recover = whClamp0(op.recoverMonthly ?? 0);
+    const inbound = whClamp0(op.inboundPalletsMonthly ?? 0);
+    const stock = whClamp0(op.avgStockPallets ?? 0);
+
+    const moPickPack = whClamp0(op.moPickPackMonthly ?? 0);
+    const moReturns  = whClamp0(op.moReturnsMonthly ?? 0);
+    const moRefunds  = whClamp0(op.moRefundsMonthly ?? 0);
+    const moRecover  = whClamp0(op.moRecoverMonthly ?? 0);
+    const moInbound  = whClamp0(op.moInboundMonthly ?? 0);
+
+    const oh = whClamp0(op.ohMonthly ?? 0);
+    const office = whClamp0(op.officeMonthly ?? 0);
+    const sections = 5;
+    const sharedPerSection = (oh + office) / sections;
+
+    const uPickPack = sold>0 ? (moPickPack/sold + sharedPerSection/sold) : NaN;
+    const uRet      = rets>0 ? (moReturns/rets + sharedPerSection/rets) : NaN;
+    const uRefund   = refunds>0 ? (moRefunds/refunds + sharedPerSection/refunds) : NaN;
+    const uRecover  = recover>0 ? (moRecover/recover + sharedPerSection/recover) : NaN;
+    const uIn       = inbound>0 ? (moInbound/inbound + sharedPerSection/inbound) : NaN;
+
+    const uStorage  = stock>0 ? (oh/stock) : NaN;
+
+    return {uPickPack,uRet,uRefund,uRecover,uIn,uStorage};
+  }
+
+  function whComputeScenario(w){
+    const op = w.op || {};
+    const sim = w.sim || {};
+    const u = whComputeUnitCosts(op);
+
+    const sold = whClamp0(sim.sold ?? 0);
+    const rets = whClamp0(sim.returns ?? 0);
+    const refunds = whClamp0(sim.refunds ?? 0);
+    const recover = whClamp0(sim.recover ?? 0);
+    const inbound = whClamp0(sim.inboundPallets ?? 0);
+    const stock = whClamp0(sim.avgStock ?? 0);
+
+    const pickPackMonthly = Number.isFinite(u.uPickPack) ? sold*u.uPickPack : NaN;
+    const retMonthly      = Number.isFinite(u.uRet) ? rets*u.uRet : NaN;
+    const refundMonthly   = Number.isFinite(u.uRefund) ? refunds*u.uRefund : NaN;
+    const recoverMonthly  = Number.isFinite(u.uRecover) ? recover*u.uRecover : NaN;
+    const inboundMonthly  = Number.isFinite(u.uIn) ? inbound*u.uIn : NaN;
+    const storageMonthly  = Number.isFinite(u.uStorage) ? stock*u.uStorage : NaN;
+
+    // Consumíveis: vêm do Produto + Vendas (mês), apenas para VENDIDOS
+    const monthKey = (document.getElementById("wh_linkMonth")?.value) || (new Date().toISOString().slice(0,7));
+    const cons = whGetConsumablesPerUnitFromSalesMonth(monthKey);
+    const packMatPerUnit = cons.perUnit;
+    const packMatMonthly  = sold*packMatPerUnit;
+
+    const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + refundMonthly + recoverMonthly + inboundMonthly + storageMonthly;
+    const costPerUnit = sold>0 ? totalMonthly/sold : NaN;
+
+    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, refundMonthly, recoverMonthly, inboundMonthly, storageMonthly};
+  }
+
+  function whRender(){
+    if (!document.getElementById("tab-armazem")) return;
+
+    const w = warehouse || warehouseDefault();
+    const u = whComputeUnitCosts(w.op || {});
+
+    const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    try {
+      const monthKey = (document.getElementById("wh_linkMonth")?.value) || (new Date().toISOString().slice(0,7));
+      const cons = whGetConsumablesPerUnitFromSalesMonth(monthKey);
+      setTxt("wh_consFromProductsKPI", whFmtEUR(cons.perUnit));
+      setTxt("wh_consFromProductsTotalKPI", whFmtEUR(cons.total));
+    } catch(e) {}
+    setTxt("wh_uPickPack", whFmtEUR(u.uPickPack));
+        setTxt("wh_uRet",  whFmtEUR(u.uRet));
+    setTxt("wh_uRefund", whFmtEUR(u.uRefund));
+    setTxt("wh_uRecover", whFmtEUR(u.uRecover));
+    setTxt("wh_uIn",   whFmtEUR(u.uIn));
+    setTxt("wh_uStorage", whFmtEUR(u.uStorage));
+
+    const s = whComputeScenario(w);
+    setTxt("wh_simTotalMonthly", whFmtEUR(s.totalMonthly));
+    setTxt("wh_simCostPerOrder", whFmtEUR(s.costPerUnit));
+    setTxt("wh_simPickMonthly", whFmtEUR(s.pickPackMonthly));
+        setTxt("wh_simPackMatMonthly", whFmtEUR(s.packMatMonthly));
+    setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));
+    setTxt("wh_simRefundsMonthlyCost", whFmtEUR(s.refundMonthly));
+    setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));
+    setTxt("wh_simInboundMonthlyCost", whFmtEUR(s.inboundMonthly));
+        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
+  }
+
+  
+  
+  function whParseRecoverBulk(text){
+    const lines = String(text||"").split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const items = [];
+    for (const line of lines){
+      let parts = line.split("\t");
+      if (parts.length < 2) parts = line.split(";");
+      if (parts.length < 2) parts = line.split(",");
+      if (parts.length < 2) parts = line.split("|");
+      const name = String(parts[0]||"").trim();
+      if (!name) continue;
+      let qty = 1;
+      let val = 0;
+      if (parts.length >= 2){
+        const q = Number(String(parts[1]).trim().replace(",", "."));
+        if (Number.isFinite(q)) qty = Math.max(0, Math.round(q)); else qty = 1;
+      }
+      if (parts.length >= 3){
+        const v = Number(String(parts[2]).trim().replace(",", "."));
+        if (Number.isFinite(v)) val = v;
+      }
+      items.push({name, qty, value: val, line});
+    }
+    return items;
+  }
+
+  function whApplyRecoverBulk(){
+    const monthEl = document.getElementById("wh_linkMonth");
+    const monthKey = monthEl?.value || (new Date().toISOString().slice(0,7));
+    const ta = document.getElementById("wh_recoverBulk");
+    const txt = ta ? ta.value : "";
+    const items = whParseRecoverBulk(txt);
+
+    const idx = new Map();
+    (Array.isArray(products)?products:[]).forEach(p=>{
+      const nm = String(p.name||p.nome||"").trim();
+      if (nm) idx.set(nm.toLowerCase(), getProductId(p));
+    });
+
+    const unknown = [];
+    const mapped = [];
+    let totalUnits = 0;
+    let totalValue = 0;
+
+    for (const it of items){
+      const pid = idx.get(it.name.toLowerCase());
+      if (!pid){ unknown.push(it.name); continue; }
+      mapped.push({pid, name: it.name, qty: it.qty, value: it.value});
+      totalUnits += it.qty;
+      totalValue += (it.value || 0) * (it.qty || 0);
+    }
+
+    warehouse = warehouse || warehouseDefault();
+    warehouse.recoverMonths = warehouse.recoverMonths || {};
+    warehouse.recoverMonths[monthKey] = { items: mapped, totalUnits, totalValue, updatedAt: Date.now() };
+
+    const inp = document.getElementById("wh_recoverMonthly");
+    if (inp) inp.value = String(totalUnits);
+
+    const k1 = document.getElementById("wh_recoverUnitsKPI");
+    const k2 = document.getElementById("wh_recoverValueKPI");
+    if (k1) k1.textContent = String(totalUnits.toLocaleString("pt-PT"));
+    if (k2) k2.textContent = whFmtEUR(totalValue);
+
+    warehouse = whReadFromUI();
+    warehouse.recoverMonths = warehouse.recoverMonths || {};
+    warehouse.recoverMonths[monthKey] = { items: mapped, totalUnits, totalValue, updatedAt: Date.now() };
+
+    saveWarehouse(warehouse);
+    whRender();
+
+    if (unknown.length){
+      alert("Recover: nomes não reconhecidos ("+unknown.length+"): " + unknown.slice(0,20).join(", ") + (unknown.length>20?"…":""));
+    }
+  }
+
+  function whBindRecoverBulk(){
+    const btn = document.getElementById("wh_applyRecoverBulk");
+    const clr = document.getElementById("wh_clearRecoverBulk");
+    if (btn) btn.addEventListener("click", whApplyRecoverBulk);
+    if (clr) clr.addEventListener("click", ()=>{ const ta=document.getElementById("wh_recoverBulk"); if(ta) ta.value=""; });
+  }
+
+  // Consumíveis: puxar automaticamente do módulo Produto + Vendas (mês)
+  function whProductConsumables(p){
+    // Tenta vários campos comuns; ajusta se no teu modelo usares outro nome
+    const candidates = [
+      p?.consumables,
+      p?.consumiveis,
+      p?.consumiveis_total,
+      p?.packagingCost,
+      p?.custoEmbalagem,
+      p?.custo_consumiveis,
+      p?.consumiveisPorUnidade
+    ];
+    for (const v of candidates){
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      const n = Number(String(v ?? "").replace(",", "."));
+      if (Number.isFinite(n)) return n;
+    }
+    return 0;
+  }
+
+  function whGetConsumablesPerUnitFromSalesMonth(monthKey){
+    try{
+      if (!sales || !sales.months) return {perUnit: 0, total: 0, units: 0};
+      const monthMap = sales.months[monthKey];
+      if (!monthMap || typeof monthMap !== "object") return {perUnit: 0, total: 0, units: 0};
+
+      // index products by id
+      const pIndex = new Map();
+      (Array.isArray(products)?products:[]).forEach(p=>{
+        const pid = getProductId(p);
+        if (pid) pIndex.set(String(pid), p);
+      });
+
+      let totalUnits = 0;
+      let totalCons = 0;
+
+      for (const [pid, v] of Object.entries(monthMap)){
+        const sold = (v && typeof v === "object") ? Number(v.sold ?? 0) : Number(v ?? 0);
+        const u = Number.isFinite(sold) ? sold : 0;
+        if (u <= 0) continue;
+        totalUnits += u;
+        const p = pIndex.get(String(pid));
+        const cons = p ? whProductConsumables(p) : 0;
+        totalCons += u * (Number.isFinite(cons) ? cons : 0);
+      }
+      const perUnit = totalUnits > 0 ? (totalCons / totalUnits) : 0;
+      return {perUnit, total: totalCons, units: totalUnits};
+    }catch(e){
+      return {perUnit: 0, total: 0, units: 0};
+    }
+  }
+
+function whAutoFillFromSales(){
+    try{
+      const chk = document.getElementById("wh_autoFromSales");
+      const monthEl = document.getElementById("wh_linkMonth");
+      if (!chk || !monthEl) return;
+      if (!monthEl.value){
+        // default to current month
+        const d = new Date();
+        monthEl.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+      }
+      if (!chk.checked) return;
+
+      // Ensure sales is loaded
+      if (!sales || !sales.months) return;
+      const monthKey = monthEl.value;
+      const monthMap = sales.months[monthKey];
+      if (!monthMap || typeof monthMap !== "object") return;
+
+      let soldTotal = 0, returnsTotal = 0, refundsTotal = 0;
+      for (const v of Object.values(monthMap)){
+        if (v && typeof v === "object"){
+          soldTotal += Number(v.sold ?? 0) || 0;
+          returnsTotal += Number(v.returns ?? 0) || 0;
+          refundsTotal += Number(v.refunds ?? 0) || 0;
+        } else {
+          soldTotal += Number(v ?? 0) || 0;
+        }
+      }
+
+      // Preencher campos do Armazém
+      const set = (id, val)=>{ const el=document.getElementById(id); if(el) el.value = String(Math.max(0, Math.round(val||0))); };
+      set("wh_soldMonthly", soldTotal);
+      set("wh_returnsMonthly", returnsTotal);
+      set("wh_refundsMonthly", refundsTotal);
+      try{
+        const rm = (warehouse && warehouse.recoverMonths) ? warehouse.recoverMonths[monthKey] : null;
+        if (rm && typeof rm.totalUnits === "number") {
+          set("wh_recoverMonthly", rm.totalUnits);
+          const k1=document.getElementById("wh_recoverUnitsKPI"); const k2=document.getElementById("wh_recoverValueKPI");
+          if (k1) k1.textContent = String(rm.totalUnits.toLocaleString("pt-PT"));
+          if (k2) k2.textContent = whFmtEUR(rm.totalValue||0);
+        }
+      }catch(e){}
+
+      // Guardar e re-render
+      warehouse = whReadFromUI();
+      saveWarehouse(warehouse);
+      whRender();
+    }catch(e){}
+  }
+
+
+  function whFmtNumEUR(v){
+    if (!Number.isFinite(v)) return "0,00 €";
+    const vv = Math.round(v*100)/100;
+    return vv.toLocaleString("pt-PT",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+  }
+
+  function whEnsureCostLines(){
+    warehouse = warehouse || warehouseDefault();
+    warehouse.op = warehouse.op || {};
+    if (!Array.isArray(warehouse.op.costLines)) warehouse.op.costLines = [];
+  }
+
+  function whComputeCostTotals(){
+    whEnsureCostLines();
+    let overhead = 0, office = 0;
+    for (const row of warehouse.op.costLines){
+      const val = Number(row?.value ?? 0);
+      const v = Number.isFinite(val) ? val : 0;
+      const grp = String(row?.group || "overhead");
+      if (grp === "office") office += v;
+      else overhead += v;
+    }
+    const ohEl = document.getElementById("wh_ohMonthly");
+    const ofEl = document.getElementById("wh_officeMonthly");
+    if (ohEl) ohEl.value = String(overhead);
+    if (ofEl) ofEl.value = String(office);
+
+    const k1 = document.getElementById("wh_overheadTotalKPI");
+    const k2 = document.getElementById("wh_officeTotalKPI");
+    if (k1) k1.textContent = whFmtNumEUR(overhead);
+    if (k2) k2.textContent = whFmtNumEUR(office);
+
+    warehouse.op.ohMonthly = overhead;
+    warehouse.op.officeMonthly = office;
+  }
+
+  function whRenderCostLines(){
+    const tb = document.getElementById("wh_costLines");
+    if (!tb) return;
+    whEnsureCostLines();
+    tb.innerHTML = "";
+
+    if (warehouse.op.costLines.length === 0){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="muted" colspan="4">Sem linhas. Clica “Adicionar defaults” ou “+ Adicionar linha”.</td>`;
+      tb.appendChild(tr);
+      whComputeCostTotals();
+      return;
+    }
+
+    warehouse.op.costLines.forEach((row, idx)=>{
+      const desc = String(row?.desc || "");
+      const group = String(row?.group || "overhead");
+      const value = Number(row?.value ?? 0);
+      const v = Number.isFinite(value) ? value : 0;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input data-cli="${idx}" data-clc="desc" value="${escapeHtml(desc)}" placeholder="ex.: Renda / Energia / WMS"></td>
+        <td>
+          <select data-cli="${idx}" data-clc="group">
+            <option value="overhead" ${group==="overhead"?"selected":""}>Overhead</option>
+            <option value="office" ${group==="office"?"selected":""}>Office</option>
+          </select>
+        </td>
+        <td style="text-align:right;"><input data-cli="${idx}" data-clc="value" type="number" step="0.01" min="0" style="width:240px; max-width:240px; box-sizing:border-box;" value="${v.toFixed(2)}"></td>
+        <td style="text-align:right;"><button type="button" class="secondary" data-delcl="${idx}">✕</button></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-cli]").forEach(el=>{
+      const handler = ()=>{
+        const i = Number(el.getAttribute("data-cli"));
+        const c = el.getAttribute("data-clc");
+        if (i < 0 || i >= warehouse.op.costLines.length) return;
+        if (c === "value"){
+          const num = Number(String(el.value||"").replace(",", "."));
+          warehouse.op.costLines[i][c] = Number.isFinite(num) ? Math.max(0, num) : 0;
+        } else {
+          warehouse.op.costLines[i][c] = (el.tagName === "SELECT") ? el.value : el.value;
+        }
+        whComputeCostTotals();
+        saveWarehouse(warehouse);
+        whRender();
+        whRenderCostLines();
+      };
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    });
+
+    tb.querySelectorAll("[data-delcl]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const i = Number(btn.getAttribute("data-delcl"));
+        warehouse.op.costLines.splice(i, 1);
+        whComputeCostTotals();
+        saveWarehouse(warehouse);
+        whRenderCostLines();
+        whRender();
+      });
+    });
+
+    whComputeCostTotals();
+  }
+
+  function whAddCostLine(row){
+    whEnsureCostLines();
+    warehouse.op.costLines.push(row || {desc:"", group:"overhead", value:0});
+    whComputeCostTotals();
+    saveWarehouse(warehouse);
+    whRenderCostLines();
+    whRender();
+  }
+
+  function whAddDefaultCostLines(){
+    const defaults = [
+      {desc:"Renda", group:"overhead", value:0},
+      {desc:"Energia", group:"overhead", value:0},
+      {desc:"WMS / Software", group:"overhead", value:0},
+      {desc:"Limpeza / Manutenção", group:"overhead", value:0},
+      {desc:"Seguros", group:"overhead", value:0},
+      {desc:"Office / Backoffice", group:"office", value:0}
+    ];
+    whEnsureCostLines();
+    if (warehouse.op.costLines.length === 0){
+      warehouse.op.costLines = defaults;
+    } else {
+      const seen = new Set(warehouse.op.costLines.map(r=>String(r.desc||"").trim().toLowerCase()));
+      for (const d of defaults){
+        if (!seen.has(String(d.desc).toLowerCase())) warehouse.op.costLines.push(d);
+      }
+    }
+    whComputeCostTotals();
+    saveWarehouse(warehouse);
+    whRenderCostLines();
+    whRender();
+  }
+
+function whBind(){
+    const root = document.getElementById("tab-armazem");
+    if (!root) return;
+    const monthEl = document.getElementById("wh_linkMonth");
+    const chk = document.getElementById("wh_autoFromSales");
+    if (monthEl) monthEl.addEventListener("change", ()=>{ whAutoFillFromSales(); });
+    if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
+    // primeiro preenchimento (se aplicável)
+    setTimeout(()=>{ whAutoFillFromSales(); }, 50);
+    try { whBindRecoverBulk(); } catch(e) {}
+    try {
+      const addBtn = document.getElementById("wh_addCostLine");
+      const defBtn = document.getElementById("wh_addDefaults");
+      if (addBtn) addBtn.addEventListener("click", ()=>whAddCostLine());
+      if (defBtn) defBtn.addEventListener("click", ()=>whAddDefaultCostLines());
+    } catch(e) {}
+    setTimeout(()=>{ try { whRenderCostLines(); } catch(e) {} }, 120);
+    root.querySelectorAll("input,select").forEach(el=>{
+      el.addEventListener("input", ()=>{
+        warehouse = whReadFromUI();
+        saveWarehouse(warehouse);
+        whRender();
+      });
+    });
+  }
+
+
+  // Sales (Monthly units per product) — used to compute weighted average of consumables
+  function salesDefault(){
+    return {
+      // monthKey -> { productId -> unitsNumber }
+      months: {}
+    };
+  }
+  function loadSales(){
+    try{
+      const raw = localStorage.getItem(STORAGE_SALES);
+      const obj = raw ? JSON.parse(raw) : null;
+      if (obj && typeof obj === "object" && obj.months && typeof obj.months === "object") return obj;
+      return salesDefault();
+    }catch{
+      return salesDefault();
+    }
+  }
+  function saveSales(obj){
+    localStorage.setItem(STORAGE_SALES, JSON.stringify(obj));
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+  }
+  let sales;
+
+  function ymNow(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    return `${y}-${m}`;
+  }
+
+  function getProductId(p){
+    // Prefer stable id if exists; fallback to name
+    return (p && (p.id || p.sku || p.name || p.nome || p.title)) ? String(p.id || p.sku || p.name || p.nome || p.title) : "";
+  }
+
+  function getConsumablesForProduct(p){
+    // Try common fields used in your system; fallback 0
+    // "fixedVars" / "variaveisFixas" are already added elsewhere; consumables is the per-unit packaging/consumables component.
+    // We try multiple names to be robust.
+    const candidates = [
+      p?.consumables,
+      p?.consumiveis,
+      p?.consumiveis_total,
+      p?.packagingCost,
+      p?.custoEmbalagem,
+      p?.custo_consumiveis
+    ];
+    for (const v of candidates){
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      const n = Number(String(v ?? "").replace(",", "."));
+      if (Number.isFinite(n)) return n;
+    }
+    return 0;
+  }
+
+  function salesFmtEUR(v){
+    if (!Number.isFinite(v)) return "—";
+    const vv = Math.round(v*100)/100;
+    return vv.toLocaleString("pt-PT", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+  }
+
+  
+  function salesParseLines(text){
+    // Accept: Name<TAB>Units, Name;Units, Name,Units, Name|Units
+    const lines = String(text||"").split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const items = [];
+    for (const line of lines){
+      // try tab first
+      let parts = line.split("\t");
+      if (parts.length < 2){
+        parts = line.split(";");
+      }
+      if (parts.length < 2){
+        parts = line.split(",");
+      }
+      if (parts.length < 2){
+        parts = line.split("|");
+      }
+      if (parts.length < 2){
+        // fallback: last space separates
+        const m = line.match(/^(.*?)[ ]+(\d+(?:[.,]\d+)?)$/);
+        if (m) parts = [m[1], m[2]];
+      }
+      if (!parts || parts.length < 2){
+        // Permitir colar só o nome (1 por linha) => assume valor 1
+        const nameOnly = line.trim();
+        if (!nameOnly){ items.push({ok:false, line, reason:"Nome vazio"}); continue; }
+        items.push({ok:true, name: nameOnly, sold: 1, returns: 0, refunds: 0, line});
+        continue;
+      }
+      const name = String(parts[0]).trim();
+      const soldRaw = String(parts[1]).trim().replace(",", ".");
+      const sold = Number(soldRaw);
+      const returnsRaw = (parts[2] !== undefined) ? String(parts[2]).trim().replace(",", ".") : "0";
+      const refundsRaw = (parts[3] !== undefined) ? String(parts[3]).trim().replace(",", ".") : "0";
+      const returns = Number(returnsRaw);
+      const refunds = Number(refundsRaw);
+      if (!name){
+        items.push({ok:false, line, reason:"Nome vazio"});
+        continue;
+      }
+      if (!Number.isFinite(sold)){
+        items.push({ok:false, line, reason:"Unidades inválidas"});
+        continue;
+      }
+      items.push({ok:true, name, sold: Math.max(0, Math.round(sold)), returns: Number.isFinite(returns)?Math.max(0,Math.round(returns)):0, refunds: Number.isFinite(refunds)?Math.max(0,Math.round(refunds)):0, line});
+    }
+    return items;
+  }
+
+  function buildProductNameIndex(){
+    const map = new Map();
+    const list = Array.isArray(products) ? products : [];
+    for (const p of list){
+      const nm = String(p.name || p.nome || "").trim();
+      if (!nm) continue;
+      // Index by exact name
+      map.set(nm, getProductId(p));
+    }
+    return map;
+  }
+
+  
+  function salesApplyBulkSection(section){
+    const monthInput = document.getElementById("sales_month");
+    const monthKey = monthInput?.value || ymNow();
+
+    const taId = section === "sold" ? "sales_bulk_sold" : (section === "returns" ? "sales_bulk_returns" : "sales_bulk_refunds");
+    const txt = document.getElementById(taId)?.value || "";
+    const parsed = salesParseLines(txt);
+    const idx = buildProductNameIndex();
+
+    const unknown = [];
+    const bad = [];
+    const updates = {};
+
+    for (const it of parsed){
+      if (!it.ok){ bad.push(`${it.line}  → ${it.reason}`); continue; }
+      const pid = idx.get(it.name);
+      if (!pid){ unknown.push(it.name); continue; }
+      // When using per-section bulk, the second column is the value; we map it to the chosen section
+      const val = (section === "sold") ? (it.sold ?? it.units ?? 0) : (section === "returns" ? (it.returns ?? it.sold ?? 0) : (it.refunds ?? it.sold ?? 0));
+      const vv = Math.max(0, Math.round(Number(val) || 0));
+      updates[pid] = (updates[pid] || 0) + vv;
+    }
+
+    if (!sales.months) sales.months = {};
+    if (!sales.months[monthKey]) sales.months[monthKey] = {};
+
+    for (const [pid, v] of Object.entries(updates)){
+      const cur = sales.months[monthKey][pid];
+      const obj = (cur && typeof cur === "object") ? cur : { sold: Number(cur ?? 0) || 0, returns: 0, refunds: 0 };
+      if (section === "sold") obj.sold = v;
+      if (section === "returns") obj.returns = v;
+      if (section === "refunds") obj.refunds = v;
+      sales.months[monthKey][pid] = obj;
+    }
+
+    saveSales(sales);
+    salesRender();
+
+    const msgs = [];
+    if (Object.keys(updates).length) msgs.push(`Aplicado (${section}): ${Object.keys(updates).length} produtos.`);
+    if (unknown.length) msgs.push(`Não reconhecidos (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
+    if (bad.length) msgs.push(`Linhas inválidas (${bad.length}):\n- ${bad.slice(0,10).join("\n- ")}${bad.length>10?"\n…":""}`);
+    if (msgs.length) alert(msgs.join("\n\n"));
+  }
+
+function salesApplyBulk(){
+    const monthInput = document.getElementById("sales_month");
+    const monthKey = monthInput?.value || ymNow();
+    const txt = document.getElementById("sales_bulk_text")?.value || "";
+    const parsed = salesParseLines(txt);
+    const idx = buildProductNameIndex();
+
+    const unknown = [];
+    const bad = [];
+    const updates = {};
+
+    for (const it of parsed){
+      if (!it.ok){ bad.push(`${it.line}  → ${it.reason}`); continue; }
+      const pid = idx.get(it.name);
+      if (!pid){
+        unknown.push(it.name);
+        continue;
+      }
+      updates[pid] = { sold: it.sold, returns: it.returns, refunds: it.refunds };
+    }
+
+    if (!sales.months) sales.months = {};
+    if (!sales.months[monthKey]) sales.months[monthKey] = {};
+    // Apply updates (overwrite units for the month)
+    for (const [pid, obj] of Object.entries(updates)){
+      sales.months[monthKey][pid] = obj;
+    }
+    saveSales(sales);
+    salesRender();
+
+    const msgs = [];
+    if (Object.keys(updates).length) msgs.push(`Aplicado: ${Object.keys(updates).length} produtos.`);
+    if (unknown.length) msgs.push(`Não reconhecidos (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
+    if (bad.length) msgs.push(`Linhas inválidas (${bad.length}):\n- ${bad.slice(0,10).join("\n- ")}${bad.length>10?"\n…":""}`);
+    if (msgs.length) alert(msgs.join("\n\n"));
+
+    tbody.querySelectorAll("input.salesReturns").forEach(inp=>{
+      inp.addEventListener("input", ()=>{
+        const pid = inp.getAttribute("data-pid") || "";
+        const vraw = (inp.value ?? "").toString().trim();
+        const v = vraw === "" ? 0 : Number(vraw);
+        if (!sales.months) sales.months = {};
+        if (!sales.months[monthKey]) sales.months[monthKey] = {};
+        const cur = sales.months[monthKey][pid];
+        const obj = (cur && typeof cur === "object") ? cur : { sold: Number(cur ?? 0) || 0, returns: 0, refunds: 0 };
+        obj.returns = Number.isFinite(v) ? Math.max(0, Math.round(v)) : 0;
+        sales.months[monthKey][pid] = obj;
+        saveSales(sales);
+        salesRender();
+      });
+    });
+
+    tbody.querySelectorAll("input.salesRefunds").forEach(inp=>{
+      inp.addEventListener("input", ()=>{
+        const pid = inp.getAttribute("data-pid") || "";
+        const vraw = (inp.value ?? "").toString().trim();
+        const v = vraw === "" ? 0 : Number(vraw);
+        if (!sales.months) sales.months = {};
+        if (!sales.months[monthKey]) sales.months[monthKey] = {};
+        const cur = sales.months[monthKey][pid];
+        const obj = (cur && typeof cur === "object") ? cur : { sold: Number(cur ?? 0) || 0, returns: 0, refunds: 0 };
+        obj.refunds = Number.isFinite(v) ? Math.max(0, Math.round(v)) : 0;
+        sales.months[monthKey][pid] = obj;
+        saveSales(sales);
+        salesRender();
+      });
+    });
+  }
+
+  function salesBindBulk(){
+    const btnSold = document.getElementById("sales_bulk_apply_sold");
+    const btnRet = document.getElementById("sales_bulk_apply_returns");
+    const btnRef = document.getElementById("sales_bulk_apply_refunds");
+    const clrAll = document.getElementById("sales_bulk_clear_all");
+    if (btnSold) btnSold.addEventListener("click", ()=>salesApplyBulkSection("sold"));
+    if (btnRet) btnRet.addEventListener("click", ()=>salesApplyBulkSection("returns"));
+    if (btnRef) btnRef.addEventListener("click", ()=>salesApplyBulkSection("refunds"));
+    if (clrAll) clrAll.addEventListener("click", ()=>{
+      const a=document.getElementById("sales_bulk_sold"); if(a) a.value="";
+      const b=document.getElementById("sales_bulk_returns"); if(b) b.value="";
+      const c=document.getElementById("sales_bulk_refunds"); if(c) c.value="";
+    });
+
+    const btn = document.getElementById("sales_bulk_apply");
+    const clr = document.getElementById("sales_bulk_clear");
+    if (btn) btn.addEventListener("click", salesApplyBulk);
+    if (clr) clr.addEventListener("click", ()=>{ const ta=document.getElementById("sales_bulk_text"); if (ta) ta.value=""; });
+  }
+
+function salesRender(){
+    const panel = document.getElementById("tab-vendas");
+    if (!panel) return;
+
+    const monthInput = document.getElementById("sales_month");
+    if (!monthInput.value) monthInput.value = ymNow();
+    const monthKey = monthInput.value;
+
+    const tbody = document.getElementById("sales_tbody");
+    if (!tbody) return;
+
+    const monthMap = (sales?.months?.[monthKey] && typeof sales.months[monthKey] === "object") ? sales.months[monthKey] : {};
+
+    // products variable exists in the original system
+    const list = Array.isArray(products) ? products : [];
+
+    if (list.length === 0){
+      tbody.innerHTML = '<tr><td class="muted" colspan="4">Sem produtos ainda.</td></tr>';
+      document.getElementById("sales_total_units").textContent = "0";
+      document.getElementById("sales_total_consumables").textContent = salesFmtEUR(0);
+      document.getElementById("sales_avg_consumables").textContent = salesFmtEUR(NaN);
+      return;
+    }
+
+    let totalUnits = 0;
+    let totalCons = 0;
+    let totalReturns = 0;
+    let totalRefunds = 0;
+
+    const rows = [];
+    for (const p of list){
+      const pid = getProductId(p);
+      const name = String(p.name || p.nome || pid || "Produto");
+      const cons = getConsumablesForProduct(p);
+
+      const raw = monthMap[pid];
+      const soldVal = (raw && typeof raw === "object") ? raw.sold : raw;
+      const retVal  = (raw && typeof raw === "object") ? raw.returns : 0;
+      const refVal  = (raw && typeof raw === "object") ? raw.refunds : 0;
+      const units = Number(soldVal ?? 0);
+      const returnsN = Number(retVal ?? 0);
+      const refundsN = Number(refVal ?? 0);
+      const u = Number.isFinite(units) ? units : 0;
+      const rret = Number.isFinite(returnsN) ? returnsN : 0;
+      const rref = Number.isFinite(refundsN) ? refundsN : 0;
+      const consMonth = u * cons;
+
+      totalUnits += u;
+      totalCons += consMonth;
+      totalReturns += rret;
+      totalRefunds += rref;
+
+      rows.push({pid, name, cons, units:u, returns:rret, refunds:rref, consMonth});
+    }
+
+    const avg = totalUnits > 0 ? (totalCons / totalUnits) : NaN;
+
+    document.getElementById("sales_total_units").textContent = String(totalUnits.toLocaleString("pt-PT"));
+    document.getElementById("sales_total_consumables").textContent = salesFmtEUR(totalCons);
+    document.getElementById("sales_avg_consumables").textContent = salesFmtEUR(avg);
+
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="text-align:left;">${escapeHtml(r.name)}</td>
+        <td style="text-align:right;" class="mono">${salesFmtEUR(r.cons)}</td>
+        <td style="text-align:right;">
+          <input class="salesUnits" data-pid="${escapeHtml(r.pid)}" type="number" step="1" min="0" value="${r.units}">
+        </td>
+        <td style="text-align:right;">
+          <input class="salesReturns" data-pid="${escapeHtml(r.pid)}" type="number" step="1" min="0" value="${r.returns}">
+        </td>
+        <td style="text-align:right;">
+          <input class="salesRefunds" data-pid="${escapeHtml(r.pid)}" type="number" step="1" min="0" value="${r.refunds}">
+        </td>
+        <td style="text-align:right;" class="mono">${salesFmtEUR(r.consMonth)}</td>
+      </tr>
+    `).join("");
+
+    // bind inputs
+    tbody.querySelectorAll("input.salesUnits").forEach(inp=>{
+      inp.addEventListener("input", ()=>{
+        const pid = inp.getAttribute("data-pid") || "";
+        const vraw = (inp.value ?? "").toString().trim();
+        const v = vraw === "" ? 0 : Number(vraw);
+        if (!sales.months) sales.months = {};
+        if (!sales.months[monthKey]) sales.months[monthKey] = {};
+        const cur = sales.months[monthKey][pid];
+        const obj = (cur && typeof cur === "object") ? cur : { sold: 0, returns: 0, refunds: 0 };
+        obj.sold = Number.isFinite(v) ? Math.max(0, Math.round(v)) : 0;
+        sales.months[monthKey][pid] = obj;
+        saveSales(sales);
+        salesRender();
+      });
+    });
+  }
+
+  function salesBind(){
+    try { salesBindBulk(); } catch(e) {}
+    const monthInput = document.getElementById("sales_month");
+    if (!monthInput) return;
+    monthInput.addEventListener("change", ()=>{
+      // Ensure month entry exists
+      if (!sales.months) sales.months = {};
+      if (!sales.months[monthInput.value]) sales.months[monthInput.value] = {};
+      saveSales(sales);
+      salesRender();
+    });
+  }
+
+
+  function loadMaterials() {
+    try {
+      const raw = localStorage.getItem(STORAGE_MATERIALS);
+      if (!raw) return [
+        { id: uuid(), name: "Película", baseUnit: "m" },
+        { id: uuid(), name: "Envelope", baseUnit: "un" },
+        { id: uuid(), name: "Saco", baseUnit: "un" },
+      ];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
+  }
+  function saveMaterials(arr) { localStorage.setItem(STORAGE_MATERIALS, JSON.stringify(arr)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  let materials;
+  function materialById(id) { return materials.find(m => m.id === id) || null; }
+
+  // Purchases
+  function loadPurchases() {
+    try {
+      const raw = localStorage.getItem(STORAGE_PURCHASES);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
+  }
+  function savePurchases(arr) { localStorage.setItem(STORAGE_PURCHASES, JSON.stringify(arr)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  let purchases;
+
+  function purchasesForMaterial(materialId) {
+    return purchases.filter(p => p.materialId === materialId).slice().sort((a,b) => String(a.date||"").localeCompare(String(b.date||"")));
+  }
+  function purchaseUnitCostInBase(p) {
+    const m = materialById(p.materialId);
+    if (!m) return null;
+    const baseQty = convertQty(p.qty, p.unit, m.baseUnit);
+    if (baseQty === null || baseQty <= 0) return null;
+    return n(p.price) / baseQty;
+  }
+  function materialUnitCostDerived(materialId) {
+    const m = materialById(materialId);
+    if (!m) return { unitCost: 0, lastDate: "" };
+    const list = purchasesForMaterial(materialId);
+    if (list.length === 0) return { unitCost: 0, lastDate: "" };
+
+    const last = list[list.length - 1];
+    const lastDate = last?.date || "";
+
+    if (settings.costMethod === "latest") {
+      const uc = purchaseUnitCostInBase(last);
+      return { unitCost: uc ?? 0, lastDate };
+    }
+
+    let totalCost = 0, totalBaseQty = 0;
+    for (const p of list) {
+      const baseQty = convertQty(p.qty, p.unit, m.baseUnit);
+      if (baseQty === null || baseQty <= 0) continue;
+      totalCost += n(p.price);
+      totalBaseQty += baseQty;
+    }
+    return { unitCost: totalBaseQty > 0 ? (totalCost / totalBaseQty) : 0, lastDate };
+  }
+
+  // Materials UI
+  function refreshPurchaseMaterialSelect() {
+    const sel = $("purchaseMaterial");
+    sel.innerHTML = materials.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)))
+      .map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join("");
+  }
+  function renderMaterials() {
+    const tb = $("materialsTbody");
+    tb.innerHTML = "";
+    materials.forEach((m, idx) => {
+      const d = materialUnitCostDerived(m.id);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input data-mi="${idx}" data-mc="name" value="${escapeHtml(m.name||"")}"></td>
+        <td><select data-mi="${idx}" data-mc="baseUnit">${unitOptionsHtml(m.baseUnit||"un")}</select></td>
+        <td class="num mono">${d.unitCost ? (EUR.format(d.unitCost)+"/"+unitLabel(m.baseUnit)) : "—"}</td>
+        <td class="num mono">${d.lastDate ? escapeHtml(d.lastDate) : "—"}</td>
+        <td class="num"><button type="button" class="secondary" data-delm="${idx}">✕</button></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-mi]").forEach(el => {
+      const i = Number(el.getAttribute("data-mi"));
+        const c = el.getAttribute("data-mc");
+
+        const saveNoRerender = () => {
+          materials[i][c] = el.value;
+          saveMaterials(materials);
+          // Atualiza selects/valores noutros separadores sem destruir o campo que estás a escrever
+          refreshPurchaseMaterialSelect();
+          withFocusPreserved(() => renderPurchases());
+          withFocusPreserved(() => renderRecipe());
+          calcSelected();
+        };
+
+        const saveWithRerender = () => {
+          saveNoRerender();
+          // Só re-renderiza a lista de materiais quando faz sentido (ex.: mudar unidade)
+          withFocusPreserved(() => renderMaterials());
+        };
+
+        if (el.tagName === "SELECT") {
+          el.addEventListener("change", saveWithRerender);
+        } else {
+          el.addEventListener("input", saveNoRerender);
+          el.addEventListener("change", saveNoRerender);
+        }
+    });
+
+    tb.querySelectorAll("[data-delm]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-delm"));
+        const removed = materials.splice(i, 1)[0];
+        saveMaterials(materials);
+
+        if (removed?.id) {
+          purchases = purchases.filter(p => p.materialId !== removed.id);
+          savePurchases(purchases);
+
+          const recipes = loadRecipes() || {};
+for (const k of Object.keys(recipes)) {
+            recipes[k] = (recipes[k] || []).filter(line => line.materialId !== removed.id);
+          }
+          saveRecipes(recipes);
+        }
+
+        refreshPurchaseMaterialSelect();
+        withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+      });
+    });
+  }
+
+  $("addMaterial").addEventListener("click", () => {
+    materials.push({ id: uuid(), name: "Material", baseUnit: "un" });
+    saveMaterials(materials);
+    refreshPurchaseMaterialSelect();
+    withFocusPreserved(() => renderMaterials());
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+  $("exportMaterials").addEventListener("click", () => downloadJson("materiais.json", materials));
+  $("importMaterials").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      const arr = await importJsonFile(f);
+      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      materials = arr.map(m => ({ id: m.id || uuid(), name: m.name||"", baseUnit: m.baseUnit||"un" }));
+      saveMaterials(materials);
+
+      const ids = new Set(materials.map(m => m.id));
+      purchases = purchases.filter(p => ids.has(p.materialId));
+      savePurchases(purchases);
+
+      refreshPurchaseMaterialSelect();
+      withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+      alert("Materiais importados.");
+    } catch {
+      alert("Não consegui importar este JSON de materiais.");
+    }
+    e.target.value = "";
+  });
+
+  // Purchases UI
+  function todayDateStr() {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  $("purchaseUnit").innerHTML = unitOptionsHtml("un");
+
+  function renderPurchases() {
+    const tb = $("purchasesTbody");
+    tb.innerHTML = "";
+    const sorted = purchases.slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+    if (sorted.length === 0) {
+      tb.innerHTML = `<tr><td colspan="8" class="muted">Sem compras registadas.</td></tr>`;
+      return;
+    }
+
+    sorted.forEach((p, idx) => {
+      const uc = purchaseUnitCostInBase(p);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input data-pi="${idx}" data-pc="date" type="date" value="${escapeHtml(p.date||"")}"></td>
+        <td>
+          <select data-pi="${idx}" data-pc="materialId">
+            ${materials.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)))
+              .map(mm => `<option value="${mm.id}" ${mm.id===p.materialId?"selected":""}>${escapeHtml(mm.name)}</option>`).join("")}
+          </select>
+        </td>
+        <td class="num">
+            <div style="display:flex; gap:6px; align-items:center; justify-content:flex-end; flex-wrap:wrap;">
+              <select data-pi="${idx}" data-pc="priceMode" style="max-width:190px;">
+                <option value="total" ${((p.priceMode||"total")==="total")?"selected":""}>Total</option>
+                <option value="per_unit" ${((p.priceMode||"")==="per_unit")?"selected":""}>€/un</option>
+                <option value="per_m" ${((p.priceMode||"")==="per_m")?"selected":""}>€/m</option>
+                <option value="per_m2" ${((p.priceMode||"")==="per_m2")?"selected":""}>€/m²</option>
+              </select>
+              <input data-pi="${idx}" data-pc="pricePer" type="number" step="0.01" min="0" style="max-width:140px;" value="${n(p.pricePer ?? p.price).toFixed(2)}">
+            </div>
+            <div class="muted" style="font-size:11px; text-align:right; margin-top:4px;">
+              Total: <span class="mono">${EUR.format(n(p.price))}</span>
+            </div>
+          </td>
+        <td class="num"><input data-pi="${idx}" data-pc="qty" type="number" step="0.01" min="0" value="${n(p.qty).toFixed(2)}"></td>
+        <td><select data-pi="${idx}" data-pc="unit">${unitOptionsHtml(p.unit||"un")}</select></td>
+        <td class="num mono">${uc ? (EUR.format(uc)+"/"+unitLabel(materialById(p.materialId)?.baseUnit||"")) : "—"}</td>
+        <td><input data-pi="${idx}" data-pc="note" value="${escapeHtml(p.note||"")}"></td>
+        <td class="num"><button type="button" class="secondary" data-delp="${idx}">✕</button></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-pi]").forEach(el => {
+      const handler = () => {
+        const i = Number(el.getAttribute("data-pi"));
+        const c = el.getAttribute("data-pc");
+        const sorted2 = purchases.slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+        const purchaseId = sorted2[i].id;
+        const originalIndex = purchases.findIndex(x => x.id === purchaseId);
+        if (originalIndex < 0) return;
+        purchases[originalIndex][c] = (el.tagName === "SELECT") ? el.value : el.value;
+
+        // Recalcular total se editar preço/quantidade
+        const p0 = purchases[originalIndex];
+        if (c === "pricePer") p0.pricePer = n(p0.pricePer ?? p0.price);
+        if (c === "priceMode") p0.priceMode = p0.priceMode || "total";
+        if (["priceMode","pricePer","qty"].includes(c)) {
+          const mode2 = (p0.priceMode || "total");
+          const qty0 = n(p0.qty);
+          const per2 = n(p0.pricePer ?? p0.price);
+          p0.price = (mode2 === "total") ? per2 : (per2 * qty0);
+        }
+        savePurchases(purchases);
+        withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+      };
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    });
+
+    tb.querySelectorAll("[data-delp]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-delp"));
+        const sorted2 = purchases.slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+        const purchaseId = sorted2[i].id;
+        purchases = purchases.filter(x => x.id !== purchaseId);
+        savePurchases(purchases);
+        withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+      });
+    });
+  }
+
+  $("addPurchase").addEventListener("click", () => {
+    const materialId = $("purchaseMaterial").value;
+    if (!materialId) { alert("Escolhe um material."); return; }
+    const date = $("purchaseDate").value || todayDateStr();
+    const priceMode = ($("purchasePriceMode")?.value || "total");
+    const priceInput = n($("purchasePrice").value);
+    const qty = n($("purchaseQty").value);
+    const unit = $("purchaseUnit").value;
+    const note = $("purchaseNote").value || "";
+
+    if (priceInput <= 0 || qty <= 0) { alert("Preço e quantidade têm de ser > 0."); return; }
+
+    // Converter para total (mantemos p.price como total para não quebrar o resto do sistema)
+    const totalPrice = (priceMode === "total") ? priceInput : (priceInput * qty);
+
+    purchases.push({ id: uuid(), materialId, date, price: totalPrice, qty, unit, note, priceMode, pricePer: priceInput });
+    savePurchases(purchases);
+
+    $("purchaseDate").value = date;
+    $("purchasePrice").value = "0.00";
+    $("purchaseQty").value = "0.00";
+    $("purchaseNote").value = "";
+    if ($("purchasePriceMode")) $("purchasePriceMode").value = "total";
+
+    withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+  });
+
+  $("exportPurchases").addEventListener("click", () => downloadJson("compras.json", purchases));
+  $("importPurchases").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      const arr = await importJsonFile(f);
+      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      const ids = new Set(materials.map(m => m.id));
+      purchases = arr.filter(p => ids.has(p.materialId))
+        .map(p => ({ id: p.id || uuid(), materialId: p.materialId, date: p.date||"", price: p.price||0, qty: p.qty||0, unit: p.unit||"un", note: p.note||"" }));
+      savePurchases(purchases);
+      withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
+        calcSelected();
+      alert("Compras importadas.");
+    } catch {
+      alert("Não consegui importar este JSON de compras.");
+    }
+    e.target.value = "";
+  });
+
+  // Recipes
+  function loadRecipes() {
+    try {
+      const raw = localStorage.getItem(STORAGE_RECIPES);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return (parsed && typeof parsed === "object" && !Array.isArray(parsed)) ? parsed : {};
+    } catch { return {}; }
+  }
+  function saveRecipes(obj) { localStorage.setItem(STORAGE_RECIPES, JSON.stringify(obj)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+
+  function getSelectedProduct() { return findProductName($("productSearch").value); }
+  function getRecipeFor(productName) {
+    const recipes = loadRecipes();
+    const arr = recipes[productName] || [];
+    return Array.isArray(arr) ? arr : [];
+  }
+  function setRecipeFor(productName, lines) {
+    const recipes = loadRecipes();
+    recipes[productName] = lines;
+    saveRecipes(recipes);
+  }
+  function materialsOptionsHtml(selectedId) {
+    const opts = materials.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)))
+      .map(m => `<option value="${m.id}" ${m.id===selectedId?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
+    return `<option value="">— escolher —</option>` + opts;
+  }
+  function computeRecipeLineCost(line) {
+    const m = materialById(line.materialId);
+    if (!m) return { cost: 0, warning: "Material removido" };
+
+    const d = materialUnitCostDerived(m.id);
+    const unitCost = d.unitCost || 0;
+
+    const usedInBase = convertQty(line.usedQty, line.usedUnit, m.baseUnit);
+    if (usedInBase === null) return { cost: 0, warning: `Unidades incompatíveis (${line.usedUnit} → ${m.baseUnit})` };
+    if (unitCost <= 0) return { cost: 0, warning: "Sem compras registadas" };
+    return { cost: unitCost * usedInBase, warning: "" };
+  }
+  function renderRecipe() {
+    const tb = $("recipeTbody");
+    tb.innerHTML = "";
+    const p = getSelectedProduct();
+    $("selectedProductTop").textContent = p ? p : "—";
+
+    if (!p) {
+      tb.innerHTML = `<tr><td colspan="5" class="muted">Escolhe um produto para editar a receita.</td></tr>`;
+      return;
+    }
+
+    const lines = getRecipeFor(p);
+    if (lines.length === 0) {
+      tb.innerHTML = `<tr><td colspan="5" class="muted">Sem linhas. Clica “Adicionar linha”.</td></tr>`;
+      return;
+    }
+
+    lines.forEach((line, idx) => {
+      const r = computeRecipeLineCost(line);
+      const warn = r.warning ? `<div class="muted" style="font-size:12px;">⚠ ${escapeHtml(r.warning)}</div>` : "";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><select data-ri="${idx}" data-rc="materialId">${materialsOptionsHtml(line.materialId||"")}</select>${warn}</td>
+        <td class="num"><input data-ri="${idx}" data-rc="usedQty" type="number" min="0" step="0.01" value="${(line.usedQty===undefined||line.usedQty===null||String(line.usedQty).trim()==="") ? 1 : line.usedQty}"></td>
+        <td><select data-ri="${idx}" data-rc="usedUnit">${unitOptionsHtml(line.usedUnit||"un")}</select></td>
+        <td class="num mono">${EUR.format(r.cost)}</td>
+        <td class="num"><button type="button" class="secondary" data-delr="${idx}">✕</button></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-ri]").forEach(el => {
+      const handler = () => {
+        const p2 = getSelectedProduct();
+        if (!p2) return;
+
+        const i = Number(el.getAttribute("data-ri"));
+        const c = el.getAttribute("data-rc");
+        const lines2 = getRecipeFor(p2);
+
+        const before = { ...lines2[i] };
+
+        // atualiza campo
+        lines2[i][c] = (el.tagName === "SELECT") ? el.value : el.value;
+
+        // Se mudou o material, aplica unidade "amigável" por defeito (cm/cm² quando a base é m/m²)
+        if (c === "materialId") {
+          const oldBase = materialById(before.materialId)?.baseUnit || "";
+          const newBase = materialById(lines2[i].materialId)?.baseUnit || "";
+
+          const oldPref = preferredUsedUnit(oldBase);
+          const newPref = preferredUsedUnit(newBase);
+
+          const curUnit = String(lines2[i].usedUnit || "").trim();
+          const shouldAuto =
+            !curUnit ||
+            curUnit === "un" ||
+            curUnit === oldBase ||
+            curUnit === oldPref;
+
+          if (shouldAuto) lines2[i].usedUnit = newPref;
+        }
+
+        setRecipeFor(p2, lines2);
+        // Para "QTD usada": não re-renderizar a cada tecla (evita o cursor saltar). Atualiza no blur.
+        if (c === "usedQty") {
+          calcSelected();
+          clearTimeout(window.__recipeQtyT);
+          window.__recipeQtyT = setTimeout(() => { withFocusPreserved(() => renderRecipe()); }, 500);
+          return;
+        }
+        withFocusPreserved(() => renderRecipe());
+        calcSelected();
+      };
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    });
+
+    tb.querySelectorAll("[data-delr]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p2 = getSelectedProduct();
+        if (!p2) return;
+        const i = Number(btn.getAttribute("data-delr"));
+        const lines2 = getRecipeFor(p2);
+        lines2.splice(i, 1);
+        setRecipeFor(p2, lines2);
+        withFocusPreserved(() => renderRecipe());
+        calcSelected();
+      });
+    });
+  }
+
+  $("addRecipeLine").addEventListener("click", () => {
+    const p = getSelectedProduct();
+    if (!p) { alert("Escolhe primeiro um produto."); return; }
+    const lines = getRecipeFor(p);
+    const first = materials[0];
+    lines.push({ materialId: first?.id || "", usedQty: 1, usedUnit: preferredUsedUnit(first?.baseUnit || "un") });
+    setRecipeFor(p, lines);
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+
+  $("clearRecipe").addEventListener("click", () => {
+    const p = getSelectedProduct();
+    if (!p) return;
+    if (!confirm("Limpar a receita deste produto?")) return;
+    setRecipeFor(p, []);
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+
+  $("exportRecipes").addEventListener("click", () => downloadJson("receitas_por_produto.json", loadRecipes()));
+  $("importRecipes").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      const obj = await importJsonFile(f);
+      if (typeof obj !== "object" || obj === null) throw new Error("Formato inválido");
+      saveRecipes(obj);
+      withFocusPreserved(() => renderRecipe());
+      calcSelected();
+      alert("Receitas importadas.");
+    } catch {
+      alert("Não consegui importar este JSON de receitas.");
+    }
+    e.target.value = "";
+  });
+
+  // Vars
+  function loadVars() {
+    try {
+      const raw = localStorage.getItem(STORAGE_VARS);
+      if (!raw) return [{ id: uuid(), name: "Taxa fixa", value: 0, enabled: false }];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch { return []; }
+  }
+  function saveVars(arr) { localStorage.setItem(STORAGE_VARS, JSON.stringify(arr)); 
+    cloudRequestSave(CLOUD_STORAGE_KEYS);
+}
+  let vars;
+
+  function renderVars() {
+    const tb = $("varsTbody");
+    tb.innerHTML = "";
+    vars.forEach((v, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input data-vi="${idx}" data-vc="name" value="${escapeHtml(v.name||"")}"></td>
+        <td class="num"><input data-vi="${idx}" data-vc="value" type="number" step="0.01" min="0" value="${n(v.value).toFixed(2)}"></td>
+        <td>
+          <select data-vi="${idx}" data-vc="enabled">
+            <option value="true" ${v.enabled ? "selected":""}>Sim</option>
+            <option value="false" ${!v.enabled ? "selected":""}>Não</option>
+          </select>
+        </td>
+        <td class="num"><button type="button" class="secondary" data-delv="${idx}">✕</button></td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-vi]").forEach(el => {
+      const handler = () => {
+        const i = Number(el.getAttribute("data-vi"));
+        const c = el.getAttribute("data-vc");
+        if (c === "enabled") vars[i][c] = (el.value === "true");
+        else vars[i][c] = el.value;
+        saveVars(vars);
+      withFocusPreserved(() => renderVars());
+      calcSelected();
+
+      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      if (document.getElementById("allProductsTbody")?.children?.length) {
+        calcAllProducts();
+      }
+      };
+      el.addEventListener("input", handler);
+      el.addEventListener("change", handler);
+    });
+
+    tb.querySelectorAll("[data-delv]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = Number(btn.getAttribute("data-delv"));
+        vars.splice(i, 1);
+        if (vars.length === 0) vars.push({ id: uuid(), name: "Variável", value: 0, enabled: false });
+        saveVars(vars);
+      withFocusPreserved(() => renderVars());
+      calcSelected();
+
+      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      if (document.getElementById("allProductsTbody")?.children?.length) {
+        calcAllProducts();
+      }
+      });
+    });
+  }
+
+  $("addVar").addEventListener("click", () => {
+    vars.push({ id: uuid(), name: "Variável", value: 0, enabled: true });
+    saveVars(vars);
+      withFocusPreserved(() => renderVars());
+      calcSelected();
+
+      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      if (document.getElementById("allProductsTbody")?.children?.length) {
+        calcAllProducts();
+      }
+      });
+
+  $("exportVars").addEventListener("click", () => downloadJson("variaveis.json", vars));
+  $("importVars").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      const arr = await importJsonFile(f);
+      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      vars = arr.map(v => ({ id: v.id || uuid(), name: v.name||"", value: v.value||0, enabled: !!v.enabled }));
+      saveVars(vars);
+      withFocusPreserved(() => renderVars());
+      calcSelected();
+
+      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      if (document.getElementById("allProductsTbody")?.children?.length) {
+        calcAllProducts();
+      }
+      alert("Variáveis importadas.");
+    } catch {
+      alert("Não consegui importar este JSON de variáveis.");
+    }
+    e.target.value = "";
+  });
+
+  // Calculation
+  function calcSelected() {
+    const p = getSelectedProduct();
+    $("selectedProductTop").textContent = p ? p : "—";
+    if (!p) {
+      $("materialsCostTop").textContent = "€ 0,00";
+      $("totalCostTop").textContent = "€ 0,00";
+      $("materialsCost").textContent = "€ 0,00";
+      $("varsCost").textContent = "€ 0,00";
+      $("totalCost").textContent = "€ 0,00";
+      $("breakdownTbody").innerHTML = `<tr><td class="muted" colspan="2">Escolhe um produto.</td></tr>`;
+      return 0;
+    }
+
+    const lines = getRecipeFor(p);
+    let matTotal = 0;
+    const breakdown = [];
+
+    for (const ln of lines) {
+      const m = materialById(ln.materialId);
+      const name = m ? m.name : "Material";
+      const r = computeRecipeLineCost(ln);
+      matTotal += r.cost;
+      breakdown.push({ label: `${name} — ${n(ln.usedQty).toFixed(2)} ${unitLabel(ln.usedUnit)}${r.warning ? " (⚠)" : ""}`, cost: r.cost });
+    }
+
+    let varsTotal = 0;
+    for (const v of vars) {
+      if (v.enabled) {
+        const c = n(v.value);
+        varsTotal += c;
+        breakdown.push({ label: v.name || "Variável", cost: c });
+      }
+    }
+
+    const total = matTotal + varsTotal;
+
+    $("materialsCostTop").textContent = EUR.format(matTotal);
+    $("totalCostTop").textContent = EUR.format(total);
+
+    $("materialsCost").textContent = EUR.format(matTotal);
+    $("varsCost").textContent = EUR.format(varsTotal);
+    $("totalCost").textContent = EUR.format(total);
+
+    const bt = $("breakdownTbody");
+    bt.innerHTML = "";
+    if (breakdown.length === 0) {
+      bt.innerHTML = `<tr><td class="muted" colspan="2">Sem itens.</td></tr>`;
+    } else {
+      for (const b of breakdown) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${escapeHtml(b.label)}</td><td class="num mono">${EUR.format(b.cost)}</td>`;
+        bt.appendChild(tr);
+      }
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><strong>Total</strong></td><td class="num mono"><strong>${EUR.format(total)}</strong></td>`;
+      bt.appendChild(tr);
+    }
+
+    withFocusPreserved(() => renderMaterials());
+    return total;
+  }
+
+  function calcAllProducts() {
+    const body = $("allProductsTbody");
+    body.innerHTML = "";
+    const recipes = loadRecipes();
+
+    const all = products.map(p => {
+      const name = p.product;
+      const lines = Array.isArray(recipes[name]) ? recipes[name] : [];
+      let matTotal = 0;
+      for (const ln of lines) matTotal += computeRecipeLineCost(ln).cost;
+      let varsTotal = 0;
+      for (const v of vars) if (v.enabled) varsTotal += n(v.value);
+      return { name, total: matTotal + varsTotal };
+    }).sort((a,b) => b.total - a.total);
+
+    for (const r of all) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${escapeHtml(r.name)}</td><td class="num mono">${EUR.format(r.total)}</td>`;
+      body.appendChild(tr);
+    }
+
+  function exportAllCostsCsv() {
+    const recipes = loadRecipes();
+    const all = products.map(p => {
+      const name = p.product;
+      const lines = Array.isArray(recipes[name]) ? recipes[name] : [];
+      let matTotal = 0;
+      for (const ln of lines) matTotal += computeRecipeLineCost(ln).cost;
+      let varsTotal = 0;
+      for (const v of vars) if (v.enabled) varsTotal += n(v.value);
+      const total = matTotal + varsTotal;
+      return { name, matTotal, varsTotal, total };
+    }).sort((a,b) => b.total - a.total);
+
+    const fmt = (x) => {
+      const v = Math.round((Number(x)||0)*100)/100;
+      return v.toFixed(2).replace(".", ",");
+    };
+
+    const header = ["Produto","Materiais","Variáveis","Total"].join(";");
+    const rows = all.map(r => [r.name, fmt(r.matTotal), fmt(r.varsTotal), fmt(r.total)].join(";"));
+    const csv = [header, ...rows].join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "custos_por_produto.csv";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  }
+  $("calcAll").addEventListener("click", calcAllProducts);
+  $("exportAllCostsCsv").addEventListener("click", exportAllCostsCsv);
+
+  // Cost method change
+  $("costMethod").addEventListener("change", () => {
+    settings.costMethod = $("costMethod").value;
+    saveSettings(settings);
+    withFocusPreserved(() => renderMaterials());
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+
+  // Product upload (Upload tab)
+  $("prodUpload").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const text = await f.text();
+    const rows = parseCsv(text);
+    if (!rows.length) { alert("CSV vazio ou inválido."); return; }
+    const start = looksLikeHeader(rows[0]) ? 1 : 0;
+    const newArr = [];
+    for (let i=start; i<rows.length; i++) {
+      const r = rows[i];
+      if (!r || !r[0]) continue;
+      newArr.push({ product: r[0], dims_cm: r[1]||"", weight: r[2]||"", volume: r[3]||"" });
+    }
+    if (!newArr.length) { alert("Não encontrei produtos na Coluna A."); return; }
+    products = newArr;
+    saveProducts(products);
+    refreshProductsUI();
+    alert("Produtos atualizados.");
+    e.target.value = "";
+  });
+
+  $("exportProducts").addEventListener("click", () => {
+    const header = ["PRODUTO","DIMENSOES_CM","PESO","VOLUME"];
+    const lines = [header.join(",")];
+    for (const p of products) {
+      const row = [p.product||"", p.dims_cm||"", p.weight||"", p.volume||""].map(v => `"${String(v).replace(/"/g,'""')}"`);
+      lines.push(row.join(","));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "produtos.csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  $("resetProducts").addEventListener("click", () => {
+    if (!confirm("Repor a lista de produtos original?")) return;
+    products = DEFAULT_PRODUCTS;
+    saveProducts(products);
+    refreshProductsUI();
+    alert("Produtos repostos.");
+  });
+
+  $("productSearch").addEventListener("change", () => {
+    const name = findProductName($("productSearch").value);
+    if (name) $("productSearch").value = name;
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+  $("productSearch").addEventListener("input", () => {
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+  });
+
+  // Backup all
+  $("exportAll").addEventListener("click", () => {
+    const payload = {
+      exportedAt: nowIso(),
+      products: loadProducts(),
+      materials: loadMaterials(),
+      purchases: loadPurchases(),
+      recipes: loadRecipes(),
+      vars: loadVars(),
+      settings: loadSettings(),
+      warehouse: loadWarehouse(),
+      sales: loadSales()
+    };
+    downloadJson("backup_custo_produto.json", payload);
+  });
+
+  $("importAll").addEventListener("change", async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    try {
+      const payload = await importJsonFile(f);
+      if (!payload || typeof payload !== "object") throw new Error("Formato inválido");
+
+      if (Array.isArray(payload.products)) { products = payload.products; saveProducts(products); }
+      if (Array.isArray(payload.materials)) { materials = payload.materials; saveMaterials(materials); }
+      if (Array.isArray(payload.purchases)) { purchases = payload.purchases; savePurchases(purchases); }
+      if (payload.recipes && typeof payload.recipes === "object") { saveRecipes(payload.recipes); }
+      if (Array.isArray(payload.vars)) { vars = payload.vars; saveVars(vars); }
+      if (payload.settings && typeof payload.settings === "object") { settings = payload.settings; saveSettings(settings); }
+      if (payload.warehouse && typeof payload.warehouse === "object") { saveWarehouse(payload.warehouse); }
+      if (payload.sales && typeof payload.sales === "object") { saveSales(payload.sales); }
+
+      products = loadProducts();
+      materials = loadMaterials();
+      purchases = loadPurchases();
+      vars = loadVars();
+      settings = loadSettings();
+
+      $("costMethod").value = (settings && settings.costMethod) ? settings.costMethod : "latest";
+      refreshProductsUI();
+      refreshPurchaseMaterialSelect();
+      withFocusPreserved(() => renderMaterials());
+      withFocusPreserved(() => renderPurchases());
+      withFocusPreserved(() => renderVars());
+      withFocusPreserved(() => renderRecipe());
+      calcSelected();
+
+      alert("Backup importado.");
+    } catch {
+      alert("Não consegui importar este backup.");
+    }
+    e.target.value = "";
+  });
+
+  // Init
+  async function init() {
+    // Inicializa Firebase (carrega dados da nuvem -> localStorage)
+    await firebaseInit(CLOUD_STORAGE_KEYS);
+
+    ui = loadUI();
+
+    if (!localStorage.getItem(STORAGE_PRODUCTS)) saveProducts(DEFAULT_PRODUCTS);
+
+    products = loadProducts();
+    settings = loadSettings();
+    materials = loadMaterials();
+    purchases = loadPurchases();
+    vars = loadVars();
+
+    warehouse = loadWarehouse();
+    whWriteToUI(warehouse);
+    whBind();
+    whRender();
+
+    sales = loadSales();
+    salesBind();
+    salesRender();
+
+    refreshProductsUI();
+    $("costMethod").value = settings.costMethod || "latest";
+
+    refreshPurchaseMaterialSelect();
+    $("purchaseDate").value = todayDateStr();
+    $("purchaseUnit").innerHTML = unitOptionsHtml("un");
+
+    withFocusPreserved(() => renderMaterials());
+    withFocusPreserved(() => renderPurchases());
+    withFocusPreserved(() => renderVars());
+    withFocusPreserved(() => renderRecipe());
+    calcSelected();
+
+    const preferred = ui.activeTab || "tab-tudo";
+    const exists = document.getElementById(preferred);
+    showTab(exists ? preferred : "tab-tudo");
+
+    // Garante que existe doc na nuvem (mesmo na 1ª vez)
+    cloudRequestSave(CLOUD_STORAGE_KEYS, true);
+  }
+  init();
+</script>
+</body>
+</html>
