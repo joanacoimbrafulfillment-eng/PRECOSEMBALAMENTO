@@ -814,25 +814,17 @@
               Consumíveis (auto Produto/Vendas): <span class="mono" id="wh_consFromProductsKPI">—</span> €/unid · Total mês: <span class="mono" id="wh_consFromProductsTotalKPI">—</span>
             </div>
 
-            <div class="muted" style="font-size:12px;">Pick+Pack (€/unidade)</div>
+            <div class="muted" style="font-size:12px;">Pick+Pack (€/produto vendido)</div>
             <div class="muted" style="font-size:12px; margin-top:6px;">
               Armazém (Pick+Pack + Returns + Recover + Gerais) <span class="mono" id="wh_whPerUnit">—</span> €/unid
               · Total (Produto+Armazém) <span class="mono" id="wh_totalPerUnit">—</span> €/unid
             </div>
 
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uPickPack">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/return)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Refunds (€/evento)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund" style="display:none">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/evento)</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/recover)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRecover">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Inbound (€/palete)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn" style="display:none">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Overhead operação (€/encomenda)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uOhOrder">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Armazenagem (€/palete/mês)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uStorage">—</div>
           </div>
@@ -918,18 +910,22 @@
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simCostPerOrder">—</div>
           </div>
 
-          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border); grid-column: span 2;">
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
+            <div style="font-weight:900; margin-bottom:8px;">Custo por secção</div>
+            <div class="row cols-3">
+              <div><div class="muted" style="font-size:12px;">Pick+Pack (€/produto vendido)</div><div class="mono" id="wh_simPickPerSold">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Returns (€/return)</div><div class="mono" id="wh_simRetPerReturn">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Recover (€/recover)</div><div class="mono" id="wh_simRecoverPerRecover">—</div></div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
             <div style="font-weight:900; margin-bottom:8px;">Breakdown mensal</div>
             <div class="row cols-3">
               <div><div class="muted" style="font-size:12px;">Pick+Pack</div><div class="mono" id="wh_simPickMonthly">—</div></div>
-                            <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
-
+              <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
               <div><div class="muted" style="font-size:12px;">Returns</div><div class="mono" id="wh_simReturnsMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost" style="display:none">—</div></div>
               <div><div class="muted" style="font-size:12px;">Recover</div><div class="mono" id="wh_simRecoverMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost" style="display:none">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Overhead operação</div><div class="mono" id="wh_simOhOpsMonthly">—</div></div>
-
               <div><div class="muted" style="font-size:12px;">Armazenagem</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
             </div>
           </div>
@@ -1689,6 +1685,7 @@ function n(v) {
       soldMonthly: whNum("wh_soldMonthly"),
       linesMonthly: whNum("wh_linesMonthly"),
       returnsMonthly: whNum("wh_returnsMonthly"),
+      recoverMonthly: whNum("wh_recoverMonthly"),
       inboundPalletsMonthly: whNum("wh_inboundPalletsMonthly"),
       avgStockPallets: whNum("wh_avgStockPallets"),
       pMoPickPack: whNum("wh_pMoPickPack") ?? 70,
@@ -1827,7 +1824,24 @@ function n(v) {
     const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + recoverMonthly + storageMonthly;
     const costPerUnit = sold>0 ? totalMonthly/sold : NaN;
 
-    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, recoverMonthly, storageMonthly};
+    const pickPackPerSold = sold>0 ? pickPackMonthly/sold : NaN;
+    const retPerReturn = rets>0 ? retMonthly/rets : NaN;
+    const recoverPerRecover = recover>0 ? recoverMonthly/recover : NaN;
+
+    return {
+      u,
+      packMatPerUnit,
+      totalMonthly,
+      costPerUnit,
+      pickPackMonthly,
+      packMatMonthly,
+      retMonthly,
+      recoverMonthly,
+      storageMonthly,
+      pickPackPerSold,
+      retPerReturn,
+      recoverPerRecover
+    };
   }
 
   function whRender(){
@@ -1843,30 +1857,31 @@ function n(v) {
       setTxt("wh_consFromProductsKPI", whFmtEUR(cons.perUnit));
       setTxt("wh_consFromProductsTotalKPI", whFmtEUR(cons.total));
     } catch(e) {}
+
     setTxt("wh_uPickPack", whFmtEUR(u.uPickPack));
-        setTxt("wh_uRet",  whFmtEUR(u.uRet));
-    setTxt("wh_uRefund", whFmtEUR(u.uRefund));
+    setTxt("wh_uRet", whFmtEUR(u.uRet));
     setTxt("wh_uRecover", whFmtEUR(u.uRecover));
-    setTxt("wh_uIn",   whFmtEUR(u.uIn));
     setTxt("wh_uStorage", whFmtEUR(u.uStorage));
 
     const s = whComputeScenario(w);
     setTxt("wh_simTotalMonthly", whFmtEUR(s.totalMonthly));
     setTxt("wh_simCostPerOrder", whFmtEUR(s.costPerUnit));
-    // KPI: custo armazém por unidade = total por unidade - custo produto (Tudo) por unidade
+
     try {
       const whPerUnit = (Number.isFinite(s.costPerUnit) ? s.costPerUnit : NaN) - (Number.isFinite(s.packMatPerUnit) ? s.packMatPerUnit : 0);
       setTxt("wh_whPerUnit", whFmtEUR(whPerUnit));
       setTxt("wh_totalPerUnit", whFmtEUR(s.costPerUnit));
     } catch(e) {}
 
+    setTxt("wh_simPickPerSold", whFmtEUR(s.pickPackPerSold));
+    setTxt("wh_simRetPerReturn", whFmtEUR(s.retPerReturn));
+    setTxt("wh_simRecoverPerRecover", whFmtEUR(s.recoverPerRecover));
+
     setTxt("wh_simPickMonthly", whFmtEUR(s.pickPackMonthly));
-        setTxt("wh_simPackMatMonthly", whFmtEUR(s.packMatMonthly));
+    setTxt("wh_simPackMatMonthly", whFmtEUR(s.packMatMonthly));
     setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));
-    setTxt("wh_simRefundsMonthlyCost", whFmtEUR(s.refundMonthly));
     setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));
-    setTxt("wh_simInboundMonthlyCost", whFmtEUR(s.inboundMonthly));
-        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
+    setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
   }
 
   
@@ -2142,6 +2157,7 @@ function whAutoFillFromSales(){
         const rm = (warehouse && warehouse.recoverMonths) ? warehouse.recoverMonths[monthKey] : null;
         if (rm && typeof rm.totalUnits === "number") {
           set("wh_recoverMonthly", rm.totalUnits);
+          set("wh_simRecover", rm.totalUnits);
           const k1=document.getElementById("wh_recoverUnitsKPI"); const k2=document.getElementById("wh_recoverValueKPI");
           if (k1) k1.textContent = String(rm.totalUnits.toLocaleString("pt-PT"));
           if (k2) k2.textContent = whFmtEUR(rm.totalValue||0);
@@ -2329,7 +2345,7 @@ function whBind(){
     });
     if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
     // primeiro preenchimento (se aplicável)
-    setTimeout(()=>{ whAutoFillFromSales(); }, 50);
+    setTimeout(()=>{ whAutoFillFromSales(); whRender(); }, 50);
     try { whBindRecoverBulk(); } catch(e) {}
     try {
       const addBtn = document.getElementById("wh_addCostLine");
@@ -3587,6 +3603,11 @@ for (const k of Object.keys(recipes)) {
     sales = loadSales();
     salesBind();
     salesRender();
+
+    // Depois de carregar Vendas (mês), preencher Armazém/Simulador automaticamente
+    try { whAutoFillFromSales(); } catch(e) {}
+    try { whRender(); } catch(e) {}
+
 
     refreshProductsUI();
     $("costMethod").value = settings.costMethod || "latest";
