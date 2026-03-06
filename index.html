@@ -1045,7 +1045,7 @@
   // -------------------------------
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBD6lSvB4rEQ71M3372BUk5W7pq0shdvto",
@@ -1057,7 +1057,8 @@
   };
 
   const CLOUD_APP_ID = "custo-por-produto-4-separadores-v1";
-  let __fb = { app: null, auth: null, db: null, uid: null, ready: false, saveTimer: null, saving: false };
+  const CLOUD_SHARED_COLLECTION = "shared_apps";
+  let __fb = { app: null, auth: null, db: null, uid: null, ready: false, saveTimer: null, saving: false, unsubShared: null, applyingRemote: false, lastRemoteUpdatedAt: 0 };
 
   function __el(id){ return document.getElementById(id); }
 
@@ -1110,8 +1111,8 @@
   }
 
   function cloudRef() {
-    if (!__fb.db || !__fb.uid) return null;
-    return doc(__fb.db, "users", __fb.uid, "apps", CLOUD_APP_ID);
+    if (!__fb.db || !__fb.auth?.currentUser) return null;
+    return doc(__fb.db, CLOUD_SHARED_COLLECTION, CLOUD_APP_ID);
   }
 
   async function cloudHydrateToLocalStorage(storageKeys) {
@@ -1140,8 +1141,60 @@
     return state;
   }
 
+  function cloudApplyStateToLocalStorage(data, storageKeys) {
+    for (const { key, field } of storageKeys) {
+      if (Object.prototype.hasOwnProperty.call(data, field)) {
+        localStorage.setItem(key, JSON.stringify(data[field]));
+      }
+    }
+  }
+
+  function refreshAppFromLocalStorage(){
+    try { ui = loadUI(); } catch(e) {}
+    try { products = loadProducts(); } catch(e) {}
+    try { settings = loadSettings(); } catch(e) {}
+    try { materials = loadMaterials(); } catch(e) {}
+    try { purchases = loadPurchases(); } catch(e) {}
+    try { vars = loadVars(); } catch(e) {}
+    try { warehouse = loadWarehouse(); } catch(e) {}
+    try { sales = loadSales(); } catch(e) {}
+
+    try { refreshProductsUI(); } catch(e) {}
+    try { refreshPurchaseMaterialSelect(); } catch(e) {}
+    try { withFocusPreserved(() => renderMaterials()); } catch(e) {}
+    try { withFocusPreserved(() => renderPurchases()); } catch(e) {}
+    try { withFocusPreserved(() => renderVars()); } catch(e) {}
+    try { withFocusPreserved(() => renderRecipe()); } catch(e) {}
+    try { whWriteToUI(warehouse); } catch(e) {}
+    try { whRender(); } catch(e) {}
+    try { salesRender(); } catch(e) {}
+    try { calcSelected(); } catch(e) {}
+  }
+
+  function cloudSubscribe(storageKeys) {
+    const ref = cloudRef();
+    if (!ref) return;
+    try { if (__fb.unsubShared) __fb.unsubShared(); } catch(e) {}
+    __fb.unsubShared = onSnapshot(ref, (snap) => {
+      if (!snap.exists()) return;
+      const data = snap.data() || {};
+      const remoteUpdatedAt = Number(data.updatedAt || 0) || 0;
+      if (__fb.lastRemoteUpdatedAt && remoteUpdatedAt && remoteUpdatedAt <= __fb.lastRemoteUpdatedAt) return;
+      __fb.lastRemoteUpdatedAt = remoteUpdatedAt;
+      __fb.applyingRemote = true;
+      try {
+        cloudApplyStateToLocalStorage(data, storageKeys);
+        refreshAppFromLocalStorage();
+      } finally {
+        setTimeout(() => { __fb.applyingRemote = false; }, 0);
+      }
+    }, (err) => {
+      console.warn("Firebase shared sync error:", err);
+    });
+  }
+
   function cloudRequestSave(storageKeys, immediate=false) {
-    if (!__fb.ready) return;
+    if (!__fb.ready || __fb.applyingRemote) return;
 
     const doSave = async () => {
       if (__fb.saving) return;
@@ -1178,8 +1231,10 @@
     try {
       if (!__fb.ready) return;
       try { clearTimeout(window.__cloudSaveT); } catch(e) {}
-      const docRef = __fb.doc(__fb.db, "users", __fb.auth.currentUser.uid, "apps", CLOUD_APP_ID);
+      const docRef = cloudRef();
+      if (!docRef) return;
       const payload = collectLocalState(keys);
+      payload.updatedAt = Date.now();
       payload.updatedAtServer = __fb.serverTimestamp();
       await __fb.setDoc(docRef, payload, { merge: true });
     } catch (e) {
@@ -1244,6 +1299,7 @@
 
 
       await cloudHydrateToLocalStorage(storageKeys);
+      cloudSubscribe(storageKeys);
 
       __fb.ready = true;
       updateAuthPill();
@@ -1266,6 +1322,8 @@
     _logoutBtn.addEventListener("click", async () => {
       try { await signOut(__fb.auth); } catch {}
       // Volta a pedir login
+      try { if (__fb.unsubShared) __fb.unsubShared(); } catch(e) {}
+      __fb.unsubShared = null;
       __fb.ready = false;
       __fb.uid = null;
       showLogin("Sessão terminada. Faz login novamente.");
