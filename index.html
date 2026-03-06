@@ -649,7 +649,7 @@
           </div>
           <div>
             <label>Refunds (€/mês)</label>
-            <input id="wh_moRefundsMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+            <input id="wh_moRefundsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
           <div>
             <label>Recover (€/mês)</label>
@@ -657,9 +657,25 @@
           </div>
           <div>
             <label>Inbound (€/mês)</label>
-            <input id="wh_moInboundMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
+            <input id="wh_moInboundMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
         </div>
+        <div class="row cols-3" style="margin-top:10px;">
+          <div>
+            <label>Nº pessoas — Pick+Pack</label>
+            <input id="wh_hcPickPack" type="number" step="1" min="0" placeholder="ex.: 4">
+          </div>
+          <div>
+            <label>Nº pessoas — Returns</label>
+            <input id="wh_hcReturns" type="number" step="1" min="0" placeholder="ex.: 2">
+          </div>
+          <div>
+            <label>Nº pessoas — Recover</label>
+            <input id="wh_hcRecover" type="number" step="1" min="0" placeholder="ex.: 1">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Overhead+Office serão repartidos proporcionalmente.</div>
+          </div>
+        </div>
+
 
         <div class="hr"></div>
 <div class="row cols-3" style="margin-top:10px; display:none;">
@@ -720,7 +736,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Refunds/mês</label>
-            <input id="wh_refundsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
+            <input id="wh_refundsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
             <div class="muted" style="font-size:12px; margin-top:6px;">Processamento administrativo de reembolso (se existir na tua operação).</div>
           </div>
           <div>
@@ -757,7 +773,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Inbound (paletes recebidas)/mês</label>
-            <input id="wh_inboundPalletsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
+            <input id="wh_inboundPalletsMonthly" type="number" step="1" min="0" placeholder="ex.: 200">
           </div>
           <div>
             <label>Stock médio (paletes)</label>
@@ -799,17 +815,22 @@
             </div>
 
             <div class="muted" style="font-size:12px;">Pick+Pack (€/unidade)</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">
+              Armazém (Pick+Pack + Returns + Recover + Gerais) <span class="mono" id="wh_whPerUnit">—</span> €/unid
+              · Total (Produto+Armazém) <span class="mono" id="wh_totalPerUnit">—</span> €/unid
+            </div>
+
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uPickPack">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Returns (€/evento)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Refunds (€/evento)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund" style="display:none">—</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRefund">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/evento)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRecover">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Inbound (€/palete)</div>
-            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn" style="display:none">—</div>
+            <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uIn">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Overhead operação (€/encomenda)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uOhOrder">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Armazenagem (€/palete/mês)</div>
@@ -845,7 +866,7 @@
         <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Refunds/mês (cliente)</label>
-            <input id="wh_simRefunds" style="display:none" type="number" step="1" min="0" placeholder="ex.: 60">
+            <input id="wh_simRefunds" type="number" step="1" min="0" placeholder="ex.: 60">
           </div>
           <div>
             <label>Recover/mês (cliente)</label>
@@ -858,7 +879,7 @@
 <div class="row cols-3" style="margin-top:10px;">
           <div>
             <label>Inbound paletes/mês (cliente)</label>
-            <input id="wh_simInboundPallets" style="display:none" type="number" step="1" min="0" placeholder="ex.: 40">
+            <input id="wh_simInboundPallets" type="number" step="1" min="0" placeholder="ex.: 40">
           </div>
           <div>
             <label>Stock médio (paletes) (cliente)</label>
@@ -893,7 +914,7 @@
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
             <div class="muted" style="font-size:12px;">Custo total mensal (cliente)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simTotalMonthly">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Custo por unidade</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Custo por unidade (Total)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simCostPerOrder">—</div>
           </div>
 
@@ -904,9 +925,9 @@
                             <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
 
               <div><div class="muted" style="font-size:12px;">Returns</div><div class="mono" id="wh_simReturnsMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost" style="display:none">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Refunds</div><div class="mono" id="wh_simRefundsMonthlyCost">—</div></div>
               <div><div class="muted" style="font-size:12px;">Recover</div><div class="mono" id="wh_simRecoverMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost" style="display:none">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Inbound</div><div class="mono" id="wh_simInboundMonthlyCost">—</div></div>
               <div><div class="muted" style="font-size:12px;">Overhead operação</div><div class="mono" id="wh_simOhOpsMonthly">—</div></div>
 
               <div><div class="muted" style="font-size:12px;">Armazenagem</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
@@ -1182,6 +1203,20 @@
 
     clearTimeout(__fb.saveTimer);
     __fb.saveTimer = setTimeout(doSave, 700);
+  }
+
+  // Força gravação imediata na Firebase (sem debounce)
+  async function cloudRequestSaveNow(keys = CLOUD_STORAGE_KEYS) {
+    try {
+      if (!__fb.ready) return;
+      try { clearTimeout(window.__cloudSaveT); } catch(e) {}
+      const docRef = __fb.doc(__fb.db, "users", __fb.auth.currentUser.uid, "apps", CLOUD_APP_ID);
+      const payload = collectLocalState(keys);
+      payload.updatedAtServer = __fb.serverTimestamp();
+      await __fb.setDoc(docRef, payload, { merge: true });
+    } catch (e) {
+      console.warn("Firebase immediate save error:", e);
+    }
   }
 
   async function firebaseInit(storageKeys) {
@@ -1570,6 +1605,7 @@ function n(v) {
         pMoPickPack: 70, pMoRet: 15, pMoRefund: 5, pMoRecover: 5, pMoIn: 5,
         pOhStorage: 60, pOhOps: 40
       },
+      byMonth: {},
       sim: {
         orders: null, linesPerOrder: null, returns: null,
         inboundPallets: null, avgStock: null,
@@ -1644,6 +1680,9 @@ function n(v) {
       moRefundsMonthly: whNum("wh_moRefundsMonthly"),
       moRecoverMonthly: whNum("wh_moRecoverMonthly"),
       moInboundMonthly: whNum("wh_moInboundMonthly"),
+      hcPickPack: whNum("wh_hcPickPack") ?? 0,
+      hcReturns: whNum("wh_hcReturns") ?? 0,
+      hcRecover: whNum("wh_hcRecover") ?? 0,
       packS: whNum("wh_packS"),
       packM: whNum("wh_packM"),
       packL: whNum("wh_packL"),
@@ -1672,8 +1711,6 @@ function n(v) {
       mixM: whNum("wh_mixM") ?? 40,
       mixL: whNum("wh_mixL") ?? 10
     };
-      // Preservar linhas de custos gerais (tabela) ao guardar outros inputs
-    try { op.costLines = (warehouse && warehouse.op && Array.isArray(warehouse.op.costLines)) ? warehouse.op.costLines : (op.costLines || []); } catch(e) { op.costLines = op.costLines || []; }
     return { op, sim };
   }
 
@@ -1690,6 +1727,9 @@ function n(v) {
     whSet("wh_moRefundsMonthly", op.moRefundsMonthly);
     whSet("wh_moRecoverMonthly", op.moRecoverMonthly);
     whSet("wh_moInboundMonthly", op.moInboundMonthly);
+    whSet("wh_hcPickPack", op.hcPickPack ?? 0);
+    whSet("wh_hcReturns", op.hcReturns ?? 0);
+    whSet("wh_hcRecover", op.hcRecover ?? 0);
     whSet("wh_packS", op.packS);
     whSet("wh_packM", op.packM);
     whSet("wh_packL", op.packL);
@@ -1727,27 +1767,40 @@ function n(v) {
   function whComputeUnitCosts(op){
     const sold = whClamp0(op.soldMonthly ?? 0);
     const rets  = whClamp0(op.returnsMonthly ?? 0);
+    const refunds = whClamp0(op.refundsMonthly ?? 0);
     const recover = whClamp0(op.recoverMonthly ?? 0);
+    const inbound = whClamp0(op.inboundPalletsMonthly ?? 0);
     const stock = whClamp0(op.avgStockPallets ?? 0);
 
     const moPickPack = whClamp0(op.moPickPackMonthly ?? 0);
     const moReturns  = whClamp0(op.moReturnsMonthly ?? 0);
+    const moRefunds  = whClamp0(op.moRefundsMonthly ?? 0);
     const moRecover  = whClamp0(op.moRecoverMonthly ?? 0);
+    const moInbound  = whClamp0(op.moInboundMonthly ?? 0);
 
     const oh = whClamp0(op.ohMonthly ?? 0);
     const office = whClamp0(op.officeMonthly ?? 0);
 
-    // Só usamos 3 secções: Pick+Pack, Returns, Recover
-    const sections = 3;
-    const sharedPerSection = (oh + office) / sections;
+    // Repartir Overhead+Office proporcionalmente ao nº de pessoas (secções usadas)
+    const hcPickPack = whClamp0(op.hcPickPack ?? 0);
+    const hcReturns  = whClamp0(op.hcReturns ?? 0);
+    const hcRecover  = whClamp0(op.hcRecover ?? 0);
+    const hcSum = hcPickPack + hcReturns + hcRecover;
+    const sharedTotal = (oh + office);
+    const sharePickPack = (hcSum>0) ? sharedTotal*(hcPickPack/hcSum) : sharedTotal/3;
+    const shareReturns  = (hcSum>0) ? sharedTotal*(hcReturns/hcSum)  : sharedTotal/3;
+    const shareRecover  = (hcSum>0) ? sharedTotal*(hcRecover/hcSum)  : sharedTotal/3;
 
-    const uPickPack = sold>0 ? (moPickPack/sold + sharedPerSection/sold) : NaN;
-    const uRet      = rets>0 ? (moReturns/rets + sharedPerSection/rets) : NaN;
-    const uRecover  = recover>0 ? (moRecover/recover + sharedPerSection/recover) : NaN;
+    const uPickPack = sold>0 ? (moPickPack/sold + sharePickPack/sold) : NaN;
+    const uRet      = rets>0 ? (moReturns/rets + shareReturns/rets) : NaN;
+    // Refunds/Inbound não usados: não recebem share (ficam só MO/volume, se preencheres)
+    const uRefund   = refunds>0 ? (moRefunds/refunds) : NaN;
+    const uRecover  = recover>0 ? (moRecover/recover + shareRecover/recover) : NaN;
+    const uIn       = inbound>0 ? (moInbound/inbound) : NaN;
 
     const uStorage  = stock>0 ? (oh/stock) : NaN;
 
-    return {uPickPack,uRet,uRecover,uStorage};
+    return {uPickPack,uRet,uRefund,uRecover,uIn,uStorage};
   }
 
   function whComputeScenario(w){
@@ -1755,31 +1808,30 @@ function n(v) {
     const sim = w.sim || {};
     const u = whComputeUnitCosts(op);
 
-    const safeMul = (vol, unit) => {
-      const v = Number(vol||0);
-      if (!(v > 0)) return 0;
-      return Number.isFinite(unit) ? (v * unit) : NaN;
-    };
-
     const sold = whClamp0(sim.sold ?? 0);
     const rets = whClamp0(sim.returns ?? 0);
+    const refunds = whClamp0(sim.refunds ?? 0);
     const recover = whClamp0(sim.recover ?? 0);
+    const inbound = whClamp0(sim.inboundPallets ?? 0);
     const stock = whClamp0(sim.avgStock ?? 0);
 
+    const pickPackMonthly = Number.isFinite(u.uPickPack) ? sold*u.uPickPack : NaN;
+    const retMonthly      = Number.isFinite(u.uRet) ? rets*u.uRet : NaN;
+    const refundMonthly   = Number.isFinite(u.uRefund) ? refunds*u.uRefund : NaN;
+    const recoverMonthly  = Number.isFinite(u.uRecover) ? recover*u.uRecover : NaN;
+    const inboundMonthly  = Number.isFinite(u.uIn) ? inbound*u.uIn : NaN;
+    const storageMonthly  = Number.isFinite(u.uStorage) ? stock*u.uStorage : NaN;
+
+    // Consumíveis: vêm do Produto + Vendas (mês), apenas para VENDIDOS
     const monthKey = (document.getElementById("wh_linkMonth")?.value) || (new Date().toISOString().slice(0,7));
     const cons = whGetConsumablesPerUnitFromSalesMonth(monthKey);
     const packMatPerUnit = cons.perUnit;
-    const packMatMonthly = (Number(sold||0)>0) ? (sold*packMatPerUnit) : 0;
+    const packMatMonthly  = sold*packMatPerUnit;
 
-    const pickPackMonthly = safeMul(sold, u.uPickPack);
-    const retMonthly = safeMul(rets, u.uRet);
-    const recoverMonthly = safeMul(recover, u.uRecover);
-    const storageMonthly = safeMul(stock, u.uStorage);
-
-    const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + recoverMonthly + storageMonthly;
+    const totalMonthly = pickPackMonthly + packMatMonthly + retMonthly + refundMonthly + recoverMonthly + inboundMonthly + storageMonthly;
     const costPerUnit = sold>0 ? totalMonthly/sold : NaN;
 
-    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, recoverMonthly, storageMonthly};
+    return {u, packMatPerUnit, totalMonthly, costPerUnit, pickPackMonthly, packMatMonthly, retMonthly, refundMonthly, recoverMonthly, inboundMonthly, storageMonthly};
   }
 
   function whRender(){
@@ -1796,14 +1848,29 @@ function n(v) {
       setTxt("wh_consFromProductsTotalKPI", whFmtEUR(cons.total));
     } catch(e) {}
     setTxt("wh_uPickPack", whFmtEUR(u.uPickPack));
-        setTxt("wh_uRet",  whFmtEUR(u.uRet));    setTxt("wh_uRecover", whFmtEUR(u.uRecover));    setTxt("wh_uStorage", whFmtEUR(u.uStorage));
+        setTxt("wh_uRet",  whFmtEUR(u.uRet));
+    setTxt("wh_uRefund", whFmtEUR(u.uRefund));
+    setTxt("wh_uRecover", whFmtEUR(u.uRecover));
+    setTxt("wh_uIn",   whFmtEUR(u.uIn));
+    setTxt("wh_uStorage", whFmtEUR(u.uStorage));
 
     const s = whComputeScenario(w);
     setTxt("wh_simTotalMonthly", whFmtEUR(s.totalMonthly));
     setTxt("wh_simCostPerOrder", whFmtEUR(s.costPerUnit));
+    // KPI: custo armazém por unidade = total por unidade - custo produto (Tudo) por unidade
+    try {
+      const whPerUnit = (Number.isFinite(s.costPerUnit) ? s.costPerUnit : NaN) - (Number.isFinite(s.packMatPerUnit) ? s.packMatPerUnit : 0);
+      setTxt("wh_whPerUnit", whFmtEUR(whPerUnit));
+      setTxt("wh_totalPerUnit", whFmtEUR(s.costPerUnit));
+    } catch(e) {}
+
     setTxt("wh_simPickMonthly", whFmtEUR(s.pickPackMonthly));
         setTxt("wh_simPackMatMonthly", whFmtEUR(s.packMatMonthly));
-    setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));    setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
+    setTxt("wh_simReturnsMonthlyCost", whFmtEUR(s.retMonthly));
+    setTxt("wh_simRefundsMonthlyCost", whFmtEUR(s.refundMonthly));
+    setTxt("wh_simRecoverMonthlyCost", whFmtEUR(s.recoverMonthly));
+    setTxt("wh_simInboundMonthlyCost", whFmtEUR(s.inboundMonthly));
+        setTxt("wh_simStorageMonthly", whFmtEUR(s.storageMonthly));
   }
 
   
@@ -1865,8 +1932,6 @@ function n(v) {
 
     const inp = document.getElementById("wh_recoverMonthly");
     if (inp) inp.value = String(totalUnits);
-    const simInp = document.getElementById("wh_simRecover");
-    if (simInp) simInp.value = String(totalUnits);
 
     const k1 = document.getElementById("wh_recoverUnitsKPI");
     const k2 = document.getElementById("wh_recoverValueKPI");
@@ -1970,6 +2035,81 @@ function n(v) {
     }
   }
 
+
+  function whMonthKey(){
+    const el = document.getElementById("wh_linkMonth");
+    const v = el?.value || (new Date().toISOString().slice(0,7));
+    return v;
+  }
+
+  function whEnsureByMonth(){
+    warehouse = warehouse || warehouseDefault();
+    warehouse.byMonth = warehouse.byMonth || {};
+  }
+
+  function whSnapshotCurrentInputs(){
+    // snapshot only the "cost inputs" that should be month-specific
+    const op = warehouse?.op || {};
+    return {
+      moPickPackMonthly: op.moPickPackMonthly ?? null,
+      hcPickPack: op.hcPickPack ?? 0,
+      moReturnsMonthly: op.moReturnsMonthly ?? null,
+      hcReturns: op.hcReturns ?? 0,
+      moRecoverMonthly: op.moRecoverMonthly ?? null,
+      hcRecover: op.hcRecover ?? 0,
+      // keep costLines
+      costLines: Array.isArray(op.costLines) ? op.costLines : [],
+      // recover totals for the month (bulk is already stored in recoverMonths, but keep totals too)
+      recoverMonthly: op.recoverMonthly ?? null,
+      // any other month-specific numeric fields you use:
+      avgStockPallets: op.avgStockPallets ?? null
+    };
+  }
+
+  function whApplySnapshotToUI(snap){
+    if (!snap || typeof snap !== "object") return;
+    // apply to warehouse.op
+    warehouse = warehouse || warehouseDefault();
+    warehouse.op = warehouse.op || {};
+    const op = warehouse.op;
+    op.moPickPackMonthly = snap.moPickPackMonthly ?? null;
+    op.hcPickPack = snap.hcPickPack ?? 0;
+    op.moReturnsMonthly = snap.moReturnsMonthly ?? null;
+    op.hcReturns = snap.hcReturns ?? 0;
+    op.moRecoverMonthly = snap.moRecoverMonthly ?? null;
+    op.hcRecover = snap.hcRecover ?? 0;
+    op.costLines = Array.isArray(snap.costLines) ? snap.costLines : [];
+    op.recoverMonthly = snap.recoverMonthly ?? op.recoverMonthly ?? null;
+    op.avgStockPallets = snap.avgStockPallets ?? op.avgStockPallets ?? null;
+
+    // push into inputs
+    try { whWriteToUI(warehouse); } catch(e) {}
+    try { whRenderCostLines(); } catch(e) {}
+    try { whRender(); } catch(e) {}
+  }
+
+  function whSaveMonthProfile(monthKey){
+    try{
+      whEnsureByMonth();
+      warehouse.byMonth[monthKey] = whSnapshotCurrentInputs();
+      saveWarehouse(warehouse);
+    }catch(e){}
+  }
+
+  function whLoadMonthProfile(monthKey){
+    try{
+      whEnsureByMonth();
+      const snap = warehouse.byMonth[monthKey];
+      if (snap) whApplySnapshotToUI(snap);
+      else {
+        // month not created yet: keep current costLines empty and MOs empty
+        // but do not overwrite anything else
+        warehouse.byMonth[monthKey] = whSnapshotCurrentInputs();
+        saveWarehouse(warehouse);
+      }
+    }catch(e){}
+  }
+
 function whAutoFillFromSales(){
     try{
       const chk = document.getElementById("wh_autoFromSales");
@@ -2004,15 +2144,10 @@ function whAutoFillFromSales(){
       set("wh_soldMonthly", soldTotal);
       set("wh_returnsMonthly", returnsTotal);
       set("wh_refundsMonthly", refundsTotal);
-
-      // Também preencher o simulador com os totais do mês (para o breakdown não ficar a 0)
-      set("wh_simSold", soldTotal);
-      set("wh_simReturns", returnsTotal);
       try{
         const rm = (warehouse && warehouse.recoverMonths) ? warehouse.recoverMonths[monthKey] : null;
         if (rm && typeof rm.totalUnits === "number") {
           set("wh_recoverMonthly", rm.totalUnits);
-          set("wh_simRecover", rm.totalUnits);
           const k1=document.getElementById("wh_recoverUnitsKPI"); const k2=document.getElementById("wh_recoverValueKPI");
           if (k1) k1.textContent = String(rm.totalUnits.toLocaleString("pt-PT"));
           if (k2) k2.textContent = whFmtEUR(rm.totalValue||0);
@@ -2185,7 +2320,14 @@ function whBind(){
     if (!root) return;
     const monthEl = document.getElementById("wh_linkMonth");
     const chk = document.getElementById("wh_autoFromSales");
-    if (monthEl) monthEl.addEventListener("change", ()=>{ whAutoFillFromSales(); whRender(); });
+    if (monthEl) monthEl.addEventListener("change", ()=>{
+      const prev = window.__whPrevMonth || monthEl.value;
+      try { if (prev) whSaveMonthProfile(prev); } catch(e) {}
+      window.__whPrevMonth = monthEl.value;
+      try { whLoadMonthProfile(monthEl.value); } catch(e) {}
+      whAutoFillFromSales();
+      whRender();
+    });
     if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
     // primeiro preenchimento (se aplicável)
     setTimeout(()=>{ whAutoFillFromSales(); }, 50);
@@ -3468,6 +3610,14 @@ for (const k of Object.keys(recipes)) {
     cloudRequestSave(CLOUD_STORAGE_KEYS, true);
   }
   init();
+
+  // Garantir gravação quando o utilizador fecha/atualiza a página
+  // Nota: browsers podem limitar async no beforeunload; por isso também usamos pagehide/visibilitychange.
+  window.addEventListener("beforeunload", () => { try { cloudRequestSaveNow(); } catch(e) {} });
+  window.addEventListener("pagehide", () => { try { cloudRequestSaveNow(); } catch(e) {} });
+  document.addEventListener("visibilitychange", () => {
+    try { if (document.visibilityState === "hidden") cloudRequestSaveNow(); } catch(e) {}
+  });
 </script>
 </body>
 </html>
