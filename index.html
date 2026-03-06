@@ -1602,6 +1602,7 @@ function n(v) {
         pOhStorage: 60, pOhOps: 40
       },
       byMonth: {},
+      recoverMonths: {},
       sim: {
         orders: null, linesPerOrder: null, returns: null,
         inboundPallets: null, avgStock: null,
@@ -1613,7 +1614,15 @@ function n(v) {
     try {
       const raw = localStorage.getItem(STORAGE_WAREHOUSE);
       const obj = raw ? JSON.parse(raw) : null;
-      return (obj && typeof obj === "object") ? obj : warehouseDefault();
+      const base = warehouseDefault();
+      if (obj && typeof obj === "object") {
+        obj.byMonth = (obj.byMonth && typeof obj.byMonth === "object") ? obj.byMonth : {};
+        obj.recoverMonths = (obj.recoverMonths && typeof obj.recoverMonths === "object") ? obj.recoverMonths : {};
+        obj.op = (obj.op && typeof obj.op === "object") ? obj.op : base.op;
+        obj.sim = (obj.sim && typeof obj.sim === "object") ? obj.sim : base.sim;
+        return obj;
+      }
+      return base;
     } catch {
       return warehouseDefault();
     }
@@ -1666,6 +1675,7 @@ function n(v) {
   }
 
   function whReadFromUI(){
+    const prev = (warehouse && typeof warehouse === "object") ? warehouse : warehouseDefault();
     const op = {
       moMonthly: whNum("wh_moMonthly"),
       ohMonthly: whNum("wh_ohMonthly"),
@@ -1710,7 +1720,13 @@ function n(v) {
     };
       // Preservar linhas de custos gerais (tabela) ao guardar outros inputs
     try { op.costLines = (warehouse && warehouse.op && Array.isArray(warehouse.op.costLines)) ? warehouse.op.costLines : (op.costLines || []); } catch(e) { op.costLines = op.costLines || []; }
-    return { op, sim };
+    return {
+      ...prev,
+      op,
+      sim,
+      byMonth: (prev.byMonth && typeof prev.byMonth === "object") ? prev.byMonth : {},
+      recoverMonths: (prev.recoverMonths && typeof prev.recoverMonths === "object") ? prev.recoverMonths : {}
+    };
   }
 
   function whWriteToUI(w){
@@ -1911,6 +1927,46 @@ function n(v) {
     return items;
   }
 
+  function whRecoverItemsToText(items){
+    return (Array.isArray(items) ? items : []).map(it => {
+      const name = String(it?.name || "").trim();
+      const qty = Number(it?.qty ?? 0) || 0;
+      const value = Number(it?.value ?? 0) || 0;
+      return value > 0 ? `${name}	${qty}	${value}` : `${name}	${qty}`;
+    }).filter(Boolean).join("\n");
+  }
+
+  function whRestoreRecoverForMonth(monthKey){
+    try{
+      warehouse = warehouse || warehouseDefault();
+      warehouse.recoverMonths = warehouse.recoverMonths || {};
+      const rm = warehouse.recoverMonths[monthKey] || null;
+      const ta = document.getElementById("wh_recoverBulk");
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = String(Math.max(0, Math.round(Number(val || 0))));
+      };
+      const k1 = document.getElementById("wh_recoverUnitsKPI");
+      const k2 = document.getElementById("wh_recoverValueKPI");
+
+      if (rm){
+        const totalUnits = Number(rm.totalUnits || 0);
+        const totalValue = Number(rm.totalValue || 0);
+        if (ta) ta.value = String(rm.rawText || whRecoverItemsToText(rm.items || []));
+        set("wh_recoverMonthly", totalUnits);
+        set("wh_simRecover", totalUnits);
+        if (k1) k1.textContent = totalUnits.toLocaleString("pt-PT");
+        if (k2) k2.textContent = whFmtEUR(totalValue);
+      } else {
+        if (ta) ta.value = "";
+        set("wh_recoverMonthly", 0);
+        set("wh_simRecover", 0);
+        if (k1) k1.textContent = "0";
+        if (k2) k2.textContent = whFmtEUR(0);
+      }
+    } catch(e){}
+  }
+
   function whApplyRecoverBulk(){
     const monthEl = document.getElementById("wh_linkMonth");
     const monthKey = monthEl?.value || (new Date().toISOString().slice(0,7));
@@ -1939,10 +1995,12 @@ function n(v) {
 
     warehouse = warehouse || warehouseDefault();
     warehouse.recoverMonths = warehouse.recoverMonths || {};
-    warehouse.recoverMonths[monthKey] = { items: mapped, totalUnits, totalValue, updatedAt: Date.now() };
+    warehouse.recoverMonths[monthKey] = { items: mapped, rawText: txt, totalUnits, totalValue, updatedAt: Date.now() };
 
     const inp = document.getElementById("wh_recoverMonthly");
     if (inp) inp.value = String(totalUnits);
+    const simInp = document.getElementById("wh_simRecover");
+    if (simInp) simInp.value = String(totalUnits);
 
     const k1 = document.getElementById("wh_recoverUnitsKPI");
     const k2 = document.getElementById("wh_recoverValueKPI");
@@ -1951,7 +2009,7 @@ function n(v) {
 
     warehouse = whReadFromUI();
     warehouse.recoverMonths = warehouse.recoverMonths || {};
-    warehouse.recoverMonths[monthKey] = { items: mapped, totalUnits, totalValue, updatedAt: Date.now() };
+    warehouse.recoverMonths[monthKey] = { items: mapped, rawText: txt, totalUnits, totalValue, updatedAt: Date.now() };
 
     saveWarehouse(warehouse);
     whRender();
@@ -1965,7 +2023,19 @@ function n(v) {
     const btn = document.getElementById("wh_applyRecoverBulk");
     const clr = document.getElementById("wh_clearRecoverBulk");
     if (btn) btn.addEventListener("click", whApplyRecoverBulk);
-    if (clr) clr.addEventListener("click", ()=>{ const ta=document.getElementById("wh_recoverBulk"); if(ta) ta.value=""; });
+    if (clr) clr.addEventListener("click", ()=>{
+      const monthKey = whMonthKey();
+      const ta = document.getElementById("wh_recoverBulk");
+      if (ta) ta.value = "";
+      warehouse = warehouse || warehouseDefault();
+      warehouse.recoverMonths = warehouse.recoverMonths || {};
+      delete warehouse.recoverMonths[monthKey];
+      whRestoreRecoverForMonth(monthKey);
+      warehouse = whReadFromUI();
+      warehouse.recoverMonths = warehouse.recoverMonths || {};
+      saveWarehouse(warehouse);
+      whRender();
+    });
   }
 
   // Consumíveis: puxar automaticamente do módulo Produto + Vendas (mês)
@@ -2095,7 +2165,9 @@ function n(v) {
 
     // push into inputs
     try { whWriteToUI(warehouse); } catch(e) {}
+    try { whRestoreRecoverForMonth(whMonthKey()); } catch(e) {}
     try { whRenderCostLines(); } catch(e) {}
+    try { warehouse = whReadFromUI(); } catch(e) {}
     try { whRender(); } catch(e) {}
   }
 
@@ -2153,16 +2225,7 @@ function whAutoFillFromSales(){
       const set = (id, val)=>{ const el=document.getElementById(id); if(el) el.value = String(Math.max(0, Math.round(val||0))); };
       set("wh_soldMonthly", soldTotal);
       set("wh_returnsMonthly", returnsTotal);
-            try{
-        const rm = (warehouse && warehouse.recoverMonths) ? warehouse.recoverMonths[monthKey] : null;
-        if (rm && typeof rm.totalUnits === "number") {
-          set("wh_recoverMonthly", rm.totalUnits);
-          set("wh_simRecover", rm.totalUnits);
-          const k1=document.getElementById("wh_recoverUnitsKPI"); const k2=document.getElementById("wh_recoverValueKPI");
-          if (k1) k1.textContent = String(rm.totalUnits.toLocaleString("pt-PT"));
-          if (k2) k2.textContent = whFmtEUR(rm.totalValue||0);
-        }
-      }catch(e){}
+      try { whRestoreRecoverForMonth(monthKey); } catch(e){}
 
       // Guardar e re-render
       warehouse = whReadFromUI();
@@ -2340,12 +2403,17 @@ function whBind(){
       try { if (prev) whSaveMonthProfile(prev); } catch(e) {}
       window.__whPrevMonth = monthEl.value;
       try { whLoadMonthProfile(monthEl.value); } catch(e) {}
+      try { whRestoreRecoverForMonth(monthEl.value); warehouse = whReadFromUI(); saveWarehouse(warehouse); } catch(e) {}
       whAutoFillFromSales();
       whRender();
     });
     if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
     // primeiro preenchimento (se aplicável)
-    setTimeout(()=>{ whAutoFillFromSales(); whRender(); }, 50);
+    setTimeout(()=>{
+      try { whRestoreRecoverForMonth(whMonthKey()); warehouse = whReadFromUI(); saveWarehouse(warehouse); } catch(e) {}
+      whAutoFillFromSales();
+      whRender();
+    }, 50);
     try { whBindRecoverBulk(); } catch(e) {}
     try {
       const addBtn = document.getElementById("wh_addCostLine");
