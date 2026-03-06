@@ -538,10 +538,13 @@
       </summary>
       <div class="content">
         <div class="note" style="margin-bottom:10px;">
-          Isto cria um único ficheiro JSON com: produtos, materiais, compras, receitas, variáveis e settings.
+          Exports simplificados: um backup total em JSON e 3 CSV fáceis de ler.
         </div>
         <div class="btns">
-          <button type="button" class="secondary" id="exportAll">Exportar tudo (JSON)</button>
+          <button type="button" class="secondary" id="exportAll">Backup total (JSON)</button>
+          <button type="button" class="secondary" id="exportMonthlyOpsCsv">Exportar resumo mensal CSV</button>
+          <button type="button" class="secondary" id="exportConsumablesSummaryCsv">Exportar consumíveis por produto CSV</button>
+          <button type="button" class="secondary" id="exportConsumablesComponentsCsv">Exportar detalhe dos consumíveis CSV</button>
           <input id="importAll" type="file" accept=".json,application/json" />
         </div>
       </div>
@@ -2207,6 +2210,31 @@ function n(v) {
     }catch(e){}
   }
 
+  function whSyncSimulatorFromMonth(){
+    try{
+      const sold = whNum("wh_soldMonthly");
+      const returns = whNum("wh_returnsMonthly");
+      const recover = whNum("wh_recoverMonthly");
+      const avgStock = whNum("wh_avgStockPallets");
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (val === null || val === undefined || !Number.isFinite(Number(val))) {
+          el.value = "";
+          return;
+        }
+        el.value = String(Math.max(0, Math.round(Number(val) || 0)));
+      };
+      set("wh_simSold", sold);
+      set("wh_simReturns", returns);
+      set("wh_simRecover", recover);
+      set("wh_simAvgStock", avgStock);
+      warehouse = whReadFromUI();
+      saveWarehouse(warehouse);
+      whRender();
+    }catch(e){}
+  }
+
 function whAutoFillFromSales(){
     try{
       const chk = document.getElementById("wh_autoFromSales");
@@ -2240,6 +2268,7 @@ function whAutoFillFromSales(){
       set("wh_soldMonthly", soldTotal);
       set("wh_returnsMonthly", returnsTotal);
       try { whRestoreRecoverForMonth(monthKey); } catch(e){}
+      try { whSyncSimulatorFromMonth(); } catch(e){}
 
       // Guardar e re-render
       warehouse = whReadFromUI();
@@ -2419,6 +2448,7 @@ function whBind(){
       try { whLoadMonthProfile(monthEl.value); } catch(e) {}
       try { whRestoreRecoverForMonth(monthEl.value); warehouse = whReadFromUI(); saveWarehouse(warehouse); } catch(e) {}
       whAutoFillFromSales();
+      try { whSyncSimulatorFromMonth(); } catch(e) {}
       whRender();
     });
     if (chk) chk.addEventListener("change", ()=>{ whAutoFillFromSales(); });
@@ -2426,6 +2456,7 @@ function whBind(){
     setTimeout(()=>{
       try { whRestoreRecoverForMonth(whMonthKey()); warehouse = whReadFromUI(); saveWarehouse(warehouse); } catch(e) {}
       whAutoFillFromSales();
+      try { whSyncSimulatorFromMonth(); } catch(e) {}
       whRender();
     }, 50);
     try { whBindRecoverBulk(); } catch(e) {}
@@ -2438,6 +2469,11 @@ function whBind(){
     setTimeout(()=>{ try { whRenderCostLines(); } catch(e) {} }, 120);
     root.querySelectorAll("input,select").forEach(el=>{
       el.addEventListener("input", ()=>{
+        const autoSimIds = new Set(["wh_soldMonthly","wh_returnsMonthly","wh_recoverMonthly","wh_avgStockPallets"]);
+        if (autoSimIds.has(el.id)) {
+          try { whSyncSimulatorFromMonth(); } catch(e) {}
+          return;
+        }
         warehouse = whReadFromUI();
         saveWarehouse(warehouse);
         whRender();
@@ -3576,10 +3612,10 @@ for (const k of Object.keys(recipes)) {
 
   $("exportProducts").addEventListener("click", () => {
     const header = ["PRODUTO","DIMENSOES_CM","PESO","VOLUME"];
-    const lines = [header.join(",")];
+    const lines = [header.join(";")];
     for (const p of products) {
       const row = [p.product||"", p.dims_cm||"", p.weight||"", p.volume||""].map(v => `"${String(v).replace(/"/g,'""')}"`);
-      lines.push(row.join(","));
+      lines.push(row.join(";"));
     }
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -3608,6 +3644,356 @@ for (const k of Object.keys(recipes)) {
     calcSelected();
   });
 
+  function csvSemicolonEscape(value){
+    const txt = String(value ?? "");
+    return '"' + txt.replace(/"/g, '""') + '"';
+  }
+
+  function downloadCsvFile(filename, rows){
+    const csv = rows.map(row => row.map(csvSemicolonEscape).join(';')).join("\n");
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
+  }
+
+  function valueToCsvCell(value){
+    if (value === null || value === undefined) return "";
+    if (typeof value === "number") return Number.isFinite(value) ? String(value).replace('.', ',') : "";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  }
+
+  function exportAllDataCsv(){
+    try {
+      const products = Array.isArray(loadProducts()) ? loadProducts() : [];
+      const materials = Array.isArray(loadMaterials()) ? loadMaterials() : [];
+      const purchases = Array.isArray(loadPurchases()) ? loadPurchases() : [];
+      const warehouse = loadWarehouse() && typeof loadWarehouse() === "object" ? loadWarehouse() : {};
+      const sales = loadSales() && typeof loadSales() === "object" ? loadSales() : {};
+
+      const productRows = [["idx", "campo", "valor"]];
+      products.forEach((item, idx) => {
+        Object.entries(item || {}).forEach(([k, v]) => productRows.push([String(idx), k, valueToCsvCell(v)]));
+      });
+
+      const materialRows = [["idx", "campo", "valor"]];
+      materials.forEach((item, idx) => {
+        Object.entries(item || {}).forEach(([k, v]) => materialRows.push([String(idx), k, valueToCsvCell(v)]));
+      });
+
+      const purchaseRows = [["idx", "campo", "valor"]];
+      purchases.forEach((item, idx) => {
+        Object.entries(item || {}).forEach(([k, v]) => purchaseRows.push([String(idx), k, valueToCsvCell(v)]));
+      });
+
+      const warehouseRows = [["secao", "chave", "subchave", "valor"]];
+      Object.entries(warehouse).forEach(([k, v]) => {
+        if (k === "byMonth" && v && typeof v === "object") {
+          Object.entries(v).forEach(([monthKey, monthObj]) => {
+            Object.entries(monthObj || {}).forEach(([mk, mv]) => warehouseRows.push(["byMonth", monthKey, mk, valueToCsvCell(mv)]));
+          });
+        } else if (k === "recoverMonths" && v && typeof v === "object") {
+          Object.entries(v).forEach(([monthKey, items]) => {
+            (Array.isArray(items) ? items : []).forEach((item, idx) => {
+              Object.entries(item || {}).forEach(([ik, iv]) => warehouseRows.push(["recoverMonths", monthKey + "#" + String(idx), ik, valueToCsvCell(iv)]));
+            });
+          });
+        } else if (v && typeof v === "object" && !Array.isArray(v)) {
+          Object.entries(v).forEach(([k2, v2]) => warehouseRows.push([k, k2, "", valueToCsvCell(v2)]));
+        } else {
+          warehouseRows.push(["root", k, "", valueToCsvCell(v)]);
+        }
+      });
+
+      const salesRows = [["secao", "chave", "subchave", "valor"]];
+      Object.entries(sales).forEach(([k, v]) => {
+        if (k === "months" && v && typeof v === "object") {
+          Object.entries(v).forEach(([monthKey, monthObj]) => {
+            Object.entries(monthObj || {}).forEach(([prodKey, prodVal]) => {
+              if (prodVal && typeof prodVal === "object" && !Array.isArray(prodVal)) {
+                Object.entries(prodVal).forEach(([pk, pv]) => salesRows.push(["months", monthKey + "#" + prodKey, pk, valueToCsvCell(pv)]));
+              } else {
+                salesRows.push(["months", monthKey, prodKey, valueToCsvCell(prodVal)]);
+              }
+            });
+          });
+        } else if (v && typeof v === "object" && !Array.isArray(v)) {
+          Object.entries(v).forEach(([k2, v2]) => salesRows.push([k, k2, "", valueToCsvCell(v2)]));
+        } else {
+          salesRows.push(["root", k, "", valueToCsvCell(v)]);
+        }
+      });
+
+      downloadCsvFile('produtos.csv', productRows);
+      setTimeout(() => downloadCsvFile('materiais.csv', materialRows), 150);
+      setTimeout(() => downloadCsvFile('compras.csv', purchaseRows), 300);
+      setTimeout(() => downloadCsvFile('warehouse.csv', warehouseRows), 450);
+      setTimeout(() => downloadCsvFile('sales.csv', salesRows), 600);
+    } catch (err) {
+      console.error('Export CSV separado falhou:', err);
+      alert('Export CSV separado falhou. Abre a consola (F12) para ver o erro.');
+    }
+  }
+
+  function buildSeparatedCsvData(){
+    const products = loadProducts();
+    const materials = loadMaterials();
+    const purchases = loadPurchases();
+    const warehouse = loadWarehouse();
+    const sales = loadSales();
+
+    const productRows = [["produto", "dimensoes", "peso_kg", "volume_m3"]];
+    (products || []).forEach(p => productRows.push([
+      valueToCsvCell(p?.name || ""),
+      valueToCsvCell(p?.dims || ""),
+      valueToCsvCell(p?.weight ?? ""),
+      valueToCsvCell(p?.volume ?? "")
+    ]));
+
+    const materialRows = [["material", "unidade_base", "custo_manual", "ultima_compra"]];
+    (materials || []).forEach(m => materialRows.push([
+      valueToCsvCell(m?.name || ""),
+      valueToCsvCell(m?.unit || ""),
+      valueToCsvCell(m?.manualCost ?? ""),
+      valueToCsvCell(m?.lastCost ?? "")
+    ]));
+
+    const purchaseRows = [["data", "material", "quantidade", "preco_total", "preco_unitario", "fornecedor", "notas"]];
+    (purchases || []).forEach(r => {
+      const qty = Number(r?.qty ?? 0) || 0;
+      const total = Number(r?.total ?? 0) || 0;
+      purchaseRows.push([
+        valueToCsvCell(r?.date || ""),
+        valueToCsvCell(r?.material || ""),
+        valueToCsvCell(r?.qty ?? ""),
+        valueToCsvCell(r?.total ?? ""),
+        valueToCsvCell(qty > 0 ? (total / qty) : ""),
+        valueToCsvCell(r?.supplier || ""),
+        valueToCsvCell(r?.notes || "")
+      ]);
+    });
+
+    const warehouseRows = [["secao", "chave", "subchave", "valor"]];
+    Object.entries(warehouse || {}).forEach(([k, v]) => {
+      if (k === "byMonth" && v && typeof v === "object") {
+        Object.entries(v).forEach(([monthKey, monthObj]) => {
+          Object.entries(monthObj || {}).forEach(([mk, mv]) => warehouseRows.push(["byMonth", monthKey, mk, valueToCsvCell(mv)]));
+        });
+      } else if (k === "recoverMonths" && v && typeof v === "object") {
+        Object.entries(v).forEach(([monthKey, items]) => {
+          (Array.isArray(items) ? items : []).forEach((item, idx) => {
+            Object.entries(item || {}).forEach(([ik, iv]) => warehouseRows.push(["recoverMonths", monthKey + "#" + String(idx), ik, valueToCsvCell(iv)]));
+          });
+        });
+      } else if (v && typeof v === "object" && !Array.isArray(v)) {
+        Object.entries(v).forEach(([k2, v2]) => warehouseRows.push([k, k2, "", valueToCsvCell(v2)]));
+      } else {
+        warehouseRows.push(["root", k, "", valueToCsvCell(v)]);
+      }
+    });
+
+    const salesRows = [["secao", "chave", "subchave", "valor"]];
+    Object.entries(sales || {}).forEach(([k, v]) => {
+      if (k === "months" && v && typeof v === "object") {
+        Object.entries(v).forEach(([monthKey, monthObj]) => {
+          Object.entries(monthObj || {}).forEach(([prodKey, prodVal]) => {
+            if (prodVal && typeof prodVal === "object" && !Array.isArray(prodVal)) {
+              Object.entries(prodVal).forEach(([pk, pv]) => salesRows.push(["months", monthKey + "#" + prodKey, pk, valueToCsvCell(pv)]));
+            } else {
+              salesRows.push(["months", monthKey, prodKey, valueToCsvCell(prodVal)]);
+            }
+          });
+        });
+      } else if (v && typeof v === "object" && !Array.isArray(v)) {
+        Object.entries(v).forEach(([k2, v2]) => salesRows.push([k, k2, "", valueToCsvCell(v2)]));
+      } else {
+        salesRows.push(["root", k, "", valueToCsvCell(v)]);
+      }
+    });
+
+    return { productRows, materialRows, purchaseRows, warehouseRows, salesRows };
+  }
+
+  function exportOneSeparatedCsv(kind){
+    const data = buildSeparatedCsvData();
+    if (kind === 'products') downloadCsvFile('produtos.csv', data.productRows);
+    else if (kind === 'materials') downloadCsvFile('materiais.csv', data.materialRows);
+    else if (kind === 'purchases') downloadCsvFile('compras.csv', data.purchaseRows);
+    else if (kind === 'warehouse') downloadCsvFile('warehouse.csv', data.warehouseRows);
+    else if (kind === 'sales') downloadCsvFile('sales.csv', data.salesRows);
+  }
+
+  function exportAllDataAsSeparatedCsv(){
+    try {
+      const data = buildSeparatedCsvData();
+      downloadCsvFile('produtos.csv', data.productRows);
+      setTimeout(() => downloadCsvFile('materiais.csv', data.materialRows), 150);
+      setTimeout(() => downloadCsvFile('compras.csv', data.purchaseRows), 300);
+      setTimeout(() => downloadCsvFile('warehouse.csv', data.warehouseRows), 450);
+      setTimeout(() => downloadCsvFile('sales.csv', data.salesRows), 600);
+    } catch (err) {
+      console.error('Export CSV separado falhou:', err);
+      alert('Export CSV separado falhou. Abre a consola (F12) para ver o erro.');
+    }
+  }
+
+  function exportMonthlyOperationsCsv(){
+    try {
+      const warehouseData = loadWarehouse() || {};
+      const salesData = loadSales() || {};
+      const monthKeys = new Set();
+      Object.keys((salesData && salesData.months) || {}).forEach(k => monthKeys.add(k));
+      Object.keys((warehouseData && warehouseData.byMonth) || {}).forEach(k => monthKeys.add(k));
+      Object.keys((warehouseData && warehouseData.recoverMonths) || {}).forEach(k => monthKeys.add(k));
+      const months = Array.from(monthKeys).sort();
+
+      const rows = [[
+        'mês','vendidos_mês','returns_mês','recover_mês','stock_médio_paletes',
+        'custo_pick_pack_eur','custo_consumíveis_eur','custo_returns_eur','custo_recover_eur','custo_armazenagem_eur',
+        'custo_total_eur','custo_total_por_produto_eur','consumíveis_por_produto_eur'
+      ]];
+
+      months.forEach(monthKey => {
+        const monthSales = ((salesData.months || {})[monthKey]) || {};
+        let sold = 0;
+        let returns = 0;
+        Object.values(monthSales).forEach(v => {
+          if (v && typeof v === 'object') {
+            sold += Number(v.sold || 0) || 0;
+            returns += Number(v.returns || 0) || 0;
+          } else {
+            sold += Number(v || 0) || 0;
+          }
+        });
+
+        const snap = ((warehouseData.byMonth || {})[monthKey]) || {};
+        const recoverObj = ((warehouseData.recoverMonths || {})[monthKey]) || {};
+        const opBase = (warehouseData.op && typeof warehouseData.op === 'object') ? warehouseData.op : {};
+        const op = { ...opBase, ...snap };
+        const recover = Number(recoverObj.totalUnits ?? op.recoverMonthly ?? 0) || 0;
+        const avgStock = Number(op.avgStockPallets ?? 0) || 0;
+        const w = {
+          ...warehouseData,
+          op,
+          sim: { sold, returns, recover, avgStock }
+        };
+        const scenario = whComputeScenario(w);
+        rows.push([
+          monthKey,
+          sold,
+          returns,
+          recover,
+          avgStock,
+          scenario.pickPackMonthly,
+          scenario.packMatMonthly,
+          scenario.retMonthly,
+          scenario.recoverMonthly,
+          scenario.storageMonthly,
+          scenario.totalMonthly,
+          scenario.costPerUnit,
+          scenario.packMatPerUnit
+        ].map(valueToCsvCell));
+      });
+
+      downloadCsvFile('mensal_vendas_returns_recover_custos.csv', rows);
+    } catch (err) {
+      console.error('Export mensal falhou:', err);
+      alert('Export mensal falhou. Abre a consola (F12) para ver o erro.');
+    }
+  }
+
+  function getProductDisplayName(p){
+    return String(p?.product || p?.name || p?.nome || p?.title || p?.sku || '').trim();
+  }
+
+  function buildConsumablesExportData(){
+    const prods = Array.isArray(loadProducts()) ? loadProducts() : [];
+    const rec = (typeof loadRecipes === 'function') ? loadRecipes() : {};
+    const activeVars = Array.isArray(vars) ? vars.filter(v => v && v.enabled) : [];
+    const rowsSummary = [[
+      'produto','consumíveis_total_eur_un','materiais_eur_un','variáveis_eur_un','número_componentes_materiais','número_variáveis_ativas'
+    ]];
+    const rowsComponents = [[
+      'produto','tipo','componente','quantidade_usada','unidade_usada','unidade_base','custo_unitário_base_eur','custo_da_linha_eur'
+    ]];
+
+    prods.forEach(p => {
+      const productName = getProductDisplayName(p);
+      if (!productName) return;
+      const lines = (rec && Array.isArray(rec[productName])) ? rec[productName] : [];
+      let materialsTotal = 0;
+      lines.forEach(line => {
+        const material = materialById(line.materialId);
+        const derived = material ? materialUnitCostDerived(line.materialId) : { unitCost: 0 };
+        const lineCostInfo = computeRecipeLineCost(line);
+        const lineCost = Number(lineCostInfo?.cost || 0) || 0;
+        materialsTotal += lineCost;
+        rowsComponents.push([
+          productName,
+          'material',
+          material?.name || '',
+          valueToCsvCell(line?.usedQty ?? ''),
+          valueToCsvCell(line?.usedUnit || ''),
+          valueToCsvCell(material?.baseUnit || ''),
+          valueToCsvCell(derived?.unitCost ?? 0),
+          valueToCsvCell(lineCost)
+        ]);
+      });
+
+      const varsTotal = activeVars.reduce((sum, v) => sum + (Number(v?.value || 0) || 0), 0);
+      activeVars.forEach(v => {
+        rowsComponents.push([
+          productName,
+          'variavel',
+          valueToCsvCell(v?.name || ''),
+          '',
+          '',
+          '',
+          '',
+          valueToCsvCell(v?.value ?? 0)
+        ]);
+      });
+
+      rowsSummary.push([
+        productName,
+        valueToCsvCell(materialsTotal + varsTotal),
+        valueToCsvCell(materialsTotal),
+        valueToCsvCell(varsTotal),
+        valueToCsvCell(lines.length),
+        valueToCsvCell(activeVars.length)
+      ]);
+    });
+
+    return { rowsSummary, rowsComponents };
+  }
+
+  function exportConsumablesSummaryCsv(){
+    try {
+      const data = buildConsumablesExportData();
+      downloadCsvFile('consumiveis_por_produto.csv', data.rowsSummary);
+    } catch (err) {
+      console.error('Export consumíveis por produto falhou:', err);
+      alert('Export consumíveis por produto falhou. Abre a consola (F12) para ver o erro.');
+    }
+  }
+
+  function exportConsumablesComponentsCsv(){
+    try {
+      const data = buildConsumablesExportData();
+      downloadCsvFile('componentes_consumiveis_por_produto.csv', data.rowsComponents);
+    } catch (err) {
+      console.error('Export componentes consumíveis falhou:', err);
+      alert('Export componentes consumíveis falhou. Abre a consola (F12) para ver o erro.');
+    }
+  }
+
   // Backup all
   $("exportAll").addEventListener("click", () => {
     const payload = {
@@ -3623,6 +4009,10 @@ for (const k of Object.keys(recipes)) {
     };
     downloadJson("backup_custo_produto.json", payload);
   });
+
+  $("exportMonthlyOpsCsv").addEventListener("click", exportMonthlyOperationsCsv);
+  $("exportConsumablesSummaryCsv").addEventListener("click", exportConsumablesSummaryCsv);
+  $("exportConsumablesComponentsCsv").addEventListener("click", exportConsumablesComponentsCsv);
 
   $("importAll").addEventListener("change", async (e) => {
     const f = e.target.files?.[0];
