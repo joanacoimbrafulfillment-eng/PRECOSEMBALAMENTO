@@ -566,7 +566,7 @@
           <div>
             <label style="display:none;">Mão de obra total (legacy — podes deixar vazio)</label>
             <input id="wh_moMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 20000">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Equipa de armazém (pick/pack/inbound/returns).</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Equipa de armazém (pick/pack/returns/recover).</div>
           </div>
           <div>
             <label>Overhead armazém (€/mês)</label>
@@ -648,16 +648,8 @@
             <input id="wh_moReturnsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 3000">
           </div>
           <div>
-            <label>Refunds (€/mês)</label>
-            <input id="wh_moRefundsMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
-          </div>
-          <div>
             <label>Recover (€/mês)</label>
             <input id="wh_moRecoverMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
-          </div>
-          <div>
-            <label>Inbound (€/mês)</label>
-            <input id="wh_moInboundMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
         </div>
         <div class="row cols-3" style="margin-top:10px;">
@@ -700,13 +692,12 @@
           <div>
             <label>Usar mês de “Vendas (mês)”</label>
             <input id="wh_linkMonth" type="month">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês para puxar automaticamente Vendidos/Returns/Refunds.</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês para puxar automaticamente Vendidos e Returns.</div>
           </div>
           <div class="note">
             <b>Ligação automática</b>:<br>
             Vendidos → Pick+Pack (por unidade)<br>
-            Returns → custos Returns<br>
-            Refunds → custos Refunds
+            Returns → custos Returns
           </div>
           <div>
             <label style="display:flex; align-items:center; gap:10px;">
@@ -734,11 +725,6 @@
         </div>
 
         <div class="row cols-3" style="margin-top:10px;">
-          <div>
-            <label>Refunds/mês</label>
-            <input id="wh_refundsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento administrativo de reembolso (se existir na tua operação).</div>
-          </div>
           <div>
             <label>Recover/mês</label>
             <input id="wh_recoverMonthly" type="number" step="1" min="0" placeholder="ex.: 150">
@@ -772,10 +758,6 @@
 
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Inbound (paletes recebidas)/mês</label>
-            <input id="wh_inboundPalletsMonthly" style="display:none" type="number" step="1" min="0" placeholder="ex.: 200">
-          </div>
-          <div>
             <label>Stock médio (paletes)</label>
             <input id="wh_avgStockPallets" type="number" step="1" min="0" placeholder="ex.: 150">
             <div class="muted" style="font-size:12px; margin-top:6px;">Dica: (início + fim)/2</div>
@@ -797,9 +779,7 @@
             <div style="font-weight:900; margin-bottom:8px;">% Mão de Obra</div>
             <label>Pick+Pack (%)</label><input id="wh_pMoPickPack" style="display:none" type="number" step="0.1" min="0" value="70">
             <label style="margin-top:8px;">Returns (%)</label><input id="wh_pMoRet" style="display:none" type="number" step="0.1" min="0" value="15">
-            <label style="margin-top:8px;">Refunds (%)</label><input id="wh_pMoRefund" style="display:none" type="number" step="0.1" min="0" value="5">
             <label style="margin-top:8px;">Recover (%)</label><input id="wh_pMoRecover" style="display:none" type="number" step="0.1" min="0" value="5">
-            <label style="margin-top:8px;">Inbound (%)</label><input id="wh_pMoIn" style="display:none" type="number" step="0.1" min="0" value="5">
 </div>
 
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
@@ -857,10 +837,6 @@
         
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Refunds/mês (cliente)</label>
-            <input id="wh_simRefunds" style="display:none" type="number" step="1" min="0" placeholder="ex.: 60">
-          </div>
-          <div>
             <label>Recover/mês (cliente)</label>
             <input id="wh_simRecover" type="number" step="1" min="0" placeholder="ex.: 50">
           </div>
@@ -869,10 +845,6 @@
           </div>
         </div>
 <div class="row cols-3" style="margin-top:10px;">
-          <div>
-            <label>Inbound paletes/mês (cliente)</label>
-            <input id="wh_simInboundPallets" style="display:none" type="number" step="1" min="0" placeholder="ex.: 40">
-          </div>
           <div>
             <label>Stock médio (paletes) (cliente)</label>
             <input id="wh_simAvgStock" type="number" step="1" min="0" placeholder="ex.: 30">
@@ -932,7 +904,7 @@
         </div>
 
         <div class="muted" style="font-size:12px; margin-top:10px;">
-          Fórmula por encomenda: linhas×€/linha_pick + €/enc_pack + consumíveis + overhead_op/enc + (returns/enc)×€/return + (inbound/enc)×€/palete_in + (stock/enc)×€/palete/mês (aprox.)
+          Fórmula por unidade total: Pick+Pack + consumíveis + Returns + Recover + Armazenagem
         </div>
       </div>
     </details>
@@ -1597,15 +1569,14 @@ function n(v) {
         moMonthly: null, ohMonthly: null,
         packS: null, packM: null, packL: null,
         soldMonthly: null, linesMonthly: null, returnsMonthly: null,
-        inboundPalletsMonthly: null, avgStockPallets: null,
-        pMoPickPack: 70, pMoRet: 15, pMoRefund: 5, pMoRecover: 5, pMoIn: 5,
+        avgStockPallets: null,
+        pMoPickPack: 70, pMoRet: 15, pMoRecover: 5,
         pOhStorage: 60, pOhOps: 40
       },
       byMonth: {},
       recoverMonths: {},
       sim: {
-        orders: null, linesPerOrder: null, returns: null,
-        inboundPallets: null, avgStock: null,
+        orders: null, linesPerOrder: null, avgStock: null,
         mixS: 50, mixM: 40, mixL: 10
       }
     };
@@ -1683,9 +1654,7 @@ function n(v) {
       costLines: null,
       moPickPackMonthly: whNum("wh_moPickPackMonthly"),
       moReturnsMonthly: whNum("wh_moReturnsMonthly"),
-      moRefundsMonthly: whNum("wh_moRefundsMonthly"),
       moRecoverMonthly: whNum("wh_moRecoverMonthly"),
-      moInboundMonthly: whNum("wh_moInboundMonthly"),
       hcPickPack: whNum("wh_hcPickPack") ?? 0,
       hcReturns: whNum("wh_hcReturns") ?? 0,
       hcRecover: whNum("wh_hcRecover") ?? 0,
@@ -1696,13 +1665,10 @@ function n(v) {
       linesMonthly: whNum("wh_linesMonthly"),
       returnsMonthly: whNum("wh_returnsMonthly"),
       recoverMonthly: whNum("wh_recoverMonthly"),
-      inboundPalletsMonthly: whNum("wh_inboundPalletsMonthly"),
       avgStockPallets: whNum("wh_avgStockPallets"),
       pMoPickPack: whNum("wh_pMoPickPack") ?? 70,
       pMoRet: whNum("wh_pMoRet") ?? 15,
-      pMoRefund: whNum("wh_pMoRefund") ?? 5,
       pMoRecover: whNum("wh_pMoRecover") ?? 5,
-      pMoIn: whNum("wh_pMoIn") ?? 5,
       pOhStorage: whNum("wh_pOhStorage") ?? 60,
       pOhOps: whNum("wh_pOhOps") ?? 40
     };
@@ -1710,9 +1676,7 @@ function n(v) {
       sold: whNum("wh_simSold"),
       linesPerOrder: whNum("wh_simLinesPerOrder"),
       returns: whNum("wh_simReturns"),
-      refunds: whNum("wh_simRefunds"),
       recover: whNum("wh_simRecover"),
-      inboundPallets: whNum("wh_simInboundPallets"),
       avgStock: whNum("wh_simAvgStock"),
       mixS: whNum("wh_mixS") ?? 50,
       mixM: whNum("wh_mixM") ?? 40,
@@ -1739,9 +1703,7 @@ function n(v) {
     whSet("wh_officeMonthly", op.officeMonthly);
     whSet("wh_moPickPackMonthly", op.moPickPackMonthly);
     whSet("wh_moReturnsMonthly", op.moReturnsMonthly);
-    whSet("wh_moRefundsMonthly", op.moRefundsMonthly);
     whSet("wh_moRecoverMonthly", op.moRecoverMonthly);
-    whSet("wh_moInboundMonthly", op.moInboundMonthly);
     whSet("wh_hcPickPack", op.hcPickPack ?? 0);
     whSet("wh_hcReturns", op.hcReturns ?? 0);
     whSet("wh_hcRecover", op.hcRecover ?? 0);
@@ -1752,16 +1714,12 @@ function n(v) {
     whSet("wh_soldMonthly", op.soldMonthly);
     whSet("wh_linesMonthly", op.linesMonthly);
     whSet("wh_returnsMonthly", op.returnsMonthly);
-    whSet("wh_refundsMonthly", op.refundsMonthly);
     whSet("wh_recoverMonthly", op.recoverMonthly);
-    whSet("wh_inboundPalletsMonthly", op.inboundPalletsMonthly);
     whSet("wh_avgStockPallets", op.avgStockPallets);
 
     whSet("wh_pMoPickPack", op.pMoPickPack ?? 70);
     whSet("wh_pMoRet", op.pMoRet ?? 15);
-    whSet("wh_pMoRefund", op.pMoRefund ?? 5);
     whSet("wh_pMoRecover", op.pMoRecover ?? 5);
-    whSet("wh_pMoIn", op.pMoIn ?? 5);
 
     whSet("wh_pOhStorage", op.pOhStorage ?? 60);
     whSet("wh_pOhOps", op.pOhOps ?? 40);
@@ -1769,9 +1727,7 @@ function n(v) {
     whSet("wh_simSold", sim.sold);
     whSet("wh_simLinesPerOrder", sim.linesPerOrder);
     whSet("wh_simReturns", sim.returns);
-    whSet("wh_simRefunds", sim.refunds);
     whSet("wh_simRecover", sim.recover);
-    whSet("wh_simInboundPallets", sim.inboundPallets);
     whSet("wh_simAvgStock", sim.avgStock);
 
     whSet("wh_mixS", sim.mixS ?? 50);
