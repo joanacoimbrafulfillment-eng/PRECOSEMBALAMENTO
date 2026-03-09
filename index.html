@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fulfillment — Custo por Produto (4 separadores)</title>
+  <title>Fulfillment — Cost per Product (4 tabs)</title>
   <style>
     :root {
       --gap: 12px;
@@ -197,13 +197,13 @@
 <body>
 <div id="loadingOverlay">
   <div class="box">
-    <div id="overlayMsg">A ligar à Firebase…</div>
+    <div id="overlayMsg">Connecting to Firebase…</div>
     <div id="loginBox" hidden>
       <div style="font-size:14px; font-weight:900;">Login</div>
-      <div class="muted" style="font-size:12px;">Acesso apenas para contas <strong>@admin.com</strong>.</div>
+      <div class="muted" style="font-size:12px;">Access only for <strong>@admin.com</strong> accounts.</div>
       <div>
         <label style="margin:0 0 6px;">Email</label>
-        <input id="loginEmail" type="email" autocomplete="username" placeholder="nome@admin.com">
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="name@admin.com">
       </div>
       <div>
         <label style="margin:0 0 6px;">Password</label>
@@ -211,39 +211,39 @@
       </div>
       <div id="loginErr" hidden></div>
       <div class="btns" style="justify-content:flex-end;">
-        <button type="button" id="loginBtn">Entrar</button>
+        <button type="button" id="loginBtn">Sign in</button>
       </div>
     </div>
   </div>
 </div>
 
 <header>
-  <h1>Custo por Produto — 4 separadores</h1>
-  <div class="sub">Separadores: <strong>Tudo</strong> (produto+receita+variáveis+resultado) · <strong>Materiais</strong> · <strong>Compras</strong> · <strong>Upload</strong>.</div>
+  <h1>Cost per Product — 4 tabs</h1>
+  <div class="sub">Tabs: <strong>All</strong> (product+recipe+variables+result) · <strong>Materials</strong> · <strong>Purchases</strong> · <strong>Upload</strong>.</div>
   <div style="margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-    <button type="button" id="logoutBtn" hidden>Sair</button>
+    <button type="button" id="logoutBtn" hidden>Sign out</button>
     <span class="pill" id="authStatus" style="background:#111; color:#fff; border-color:#333;" hidden>—</span>
   </div>
 </header>
 
 <main>
   <div class="topbar">
-    <div class="tabs" role="tablist" aria-label="Separadores">
-      <button class="tabbtn" type="button" data-tab="tab-tudo" aria-selected="false">Tudo</button>
-      <button class="tabbtn" type="button" data-tab="tab-materiais" aria-selected="false">Materiais</button>
-      <button class="tabbtn" type="button" data-tab="tab-compras" aria-selected="false">Compras</button>
+    <div class="tabs" role="tablist" aria-label="Tabs">
+      <button class="tabbtn" type="button" data-tab="tab-tudo" aria-selected="false">All</button>
+      <button class="tabbtn" type="button" data-tab="tab-materiais" aria-selected="false">Materials</button>
+      <button class="tabbtn" type="button" data-tab="tab-compras" aria-selected="false">Purchases</button>
       <button class="tabbtn" type="button" data-tab="tab-upload" aria-selected="false">Upload</button>
-      <button class="tabbtn" type="button" data-tab="tab-armazem" aria-selected="false">Armazém</button>
-      <button class="tabbtn" type="button" data-tab="tab-vendas" aria-selected="false">Vendas (mês)</button>
+      <button class="tabbtn" type="button" data-tab="tab-armazem" aria-selected="false">Warehouse</button>
+      <button class="tabbtn" type="button" data-tab="tab-vendas" aria-selected="false">Sales (month)</button>
     </div>
 
-    <div class="summary" aria-label="Resumo">
+    <div class="summary" aria-label="Summary">
       <div class="sumcard product">
-        <div class="sumlabel">Produto</div>
+        <div class="sumlabel">Product</div>
         <div class="sumvalue mono" id="selectedProductTop">—</div>
       </div>
       <div class="sumcard materials">
-        <div class="sumlabel">Custo materiais</div>
+        <div class="sumlabel">Materials cost</div>
         <div class="sumvalue big mono" id="materialsCostTop">€ 0,00</div>
       </div>
       <div class="sumcard total">
@@ -255,22 +255,22 @@
 
   <!-- TUDO -->
   <section class="card" data-panel id="tab-tudo">
-    <h2>Tudo (produto + receita + variáveis + resultado)</h2>
+    <h2>All (product + recipe + variables + resultado)</h2>
 
     <details open>
       <summary>
-        <span>Produto + Receita</span>
-        <span class="hint">vários materiais por produto</span>
+        <span>Product + Receita</span>
+        <span class="hint">multiple materials per product</span>
       </summary>
       <div class="content">
         <div class="row cols-3">
           <div>
-            <label>Selecionar produto</label>
-            <input id="productSearch" list="productsList" placeholder="Começa a escrever…">
+            <label>Select product</label>
+            <input id="productSearch" list="productsList" placeholder="Start typing…">
             <datalist id="productsList"></datalist>
           </div>
           <div class="note" style="grid-column: span 2;">
-            Dica: Se precisares atualizar a lista de produtos, vai ao separador <strong>Upload</strong>.
+            Tip: If you need to update the product list, go to the <strong>Upload</strong> tab.
           </div>
         </div>
 
@@ -280,9 +280,9 @@
           <thead>
             <tr>
               <th>Material</th>
-              <th class="num">Qtd usada</th>
-              <th>Un usada</th>
-              <th class="num">Custo</th>
+              <th class="num">Used qty</th>
+              <th>Used unit</th>
+              <th class="num">Cost</th>
               <th></th>
             </tr>
           </thead>
@@ -290,9 +290,9 @@
         </table>
 
         <div class="btns" style="margin-top:10px;">
-          <button type="button" id="addRecipeLine">Adicionar linha</button>
-          <button type="button" class="secondary" id="clearRecipe">Limpar receita</button>
-          <button type="button" class="secondary" id="exportRecipes">Exportar receitas</button>
+          <button type="button" id="addRecipeLine">Add line</button>
+          <button type="button" class="secondary" id="clearRecipe">Clear recipe</button>
+          <button type="button" class="secondary" id="exportRecipes">Export recipes</button>
           <input id="importRecipes" type="file" accept=".json,application/json" />
         </div>
       </div>
@@ -300,18 +300,18 @@
 
     <details>
       <summary>
-        <span>Variáveis fixas (opcional)</span>
-        <span class="hint">ex.: taxa, etiqueta, etc.</span>
+        <span>Fixed variables (optional)</span>
+        <span class="hint">e.g. fee, label, etc.</span>
       </summary>
       <div class="content">
         <table>
-          <thead><tr><th>Variável</th><th class="num">€/produto</th><th>Ativo</th><th></th></tr></thead>
+          <thead><tr><th>Variable</th><th class="num">€/product</th><th>Active</th><th></th></tr></thead>
           <tbody id="varsTbody"></tbody>
         </table>
 
         <div class="btns" style="margin-top:10px;">
-          <button type="button" class="secondary" id="addVar">Adicionar variável</button>
-          <button type="button" class="secondary" id="exportVars">Exportar variáveis</button>
+          <button type="button" class="secondary" id="addVar">Add variable</button>
+          <button type="button" class="secondary" id="exportVars">Export variables</button>
           <input id="importVars" type="file" accept=".json,application/json" />
         </div>
       </div>
@@ -319,17 +319,17 @@
 
     <details open>
       <summary>
-        <span>Resultado</span>
-        <span class="hint">materiais + variáveis</span>
+        <span>Result</span>
+        <span class="hint">materials + variables</span>
       </summary>
       <div class="content">
         <div class="row cols-3">
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div class="muted" style="font-size:12px;">Custo materiais</div>
+            <div class="muted" style="font-size:12px;">Materials cost</div>
             <div class="mono" style="font-size:22px; font-weight:900;" id="materialsCost">€ 0,00</div>
           </div>
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div class="muted" style="font-size:12px;">Variáveis</div>
+            <div class="muted" style="font-size:12px;">Variables</div>
             <div class="mono" style="font-size:22px; font-weight:900;" id="varsCost">€ 0,00</div>
           </div>
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
@@ -340,23 +340,23 @@
 
         <div class="hr"></div>
 
-        <h2 style="margin-top:0;">Detalhe</h2>
+        <h2 style="margin-top:0;">Breakdown</h2>
         <table>
-          <thead><tr><th>Item</th><th class="num">Custo</th></tr></thead>
+          <thead><tr><th>Item</th><th class="num">Cost</th></tr></thead>
           <tbody id="breakdownTbody"></tbody>
         </table>
 
         <div class="hr"></div>
 
         <div class="btns">
-          <button type="button" class="secondary" id="calcAll">Gerar tabela (todos os produtos)</button>
-        <button type="button" class="secondary" id="exportAllCostsCsv">Exportar custos CSV (;)</button>
+          <button type="button" class="secondary" id="calcAll">Generate table (all products)</button>
+        <button type="button" class="secondary" id="exportAllCostsCsv">Export costs CSV (;)</button>
         </div>
 
         <div style="height:10px;"></div>
 
         <table>
-          <thead><tr><th>Produto</th><th class="num">Total</th></tr></thead>
+          <thead><tr><th>Product</th><th class="num">Total</th></tr></thead>
           <tbody id="allProductsTbody"></tbody>
         </table>
       </div>
@@ -365,25 +365,25 @@
 
   <!-- MATERIAIS -->
   <section class="card" data-panel id="tab-materiais">
-    <h2>Materiais</h2>
+    <h2>Materials</h2>
 
     <details open>
       <summary>
-        <span>Definição de materiais</span>
-        <span class="hint">nome + unidade base</span>
+        <span>Materials definition</span>
+        <span class="hint">name + base unit</span>
       </summary>
       <div class="content">
         <div class="row cols-2" style="align-items:end;">
           <div>
-            <label>Método de custo usado nas receitas</label>
+            <label>Cost method used in recipes</label>
             <select id="costMethod" style="max-width: 360px;">
-              <option value="latest">Última compra (preço mais recente)</option>
-              <option value="wavg">Média ponderada (todas as compras)</option>
+              <option value="latest">Latest purchase (most recent price)</option>
+              <option value="wavg">Weighted average (all purchases)</option>
             </select>
           </div>
           <div class="btns" style="justify-content:flex-end;">
-            <button type="button" class="secondary" id="addMaterial">Adicionar material</button>
-            <button type="button" class="secondary" id="exportMaterials">Exportar materiais</button>
+            <button type="button" class="secondary" id="addMaterial">Add material</button>
+            <button type="button" class="secondary" id="exportMaterials">Export materials</button>
             <input id="importMaterials" type="file" accept=".json,application/json" />
           </div>
         </div>
@@ -394,9 +394,9 @@
           <thead>
             <tr>
               <th>Material</th>
-              <th>Unidade base</th>
+              <th>Base unit</th>
               <th class="num">€/un (derivado)</th>
-              <th class="num">Última compra</th>
+              <th class="num">Latest purchase</th>
               <th></th>
             </tr>
           </thead>
@@ -404,7 +404,7 @@
         </table>
 
         <div class="note" style="margin-top:12px;">
-          O campo <strong>€/un</strong> não é editado aqui — vem do separador <strong>Compras</strong> (histórico).
+          The <strong>€/un</strong> field is not edited here — it comes from the <strong>Purchases</strong> tab (history).
         </div>
       </div>
     </details>
@@ -412,12 +412,12 @@
 
   <!-- COMPRAS -->
   <section class="card" data-panel id="tab-compras">
-    <h2>Compras (histórico de preços)</h2>
+    <h2>Purchases (histórico de preços)</h2>
 
     <details open>
       <summary>
-        <span>Adicionar compra</span>
-        <span class="hint">guarda preços por data</span>
+        <span>Add purchase</span>
+        <span class="hint">stores prices by date</span>
       </summary>
       <div class="content">
         <div class="row cols-4">
@@ -426,68 +426,68 @@
             <select id="purchaseMaterial"></select>
           </div>
           <div>
-            <label>Data</label>
+            <label>Date</label>
             <input id="purchaseDate" type="date">
           </div>
           <div>
-            <label>Preço (€)</label>
+            <label>Price (€)</label>
             <input id="purchasePrice" type="number" step="0.01" min="0" value="0.00">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Se escolheres “por m” ou “por m²”, a unidade da compra deve ser m ou m².</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">If you choose “per m” or “per m²”, the purchase unit must be m or m².</div>
           </div>
           <div>
-            <label>Tipo de preço</label>
+            <label>Price type</label>
             <select id="purchasePriceMode">
-              <option value="total">Total da compra</option>
-              <option value="per_unit">Preço por unidade (un)</option>
-              <option value="per_m">Preço por metro (m)</option>
-              <option value="per_m2">Preço por m² (m²)</option>
+              <option value="total">Total purchase amount</option>
+              <option value="per_unit">Price per unit (unit)</option>
+              <option value="per_m">Price per meter (m)</option>
+              <option value="per_m2">Price per m² (m²)</option>
             </select>
           </div>
         </div>
 
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Quantidade comprada</label>
+            <label>Purchased quantity</label>
             <input id="purchaseQty" type="number" step="0.01" min="0" value="0.00">
           </div>
           <div>
-            <label>Unidade (da compra)</label>
+            <label>Unit (purchase)</label>
             <select id="purchaseUnit"></select>
           </div>
           <div>
-            <label>Notas (opcional)</label>
-            <input id="purchaseNote" type="text" placeholder="Fornecedor, lote, etc.">
+            <label>Notes (optional)</label>
+            <input id="purchaseNote" type="text" placeholder="Supplier, batch, etc.">
           </div>
         </div>
 
         <div class="btns" style="margin-top:10px;">
-          <button type="button" id="addPurchase">Adicionar compra</button>
-          <button type="button" class="secondary" id="exportPurchases">Exportar compras</button>
+          <button type="button" id="addPurchase">Add purchase</button>
+          <button type="button" class="secondary" id="exportPurchases">Export purchases</button>
           <input id="importPurchases" type="file" accept=".json,application/json" />
         </div>
 
         <div class="note" style="margin-top:10px;">
-          Conversões: <strong>m↔cm</strong>, <strong>m²↔cm²</strong>, <strong>un</strong>. Se unidades forem incompatíveis, a linha fica com ⚠ e custo 0.
+          Conversions: <strong>m↔cm</strong>, <strong>m²↔cm²</strong>, <strong>unit</strong>. If units are incompatible, the row gets ⚠ and cost 0.
         </div>
       </div>
     </details>
 
     <details open>
       <summary>
-        <span>Lista de compras</span>
-        <span class="hint">editar / apagar</span>
+        <span>Purchase list</span>
+        <span class="hint">edit / delete</span>
       </summary>
       <div class="content">
         <table>
           <thead>
             <tr>
-              <th>Data</th>
+              <th>Date</th>
               <th>Material</th>
-              <th class="num">Preço (€)</th>
+              <th class="num">Price (€)</th>
               <th class="num">Qtd</th>
               <th>Un</th>
               <th class="num">€/un base</th>
-              <th>Notas</th>
+              <th>Notes</th>
               <th></th>
             </tr>
           </thead>
@@ -503,28 +503,28 @@
 
     <details open>
       <summary>
-        <span>Lista de produtos (CSV)</span>
-        <span class="hint">substitui a base</span>
+        <span>Product list (CSV)</span>
+        <span class="hint">replaces the current list</span>
       </summary>
       <div class="content">
         <div class="muted" style="font-size:12px; margin-bottom:10px;">
-          Upload CSV (Col A Produto | B Dimensões | C Peso | D Volume). Substitui a lista atual.
+          Upload CSV (Col A Product | B Dimensões | C Peso | D Volume). Substitui a lista atual.
         </div>
 
         <div class="row cols-3">
           <div>
-            <label>Upload CSV de produtos</label>
+            <label>Upload product CSV</label>
             <input id="prodUpload" type="file" accept=".csv,text/csv" />
           </div>
           <div>
-            <label>Ações</label>
+            <label>Actions</label>
             <div class="btns">
-              <button type="button" class="secondary" id="exportProducts">Exportar produtos CSV</button>
-              <button type="button" class="secondary" id="resetProducts">Repor produtos</button>
+              <button type="button" class="secondary" id="exportProducts">Export products CSV</button>
+              <button type="button" class="secondary" id="resetProducts">Reset products</button>
             </div>
           </div>
           <div>
-            <label>Estado</label>
+            <label>Status</label>
             <span class="pill" id="prodStatus">—</span>
           </div>
         </div>
@@ -533,18 +533,18 @@
 
     <details>
       <summary>
-        <span>Backup rápido (JSON)</span>
-        <span class="hint">exportar / importar tudo</span>
+        <span>Quick backup (JSON)</span>
+        <span class="hint">export / import everything</span>
       </summary>
       <div class="content">
         <div class="note" style="margin-bottom:10px;">
-          Exports simplificados: um backup total em JSON e 3 CSV fáceis de ler.
+          Simplified exports: one full JSON backup and 3 easy-to-read CSV files.
         </div>
         <div class="btns">
-          <button type="button" class="secondary" id="exportAll">Backup total (JSON)</button>
-          <button type="button" class="secondary" id="exportMonthlyOpsCsv">Exportar resumo mensal CSV</button>
-          <button type="button" class="secondary" id="exportConsumablesSummaryCsv">Exportar consumíveis por produto CSV</button>
-          <button type="button" class="secondary" id="exportConsumablesComponentsCsv">Exportar detalhe dos consumíveis CSV</button>
+          <button type="button" class="secondary" id="exportAll">Full backup (JSON)</button>
+          <button type="button" class="secondary" id="exportMonthlyOpsCsv">Export monthly summary CSV</button>
+          <button type="button" class="secondary" id="exportConsumablesSummaryCsv">Export consumables by product CSV</button>
+          <button type="button" class="secondary" id="exportConsumablesComponentsCsv">Export consumables detail CSV</button>
           <input id="importAll" type="file" accept=".json,application/json" />
         </div>
       </div>
@@ -553,64 +553,64 @@
 
   <!-- ARMAZÉM -->
   <section class="card" data-panel id="tab-armazem">
-    <h2>Armazém (Fulfillment) — Custos operacionais</h2>
+    <h2>Warehouse (Fulfillment) — Costs operacionais</h2>
     <div class="muted" style="margin-top:6px; line-height:1.35;">
-      Aqui inseres <b>custos mensais</b> e <b>volumes</b>. O sistema calcula automaticamente custos unitários (€/linha, €/encomenda, etc.)
-      e permite simular um cliente/cenário. <b>Não inclui callcenter</b>.
+      Here you enter <b>monthly costs</b> and <b>volumes</b>. The system automatically calculates unit costs (€/line, €/order, etc.)
+      and lets you simulate a client/scenario. <b>Call center not included</b>.
     </div>
 
     <details open>
       <summary>
-        <span>Operação (inputs mensais)</span>
-        <span class="hint">mão de obra + overhead + volumes + consumíveis S/M/L</span>
+        <span>Operation (monthly inputs)</span>
+        <span class="hint">labor + overhead + volumes + consumables S/M/L</span>
       </summary>
       <div class="content">
         <div class="row cols-4">
           <div>
-            <label style="display:none;">Mão de obra total (legacy — podes deixar vazio)</label>
-            <input id="wh_moMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 20000">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Equipa de armazém (pick/pack/returns/recover).</div>
+            <label style="display:none;">Total labor (legacy — you can leave blank)</label>
+            <input id="wh_moMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="e.g. 20000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Warehouse team (pick/pack/returns/recover).</div>
           </div>
           <div>
-            <label>Overhead armazém (€/mês)</label>
-            <input id="wh_ohMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 10000">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Renda, energia, WMS, seguros, manutenção, amortizações…</div>
-            <div class="muted" style="font-size:12px; margin-top:6px;">Renda, energia, WMS, seguros, manutenção, amortizações…</div>
+            <label>Warehouse overhead (€/month)</label>
+            <input id="wh_ohMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="e.g. 10000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Rent, energy, WMS, insurance, maintenance, depreciation…</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Rent, energy, WMS, insurance, maintenance, depreciation…</div>
           </div>
           <div>
-            <label>Office / Backoffice (€/mês)</label>
-            <input id="wh_officeMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="ex.: 3000">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Este custo é diluído igualmente por todas as secções operacionais.</div>
+            <label>Office / Back office (€/month)</label>
+            <input id="wh_officeMonthly" style="display:none" type="number" step="0.01" min="0" placeholder="e.g. 3000">
+            <div class="muted" style="font-size:12px; margin-top:6px;">This cost is spread evenly across all operating sections.</div>
           </div>
           <div class="note" style="display:none;">
-            <b>Consumíveis S/M/L</b>: insere o custo médio do material de embalagem por encomenda, por tamanho.
+            <b>Consumables S/M/L</b>: enter the average packaging material cost per order, by size.
           </div>
         </div>
 
         
         <div class="hr"></div>
 
-        <h2 style="margin-top:0;">Mão de obra por secção (€/mês)</h2>
+        <h2 style="margin-top:0;">Labor by section (€/month)</h2>
         <div class="muted" style="font-size:12px; margin-top:-6px;">
-          Insere o custo mensal (salários+encargos) de cada equipa/secção. O sistema divide cada um pelo respetivo volume.
-          <b>Não usamos percentagens</b>.
+          Enter the monthly cost (salaries+charges) of each team/section. The system divides each one by its respective volume.
+          <b>We do not use percentages</b>.
         </div>
 
         
         <div class="hr"></div>
 
-        <h2 style="margin-top:0;">Custos gerais (linhas) — o sistema soma automaticamente</h2>
+        <h2 style="margin-top:0;">General costs (lines) — the system adds them automatically</h2>
         <div class="muted" style="font-size:12px; margin-top:-6px;">
-          Adiciona linhas para <b>Renda</b>, <b>Energia</b>, <b>WMS</b>, <b>Limpezas</b>, etc. Escolhe se é <b>Overhead</b> ou <b>Office</b>.
-          O total de cada grupo é calculado e usado nas contas do armazém.
+          Add lines for <b>Rent</b>, <b>Energy</b>, <b>WMS</b>, <b>Cleaning</b>, etc. Choose whether it is <b>Overhead</b> or <b>Office</b>.
+          The total of each group is calculated and used in warehouse costing.
         </div>
 
         <div class="row cols-3" style="margin-top:10px;">
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div style="font-weight:900; margin-bottom:8px;">Totais</div>
-            <div class="muted" style="font-size:12px;">Overhead (€/mês)</div>
+            <div style="font-weight:900; margin-bottom:8px;">Totals</div>
+            <div class="muted" style="font-size:12px;">Overhead (€/month)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_overheadTotalKPI">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Office (€/mês)</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Office (€/month)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_officeTotalKPI">—</div>
           </div>
 
@@ -619,10 +619,10 @@
             <table class="tbl" style="min-width:980px; width:100%;">
               <thead>
                 <tr>
-                  <th style="text-align:left; min-width:260px;">Descrição</th>
-                  <th style="text-align:left; min-width:160px;">Grupo</th>
-                  <th style="text-align:right; min-width:260px;">Valor (€/mês)</th>
-                  <th style="text-align:right;">Ações</th>
+                  <th style="text-align:left; min-width:260px;">Description</th>
+                  <th style="text-align:left; min-width:160px;">Group</th>
+                  <th style="text-align:right; min-width:260px;">Amount (€/month)</th>
+                  <th style="text-align:right;">Actions</th>
                 </tr>
               </thead>
               <tbody id="wh_costLines"></tbody>
@@ -630,12 +630,12 @@
           </div>
 
             <div class="btns" style="margin-top:10px;">
-              <button type="button" id="wh_addCostLine">+ Adicionar linha</button>
-              <button type="button" class="secondary" id="wh_addDefaults">Adicionar defaults</button>
+              <button type="button" id="wh_addCostLine">+ Add line</button>
+              <button type="button" class="secondary" id="wh_addDefaults">Add defaults</button>
             </div>
 
             <div class="muted" style="font-size:12px; margin-top:8px;">
-              Nota: estes totais substituem os inputs antigos “Overhead armazém” e “Office/Backoffice”.
+              Note: these totals replace the old “Warehouse overhead” and “Office/Back office” inputs.
             </div>
           </div>
         </div>
@@ -643,31 +643,31 @@
         <div class="hr"></div>
 <div class="row cols-5" style="margin-top:10px;">
           <div>
-            <label>Pick+Pack (€/mês)</label>
-            <input id="wh_moPickPackMonthly" type="number" step="0.01" min="0" placeholder="ex.: 14000">
+            <label>Pick+Pack (€/month)</label>
+            <input id="wh_moPickPackMonthly" type="number" step="0.01" min="0" placeholder="e.g. 14000">
           </div>
           <div>
-            <label>Returns (€/mês)</label>
-            <input id="wh_moReturnsMonthly" type="number" step="0.01" min="0" placeholder="ex.: 3000">
+            <label>Returns (€/month)</label>
+            <input id="wh_moReturnsMonthly" type="number" step="0.01" min="0" placeholder="e.g. 3000">
           </div>
           <div>
-            <label>Recover (€/mês)</label>
+            <label>Recover (€/month)</label>
             <input id="wh_moRecoverMonthly" type="number" step="0.01" min="0" placeholder="ex.: 1000">
           </div>
         </div>
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Nº pessoas — Pick+Pack</label>
-            <input id="wh_hcPickPack" type="number" step="1" min="0" placeholder="ex.: 4">
+            <label>No. of people — Pick+Pack</label>
+            <input id="wh_hcPickPack" type="number" step="1" min="0" placeholder="e.g. 4">
           </div>
           <div>
-            <label>Nº pessoas — Returns</label>
-            <input id="wh_hcReturns" type="number" step="1" min="0" placeholder="ex.: 2">
+            <label>No. of people — Returns</label>
+            <input id="wh_hcReturns" type="number" step="1" min="0" placeholder="e.g. 2">
           </div>
           <div>
-            <label>Nº pessoas — Recover</label>
-            <input id="wh_hcRecover" type="number" step="1" min="0" placeholder="ex.: 1">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Overhead+Office serão repartidos proporcionalmente.</div>
+            <label>No. of people — Recover</label>
+            <input id="wh_hcRecover" type="number" step="1" min="0" placeholder="e.g. 1">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Overhead+Office will be allocated proportionally.</div>
           </div>
         </div>
 
@@ -675,85 +675,85 @@
         <div class="hr"></div>
 <div class="row cols-3" style="margin-top:10px; display:none;">
           <div>
-            <label>S (€/encomenda)</label>
-            <input id="wh_packS" type="number" step="0.01" min="0" placeholder="ex.: 0.25">
+            <label>S (€/order)</label>
+            <input id="wh_packS" type="number" step="0.01" min="0" placeholder="e.g. 0.25">
           </div>
           <div>
-            <label>M (€/encomenda)</label>
-            <input id="wh_packM" type="number" step="0.01" min="0" placeholder="ex.: 0.40">
+            <label>M (€/order)</label>
+            <input id="wh_packM" type="number" step="0.01" min="0" placeholder="e.g. 0.40">
           </div>
           <div>
-            <label>L (€/encomenda)</label>
-            <input id="wh_packL" type="number" step="0.01" min="0" placeholder="ex.: 0.65">
+            <label>L (€/order)</label>
+            <input id="wh_packL" type="number" step="0.01" min="0" placeholder="e.g. 0.65">
           </div>
         </div>
 
         <div class="hr"></div>
 
-        <h2 style="margin-top:0;">Volumes do mês</h2>
+        <h2 style="margin-top:0;">Month volumes</h2>
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Usar mês de “Vendas (mês)”</label>
+            <label>Usar month de “Sales (month)”</label>
             <input id="wh_linkMonth" type="month">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês para puxar automaticamente Vendidos e Returns.</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">Choose the month to automatically pull Sold and Returns.</div>
           </div>
           <div class="note">
-            <b>Ligação automática</b>:<br>
-            Vendidos → Pick+Pack (por unidade)<br>
-            Returns → custos Returns
+            <b>Automatic link</b>:<br>
+            Sold → Pick+Pack (per unit)<br>
+            Returns → Returns costs
           </div>
           <div>
             <label style="display:flex; align-items:center; gap:10px;">
               <input id="wh_autoFromSales" type="checkbox" checked style="width:auto;">
-              Auto-preencher volumes do Armazém a partir de Vendas (mês)
+              Auto-preencher volumes do Warehouse a partir de Sales (month)
             </label>
-            <div class="muted" style="font-size:12px; margin-top:6px;">Quando ativo, os campos abaixo são preenchidos pelos totais do mês.</div>
+            <div class="muted" style="font-size:12px; margin-top:6px;">When enabled, the fields below are filled with the month totals.</div>
           </div>
         </div>
 
         <div class="row cols-3">
           <div>
-            <label>Vendidos (unidades)/mês</label>
-            <input id="wh_soldMonthly" type="number" step="1" min="0" placeholder="ex.: 10000">
+            <label>Sold (units)/month</label>
+            <input id="wh_soldMonthly" type="number" step="1" min="0" placeholder="e.g. 10000">
           </div>
           <div>
-            <label>Linhas totais/mês</label>
-            <input id="wh_linesMonthly" type="number" step="1" min="0" placeholder="ex.: 18000">
+            <label>Total lines/month</label>
+            <input id="wh_linesMonthly" type="number" step="1" min="0" placeholder="e.g. 18000">
           </div>
           <div>
-            <label>Returns/mês</label>
-            <input id="wh_returnsMonthly" type="number" step="1" min="0" placeholder="ex.: 500">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento físico do retorno (receber/triagem/QC).</div>
+            <label>Returns/month</label>
+            <input id="wh_returnsMonthly" type="number" step="1" min="0" placeholder="e.g. 500">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Physical return processing (receiving/sorting/QC).</div>
           </div>
         </div>
 
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Recover/mês</label>
-            <input id="wh_recoverMonthly" type="number" step="1" min="0" placeholder="ex.: 150">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Recuperação/recondicionamento (repack, reetiquetar, voltar ao stock).</div>
+            <label>Recover/month</label>
+            <input id="wh_recoverMonthly" type="number" step="1" min="0" placeholder="e.g. 150">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Recovery/reconditioning (repack, relabel, return to stock).</div>
           </div>
           <div class="note">
-            Se não usares um destes processos, deixa 0.
+            If you do not use one of these processes, leave 0.
           </div>
         </div>
         <div class="row cols-3" style="margin-top:10px;">
           <div style="grid-column: span 2;">
-            <label>Recover — bulk (produto + quantidade + valor opcional)</label>
-            <textarea id="wh_recoverBulk" rows="6" spellcheck="false" placeholder="Produto A	2	10.50&#10;Produto B	1	5.00"></textarea>
+            <label>Recover — bulk (product + quantity + optional value)</label>
+            <textarea id="wh_recoverBulk" rows="6" spellcheck="false" placeholder="Product A	2	10.50&#10;Product B	1	5.00"></textarea>
             <div class="muted" style="font-size:12px; margin-top:6px;">
-              Formatos: <span class="mono">Nome[TAB]Qtd[TAB]Valor</span> ou <span class="mono">Nome[TAB]Qtd</span> ou só <span class="mono">Nome</span> (assume 1).
-              O nome tem de existir nos Produtos.
+              Formatos: <span class="mono">Name[TAB]Qty[TAB]Value</span> ou <span class="mono">Name[TAB]Qty</span> ou só <span class="mono">Name</span> (assume 1).
+              The name must exist in Products.
             </div>
           </div>
           <div>
-            <label>Ações Recover</label>
-            <button type="button" id="wh_applyRecoverBulk">Aplicar Recover ao mês</button>
-            <button type="button" class="secondary" id="wh_clearRecoverBulk" style="margin-top:8px;">Limpar</button>
+            <label>Actions Recover</label>
+            <button type="button" id="wh_applyRecoverBulk">Apply Recover to month</button>
+            <button type="button" class="secondary" id="wh_clearRecoverBulk" style="margin-top:8px;">Clear</button>
             <div class="muted" style="font-size:12px; margin-top:10px;">
-              Totais do mês:
-              <div><b id="wh_recoverUnitsKPI">—</b> unidades</div>
-              <div><b id="wh_recoverValueKPI">—</b> valor</div>
+              Totals do month:
+              <div><b id="wh_recoverUnitsKPI">—</b> units</div>
+              <div><b id="wh_recoverValueKPI">—</b> value</div>
             </div>
           </div>
         </div>
@@ -761,25 +761,25 @@
 
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Stock médio (paletes)</label>
-            <input id="wh_avgStockPallets" type="number" step="1" min="0" placeholder="ex.: 150">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Dica: (início + fim)/2</div>
+            <label>Average stock (pallets)</label>
+            <input id="wh_avgStockPallets" type="number" step="1" min="0" placeholder="e.g. 150">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Tip: (start + end)/2</div>
           </div>
           <div class="note">
-            <b>Stock</b> serve para calcular custo de armazenagem (€/palete/mês).
+            <b>Stock</b> is used to calculate storage cost (€/pallet/month).
           </div>
         </div>
 
         <div class="hr"></div>
 
-        <h2 style="margin-top:0; display:none;">Rateio simples (desativado)</h2>
+        <h2 style="margin-top:0; display:none;">Simple allocation (disabled)</h2>
         <div class="muted" style="margin-top:-6px; font-size:12px;">
-          Se não tens produtividades (linhas/hora), usa percentagens. Se não derem 100%, o sistema ajusta automaticamente.
+          If you do not have productivity figures (lines/hour), use percentages. If they do not add up to 100%, the system adjusts automatically.
         </div>
 
         <div class="row cols-3" style="margin-top:10px; display:none;">
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div style="font-weight:900; margin-bottom:8px;">% Mão de Obra</div>
+            <div style="font-weight:900; margin-bottom:8px;">% Labor</div>
             <label>Pick+Pack (%)</label><input id="wh_pMoPickPack" style="display:none" type="number" step="0.1" min="0" value="70">
             <label style="margin-top:8px;">Returns (%)</label><input id="wh_pMoRet" style="display:none" type="number" step="0.1" min="0" value="15">
             <label style="margin-top:8px;">Recover (%)</label><input id="wh_pMoRecover" style="display:none" type="number" step="0.1" min="0" value="5">
@@ -787,20 +787,20 @@
 
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
             <div style="font-weight:900; margin-bottom:8px;">% Overhead</div>
-            <label>Armazenagem (%)</label><input id="wh_pOhStorage" style="display:none" type="number" step="0.1" min="0" value="60">
-            <label style="margin-top:8px;">Operação (%)</label><input id="wh_pOhOps" style="display:none" type="number" step="0.1" min="0" value="40">
+            <label>Storage (%)</label><input id="wh_pOhStorage" style="display:none" type="number" step="0.1" min="0" value="60">
+            <label style="margin-top:8px;">Operation (%)</label><input id="wh_pOhOps" style="display:none" type="number" step="0.1" min="0" value="40">
           </div>
 
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div style="font-weight:900; margin-bottom:8px;">Resultados unitários</div>
+            <div style="font-weight:900; margin-bottom:8px;">Results unitários</div>
             <div class="muted" style="font-size:12px; margin-top:6px;">
-              Consumíveis (auto Produto/Vendas): <span class="mono" id="wh_consFromProductsKPI">—</span> €/unid · Total mês: <span class="mono" id="wh_consFromProductsTotalKPI">—</span>
+              Consumables (auto Product/Sales): <span class="mono" id="wh_consFromProductsKPI">—</span> €/unit · Month total: <span class="mono" id="wh_consFromProductsTotalKPI">—</span>
             </div>
 
-            <div class="muted" style="font-size:12px;">Pick+Pack (€/produto vendido)</div>
+            <div class="muted" style="font-size:12px;">Pick+Pack (€/product vendido)</div>
             <div class="muted" style="font-size:12px; margin-top:6px;">
-              Armazém (Pick+Pack + Returns + Recover + Gerais) <span class="mono" id="wh_whPerUnit">—</span> €/unid
-              · Total (Produto+Armazém) <span class="mono" id="wh_totalPerUnit">—</span> €/unid
+              Warehouse (Pick+Pack + Returns + Recover + Gerais) <span class="mono" id="wh_whPerUnit">—</span> €/unid
+              · Total (Product+Warehouse) <span class="mono" id="wh_totalPerUnit">—</span> €/unid
             </div>
 
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uPickPack">—</div>
@@ -808,7 +808,7 @@
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRet">—</div>
             <div class="muted" style="font-size:12px; margin-top:10px;">Recover (€/recover)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uRecover">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Armazenagem (€/palete/mês)</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Storage (€/pallet/month)</div>
             <div class="mono" style="font-size:18px; font-weight:900;" id="wh_uStorage">—</div>
           </div>
         </div>
@@ -817,49 +817,49 @@
 
     <details open>
       <summary>
-        <span>Simulador (cliente / cenário)</span>
-        <span class="hint">custo mensal + custo por encomenda</span>
+        <span>Simulator (client / scenario)</span>
+        <span class="hint">monthly cost + cost per order</span>
       </summary>
       <div class="content">
         <div class="row cols-3">
           <div>
-            <label>Vendidos (unidades)/mês (cliente)</label>
-            <input id="wh_simSold" type="number" step="1" min="0" placeholder="ex.: 2000">
+            <label>Sold (units)/month (client)</label>
+            <input id="wh_simSold" type="number" step="1" min="0" placeholder="e.g. 2000">
           </div>
           <div>
-            <label>Linhas por encomenda (média)</label>
-            <input id="wh_simLinesPerOrder" type="number" step="0.01" min="0" placeholder="ex.: 2">
+            <label>Lines per order (average)</label>
+            <input id="wh_simLinesPerOrder" type="number" step="0.01" min="0" placeholder="e.g. 2">
           </div>
           <div>
-            <label>Returns/mês (cliente)</label>
-            <input id="wh_simReturns" type="number" step="1" min="0" placeholder="ex.: 120">
-            <div class="muted" style="font-size:12px; margin-top:6px;">Processamento físico do retorno.</div>
+            <label>Returns/month (client)</label>
+            <input id="wh_simReturns" type="number" step="1" min="0" placeholder="e.g. 120">
+            <div class="muted" style="font-size:12px; margin-top:6px;">Physical return processing.</div>
           </div>
         </div>
 
         
         <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Recover/mês (cliente)</label>
-            <input id="wh_simRecover" type="number" step="1" min="0" placeholder="ex.: 50">
+            <label>Recover/month (client)</label>
+            <input id="wh_simRecover" type="number" step="1" min="0" placeholder="e.g. 50">
           </div>
           <div class="note">
-            Se não aplicável ao cliente, deixa 0.
+            If not applicable to the client, leave 0.
           </div>
         </div>
 <div class="row cols-3" style="margin-top:10px;">
           <div>
-            <label>Stock médio (paletes) (cliente)</label>
-            <input id="wh_simAvgStock" type="number" step="1" min="0" placeholder="ex.: 30">
+            <label>Average stock (pallets) (client)</label>
+            <input id="wh_simAvgStock" type="number" step="1" min="0" placeholder="e.g. 30">
           </div>
           <div class="note">
-            O simulador usa o teu custo unitário “médio do mês” e aplica ao cliente.
+            The simulator uses your “monthly average” unit cost and applies it to the client.
           </div>
         </div>
 
         <div class="hr"></div>
 
-        <h2 style="margin-top:0;">Mix de embalagens (desativado)</h2>
+        <h2 style="margin-top:0;">Packaging mix (disabled)</h2>
         <div class="row cols-3" style="display:none;">
           <div>
             <label>S (%)</label>
@@ -879,35 +879,35 @@
 
         <div class="row cols-3">
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div class="muted" style="font-size:12px;">Custo total mensal (cliente)</div>
+            <div class="muted" style="font-size:12px;">Total monthly cost (client)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simTotalMonthly">—</div>
-            <div class="muted" style="font-size:12px; margin-top:10px;">Custo por unidade (Total)</div>
+            <div class="muted" style="font-size:12px; margin-top:10px;">Cost per unit (Total)</div>
             <div class="mono" style="font-size:20px; font-weight:900;" id="wh_simCostPerOrder">—</div>
           </div>
 
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div style="font-weight:900; margin-bottom:8px;">Custo por secção</div>
+            <div style="font-weight:900; margin-bottom:8px;">Cost by section</div>
             <div class="row cols-3">
-              <div><div class="muted" style="font-size:12px;">Pick+Pack (€/produto vendido)</div><div class="mono" id="wh_simPickPerSold">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Pick+Pack (€/product vendido)</div><div class="mono" id="wh_simPickPerSold">—</div></div>
               <div><div class="muted" style="font-size:12px;">Returns (€/return)</div><div class="mono" id="wh_simRetPerReturn">—</div></div>
               <div><div class="muted" style="font-size:12px;">Recover (€/recover)</div><div class="mono" id="wh_simRecoverPerRecover">—</div></div>
             </div>
           </div>
 
           <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-            <div style="font-weight:900; margin-bottom:8px;">Breakdown mensal</div>
+            <div style="font-weight:900; margin-bottom:8px;">Monthly breakdown</div>
             <div class="row cols-3">
               <div><div class="muted" style="font-size:12px;">Pick+Pack</div><div class="mono" id="wh_simPickMonthly">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Consumíveis</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Consumables</div><div class="mono" id="wh_simPackMatMonthly">—</div></div>
               <div><div class="muted" style="font-size:12px;">Returns</div><div class="mono" id="wh_simReturnsMonthlyCost">—</div></div>
               <div><div class="muted" style="font-size:12px;">Recover</div><div class="mono" id="wh_simRecoverMonthlyCost">—</div></div>
-              <div><div class="muted" style="font-size:12px;">Armazenagem</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
+              <div><div class="muted" style="font-size:12px;">Storage</div><div class="mono" id="wh_simStorageMonthly">—</div></div>
             </div>
           </div>
         </div>
 
         <div class="muted" style="font-size:12px; margin-top:10px;">
-          Fórmula por unidade total: Pick+Pack + consumíveis + Returns + Recover + Armazenagem
+          Total unit formula: Pick+Pack + consumables + Returns + Recover + Storage
         </div>
       </div>
     </details>
@@ -916,85 +916,85 @@
 
   <!-- VENDAS (MÊS) -->
   <section class="card" data-panel id="tab-vendas">
-    <h2>Vendas por mês (unidades) — Média ponderada de consumíveis</h2>
+    <h2>Sales by month (units) — Weighted average consumables</h2>
     <div class="muted" style="margin-top:6px; line-height:1.35;">
-      Introduz as <b>unidades vendidas por produto</b> num mês. O sistema calcula a <b>média ponderada</b> do custo de consumíveis por unidade
-      e o <b>total de consumíveis do mês</b>. Tudo fica guardado (local + Firebase).
+      Enter the <b>units sold per product</b> in a month. The system calculates the <b>weighted average</b> consumables cost per unit
+      and the <b>total consumables for the month</b>. Everything is saved (local + Firebase).
     </div>
 
     <div class="row cols-3" style="margin-top:10px;">
       <div>
-        <label>Mês (YYYY-MM)</label>
+        <label>Month (YYYY-MM)</label>
         <input id="sales_month" type="month">
-        <div class="muted" style="font-size:12px; margin-top:6px;">Escolhe o mês a preencher.</div>
+        <div class="muted" style="font-size:12px; margin-top:6px;">Choose the month to fill in.</div>
       </div>
       <div class="note">
-        <b>Média ponderada</b> = Σ(unidades × consumíveis_produto) / Σ(unidades).<br>
-        O campo "consumíveis" vem do teu cálculo por produto (variáveis/embalagem).
+        <b>Weighted average</b> = Σ(units × product_consumables) / Σ(units).<br>
+        The "consumables" field comes from your product calculation (variables/packaging).
       </div>
       <div class="note">
-        Dica: se não preencheres um produto, assume 0 unidades nesse mês.
+        Tip: if you do not fill in a product, it assumes 0 units for that month.
       </div>
     </div>
 
     
         <div class="muted" style="font-size:12px; margin-top:6px;">
-          Podes colar em bulk no formato: <span class="mono">Nome do Produto[TAB]Unidades</span> (ou <span class="mono">Nome;Unidades</span> ou <span class="mono">Nome,Unidades</span>), 1 por linha.
+          Podes colar em bulk no formato: <span class="mono">Name do Product[TAB]Unidades</span> (ou <span class="mono">Name;Unidades</span> ou <span class="mono">Name,Unidades</span>), 1 por linha.
         </div>
       </div>
       <div class="note">
-        <b>Colagem em bulk</b>: nomes têm de ser <b>iguais</b> aos da lista de produtos (mesmo texto).
+        <b>Bulk paste</b>: names must be <b>exactly the same</b> as in the product list (same text).
       </div>
       <div class="note">
         <b>Exemplo</b><br>
-        Produto A	120<br>
-        Produto B	45
+        Product A	120<br>
+        Product B	45
       </div>
     </div>
 
     <div class="row cols-3" style="margin-top:10px;">
       <div style="grid-column: span 2;">
-        <label>Bulk (colar aqui)</label>
-        <textarea id="sales_bulk_text" style="display:none" rows="6" spellcheck="false" placeholder="Produto A	120&#10;Produto B	45"></textarea>
+        <label>Bulk (paste here)</label>
+        <textarea id="sales_bulk_text" style="display:none" rows="6" spellcheck="false" placeholder="Product A	120&#10;Product B	45"></textarea>
       </div>
       <div>
-        <label>Ações</label>
-        <button type="button" id="sales_bulk_apply" style="display:none">Aplicar colagem ao mês</button>
-        <button type="button" class="secondary" id="sales_bulk_clear" style="display:none" style="margin-top:8px;">Limpar</button>
+        <label>Actions</label>
+        <button type="button" id="sales_bulk_apply" style="display:none">Apply paste to month</button>
+        <button type="button" class="secondary" id="sales_bulk_clear" style="display:none" style="margin-top:8px;">Clear</button>
         <div class="muted" style="font-size:12px; margin-top:10px;">
-          Resultado: atualiza as unidades na tabela e guarda (local + Firebase).
+          Result: atualiza as units na tabela e guarda (local + Firebase).
         </div>
         <div class="muted" style="font-size:12px; margin-top:6px;">
-          Linhas não reconhecidas ficam listadas num aviso.
+          Unrecognized lines are listed in a warning.
         </div>
       
     <div class="hr"></div>
 
-    <h2 style="margin-top:0;">Colagem em bulk (por secção)</h2>
+    <h2 style="margin-top:0;">Bulk paste (by section)</h2>
     <div class="muted" style="font-size:12px; margin-top:-6px;">
-      Cola 1 por linha: <span class="mono">Nome do Produto[TAB]Valor</span> (ou ; , |). O nome tem de ser igual ao da lista de produtos.
+      Paste 1 per line: <span class="mono">Product Name[TAB]Value</span> (or ; , |). The name must match the product list.
     </div>
 
     <div class="row cols-3" style="margin-top:10px;">
       <div>
-        <label>Bulk — Vendidos (unidades)</label>
-        <textarea id="sales_bulk_sold" rows="6" spellcheck="false" placeholder="Produto A	120&#10;Produto B	45"></textarea>
-        <button type="button" id="sales_bulk_apply_sold" style="margin-top:8px;">Aplicar Vendidos</button>
+        <label>Bulk — Vendidos (units)</label>
+        <textarea id="sales_bulk_sold" rows="6" spellcheck="false" placeholder="Product A	120&#10;Product B	45"></textarea>
+        <button type="button" id="sales_bulk_apply_sold" style="margin-top:8px;">Apply Sold</button>
       </div>
       <div>
         <label>Bulk — Returns</label>
-        <textarea id="sales_bulk_returns" rows="6" spellcheck="false" placeholder="Produto A	8&#10;Produto B	2"></textarea>
-        <button type="button" class="secondary" id="sales_bulk_apply_returns" style="margin-top:8px;">Aplicar Returns</button>
+        <textarea id="sales_bulk_returns" rows="6" spellcheck="false" placeholder="Product A	8&#10;Product B	2"></textarea>
+        <button type="button" class="secondary" id="sales_bulk_apply_returns" style="margin-top:8px;">Apply Returns</button>
       </div>
       <div>
         <label>Bulk — Refunds</label>
-        <textarea id="sales_bulk_refunds" style="display:none" rows="6" spellcheck="false" placeholder="Produto A	5&#10;Produto B	1"></textarea>
-        <button type="button" class="secondary" id="sales_bulk_apply_refunds" style="display:none" style="margin-top:8px;">Aplicar Refunds</button>
+        <textarea id="sales_bulk_refunds" style="display:none" rows="6" spellcheck="false" placeholder="Product A	5&#10;Product B	1"></textarea>
+        <button type="button" class="secondary" id="sales_bulk_apply_refunds" style="display:none" style="margin-top:8px;">Apply Refunds</button>
       </div>
     </div>
 
     <div class="btns" style="margin-top:10px;">
-      <button type="button" class="secondary" id="sales_bulk_clear_all">Limpar todos</button>
+      <button type="button" class="secondary" id="sales_bulk_clear_all">Clear todos</button>
     </div>
 </div>
     </div>
@@ -1002,38 +1002,38 @@
 
     <div class="row cols-3">
       <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-        <div class="muted" style="font-size:12px;">Total unidades (mês)</div>
+        <div class="muted" style="font-size:12px;">Total units (month)</div>
         <div class="mono" style="font-size:20px; font-weight:900;" id="sales_total_units">—</div>
       </div>
       <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-        <div class="muted" style="font-size:12px;">Total consumíveis (mês)</div>
+        <div class="muted" style="font-size:12px;">Total consumables (month)</div>
         <div class="mono" style="font-size:20px; font-weight:900;" id="sales_total_consumables">—</div>
       </div>
       <div class="card" style="padding:12px; box-shadow:none; border:1px solid var(--border);">
-        <div class="muted" style="font-size:12px;">Média consumíveis (€/unid)</div>
+        <div class="muted" style="font-size:12px;">Average consumables (€/unit)</div>
         <div class="mono" style="font-size:20px; font-weight:900;" id="sales_avg_consumables">—</div>
       </div>
     </div>
 
     <div class="hr"></div>
 
-    <h2 style="margin-top:0;">Unidades vendidas por produto</h2>
-    <div class="muted" style="font-size:12px; margin-top:-6px;" id="sales_hint_consumables">A coluna “Consumíveis €/unid” é calculada a partir do separador “Tudo” (receita/materiais + variáveis). Se estiver a 0, confirma que tens receita/variáveis definidas para esse produto.</div>
+    <h2 style="margin-top:0;">Units sold by product</h2>
+    <div class="muted" style="font-size:12px; margin-top:-6px;" id="sales_hint_consumables">The “Consumables €/unit” column is calculated from the “All” tab (recipe/materials + variables). If it is 0, confirm you have recipe/variables defined for that product.</div>
 
     <div style="overflow:auto; margin-top:10px;">
       <table class="tbl" id="sales_table" style="min-width:800px;">
         <thead>
           <tr>
-            <th style="text-align:left;">Produto</th>
-            <th style="text-align:right;">Consumíveis €/unid</th>
-            <th style="text-align:right;">Unidades vendidas (mês)</th>
-            <th style="text-align:right;">Returns (mês)</th>
-            <th style="text-align:right; display:none;">Refunds (mês)</th>
-            <th style="text-align:right;">Consumíveis do mês (€)</th>
+            <th style="text-align:left;">Product</th>
+            <th style="text-align:right;">Consumables €/unid</th>
+            <th style="text-align:right;">Units sold (month)</th>
+            <th style="text-align:right;">Returns (month)</th>
+            <th style="text-align:right; display:none;">Refunds (month)</th>
+            <th style="text-align:right;">Consumables do month (€)</th>
           </tr>
         </thead>
         <tbody id="sales_tbody">
-          <tr><td class="muted" colspan="4">Sem produtos ainda.</td></tr>
+          <tr><td class="muted" colspan="4">No products yet.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1059,7 +1059,7 @@
     appId: "1:499018503050:web:eacb779de7ce97baa26e73"
   };
 
-  const CLOUD_APP_ID = "custo-por-produto-4-separadores-v1";
+  const CLOUD_APP_ID = "custo-por-product-4-separadores-v1";
   const CLOUD_SHARED_COLLECTION = "shared_apps";
   let __fb = { app: null, auth: null, db: null, uid: null, ready: false, saveTimer: null, saving: false, unsubShared: null, applyingRemote: false, lastRemoteUpdatedAt: 0 };
 
@@ -1085,7 +1085,7 @@
     const box = ov.querySelector("#loginBox");
     const em = ov.querySelector("#loginErr");
     const msg = ov.querySelector("#overlayMsg");
-    if (msg) msg.textContent = "Autenticação necessária";
+    if (msg) msg.textContent = "Authentication required";
     if (box) box.hidden = false;
     if (em) {
       if (errMsg) { em.hidden = false; em.textContent = errMsg; }
@@ -1246,7 +1246,7 @@
   }
 
   async function firebaseInit(storageKeys) {
-    showOverlay("A ligar à Firebase…");
+    showOverlay("Connecting to Firebase…");
     try {
       __fb.app = initializeApp(firebaseConfig);
       __fb.auth = getAuth(__fb.app);
@@ -1260,7 +1260,7 @@
       });
 
       if (!user) {
-        // Sem sessão — pedir login
+        // No session — ask for login
         hideOverlay();
         showLogin();
         await new Promise((resolve) => {
@@ -1270,15 +1270,15 @@
           const handler = async () => {
             const email = String(emailEl?.value || "").trim();
             const pass = String(passEl?.value || "");
-            if (!emailIsAdmin(email)) { showLogin("Email tem de terminar em @admin.com"); return; }
-            if (!pass) { showLogin("Indica a password."); return; }
+            if (!emailIsAdmin(email)) { showLogin("Email must end with @admin.com"); return; }
+            if (!pass) { showLogin("Enter the password."); return; }
             try {
               if (btn) btn.disabled = true;
               await signInWithEmailAndPassword(__fb.auth, email, pass);
               resolve(true);
             } catch (err) {
               console.warn("Firebase login error:", err);
-              showLogin("Login falhou. Confirma email/password e se o método Email/Password está ativo no Firebase.");
+              showLogin("Login failed. Check email/password and whether the Email/Password method is enabled in Firebase.");
             } finally {
               if (btn) btn.disabled = false;
             }
@@ -1290,11 +1290,11 @@
 
       // Já autenticado
       const authed = __fb.auth.currentUser;
-      if (!authed) throw new Error("Sem utilizador autenticado.");
+      if (!authed) throw new Error("No authenticated user.");
       const email = authed.email || "";
       if (!emailIsAdmin(email)) {
         await signOut(__fb.auth);
-        throw new Error("Domínio não autorizado (precisa @admin.com).");
+        throw new Error("Unauthorized domain (requires @admin.com).");
       }
       __fb.uid = authed.uid;
 
@@ -1310,10 +1310,10 @@
       return true;
     } catch (e) {
       console.warn("Firebase init error:", e);
-      // Continua a funcionar localmente (sem nuvem)
+      // Continues to work locally (without cloud)
       __fb.ready = false;
       updateAuthPill();
-      hideOverlay("Sem ligação à Firebase — a guardar só no dispositivo.");
+      hideOverlay("No Firebase connection — saving only on this device.");
       return false;
     }
   }
@@ -1351,7 +1351,7 @@
 
   const DEFAULT_PRODUCTS = [{"product":"SKU2072 CHRISTMAS TREE 220CM","dims_cm":"33x30x120","weight":"7,64","volume":"118800"},{"product":"SKU2118 MULTIF JUICER","dims_cm":"13,2x11,2x24","weight":"0,77","volume":"3548,16"},{"product":"SKU2226 TOURIST GRILL","dims_cm":"36x29x7,5","weight":"1,37","volume":"7830"},{"product":"SKU229 SEWING MACHINE","dims_cm":"21x13x21","weight":"1","volume":"5733"},{"product":"SKU4011 FIREPLACE","dims_cm":"25x15x38","weight":"2","volume":"14250"},{"product":"SKU414 DRONE","dims_cm":"7x19x18,5","weight":"0,45","volume":"2460,5"},{"product":"SKU428 MINI AIR CONDITIONER","dims_cm":"15,7x17,50x16","weight":"0,8","volume":"4396"},{"product":"SKU541 HEDGE TRIMMERS","dims_cm":"12,08x32,5x9,03","weight":"1","volume":"3545,178"},{"product":"SKU547 THERMOSTATIC WATER HEATER","dims_cm":"10,5x22x26,5","weight":"1","volume":"6121,5"},{"product":"SKU6062 COLUMN AIR CONDITIONER","dims_cm":"18x18x60","weight":"1,95","volume":"19440"},{"product":"SKUCR7021 STEAMER","dims_cm":"29x27x17","weight":"1,98","volume":"13311"},{"product":"SKU058 GARDEN SHEARS","dims_cm":"28x5x15","weight":"0,37","volume":"2100"},{"product":"SKU2132 SHOWER HEAD","dims_cm":"16,5x10,5x8","weight":"0,27","volume":"1386"},{"product":"SKU368 MINI SAW","dims_cm":"12x36x20","weight":"1,75","volume":"8640"},{"product":"SKU511 CAMPING COOKWARE","dims_cm":"18x18x12","weight":"0,71","volume":"3888"},{"product":"SKU517 ANTENNA","dims_cm":"33x33,5x1","weight":"0,18","volume":"1105,5"},{"product":"SKU006 SILICONE KITCHEN GLOVES","dims_cm":"4x7x12","weight":"0,58","volume":"336"},{"product":"SKU012 (X5) SOLAR LAMP SET","dims_cm":"14x10x6","weight":"0,14","volume":"840"},{"product":"SKU017 BATTERY POWERED TRIMMER","dims_cm":"10x3x19","weight":"0,1","volume":"570"},{"product":"SKU024 EMBROIDERY KIT","dims_cm":"32x3x32","weight":"0,15","volume":"3072"},{"product":"SKU028 (X2) RODENT REPELLENT","dims_cm":"5,5x9x6,5","weight":"0,05","volume":"321,75"},{"product":"SKU030 AIR FRESHNER","dims_cm":"","weight":"","volume":"0"},{"product":"SKU037 ELECTRONIC KITCHEN SCALE","dims_cm":"3,5x17x23,5","weight":"0,37","volume":"1398,25"},{"product":"SKU048 WARMING OINTMENT","dims_cm":"4x1,5x6","weight":"0,01","volume":"36"},{"product":"SKU059 FOOT MASSAGE SLIPPERS","dims_cm":"7,5x29x13","weight":"0,49","volume":"2827,5"},{"product":"SKU060 MAGNETIC CLEANER","dims_cm":"13x6,5x13","weight":"0,54","volume":"1098,5"},{"product":"SKU069 MINI WIRELESS CAMERA","dims_cm":"6x6,5x10","weight":"0,09","volume":"390"},{"product":"SKU085B MOSQUITO REPELLENT WATCH","dims_cm":"6x4,5x10","weight":"0,05","volume":"270"},{"product":"SKU094 SET SILICON","dims_cm":"12x6,5x41","weight":"0,94","volume":"3198"},{"product":"SKU113 AIR HUMIDIFIER DIFFUSER","dims_cm":"10x10x10","weight":"0,19","volume":"1000"},{"product":"SKU114 NECK MASSAGER","dims_cm":"17x6x19","weight":"0,23","volume":"1938"},{"product":"SKU117 BLUETOOTH GPS KEY DOG, CAT FINDER","dims_cm":"9x1,5x9","weight":"0,25","volume":"121,5"},{"product":"SKU130 MASSAGE GUN","dims_cm":"20x6,5x27","weight":"0,81","volume":"3510"},{"product":"SKU152 DRIVING RECORDER","dims_cm":"14x11x7","weight":"0,16","volume":"1078"},{"product":"SKU172 WIRELESS KEYBOARD","dims_cm":"10,5x2,5x18","weight":"0,11","volume":"472,5"},{"product":"SKU181 TEFLON MAT FOR GRILL OVEN BAKING","dims_cm":"4x4x35","weight":"0,18","volume":"560"},{"product":"SKU191 CAR MIRROR RECORDER","dims_cm":"6x34x12","weight":"0,51","volume":"2448"},{"product":"SKU1999 CASE","dims_cm":"16,5x5x16","weight":"0,04","volume":"1320"},{"product":"SKU2008 MEMORY CARD","dims_cm":"0,5x7,5x12,5","weight":"0,01","volume":"46,875"},{"product":"SKU201 GARDEN GLOVES","dims_cm":"16x5x15","weight":"0,07","volume":"1200"},{"product":"SKU2021 TWO CHAINS AND A GUIDE FOR A MINI SAW","dims_cm":"11x1x35","weight":"0,24","volume":"385"},{"product":"SKU2030 DRONE BATTERY","dims_cm":"2,5x1x7","weight":"0,016","volume":"17,5"},{"product":"SKU2035 JUICEMAKER","dims_cm":"34x27x19,5","weight":"2,472","volume":"17901"},{"product":"SKU2042 CAMERA PEN","dims_cm":"17x8,5x3","weight":"0,1","volume":"433,5"},{"product":"SKU2045 PHEROM ONE PLUS","dims_cm":"4x5x11","weight":"0,07","volume":"220"},{"product":"SKU2054 ELECTRIC LUNCHBOX","dims_cm":"19x12x25","weight":"0,78","volume":"5700"},{"product":"SKU2055 LEAF BLOWER","dims_cm":"30x17x15","weight":"1,45","volume":"7650"},{"product":"SKU2059 FEET WARMER","dims_cm":"33x11x37","weight":"1,25","volume":"13431"},{"product":"SKU2065 MEIAS TÉRMICAS COM TURMALINA","dims_cm":"11x1x18","weight":"0,04","volume":"198"},{"product":"SKU2067 REFIL FILTER FOR VACUUM CLEANER","dims_cm":"5x5x5","weight":"0,01","volume":"125"},{"product":"SKU2068 PORTABLE ELECTRIC HEATER","dims_cm":"11,5x18,5x11,5","weight":"0,45","volume":"2446,625"},{"product":"SKU2069 AIR CURTAIN","dims_cm":"55,5x11,5x21","weight":"1,75","volume":"13403,25"},{"product":"SKU2077 ELECTRIC FIREPLACE","dims_cm":"45x39x26,5","weight":"3,68","volume":"46507,5"},{"product":"SKU2078 CHRISTMAS CURTAIN","dims_cm":"8x7x13","weight":"0,14","volume":"728"},{"product":"SKU2079 HEATED VEST","dims_cm":"36x2,5x58","weight":"0,085","volume":"5220"},{"product":"SKU2081 HEATED GLOVES","dims_cm":"26,5x16x5","weight":"0,215","volume":"2120"},{"product":"SKU2082 ELECTRIC HEATER BLANKET","dims_cm":"28x9,5x30,5","weight":"1,1","volume":"8113"},{"product":"SKU2084 ELECTRIC WATER HEATER","dims_cm":"9x21x26,5","weight":"1,47","volume":"5008,5"},{"product":"SKU2090 MINI THERMAL PRINTER","dims_cm":"12x9x5","weight":"0,21","volume":"540"},{"product":"SKU2106 CLOTHES CHAVER","dims_cm":"10x4,5x7,5","weight":"0,09","volume":"337,5"},{"product":"SKU2111 GPS LOCATOR","dims_cm":"7x4x10","weight":"0,058","volume":"280"},{"product":"SKU2112 PAPER FOR A MINI PRINTER SET5","dims_cm":"6x3x13","weight":"0,09","volume":"234"},{"product":"SKU2113 HAND CRAFTING KIT","dims_cm":"22x3x15","weight":"0,22","volume":"990"},{"product":"SKU2116 AUTOMATIC HAIR CURLER","dims_cm":"7x8x22","weight":"0,41","volume":"1232"},{"product":"SKU2117 BATTERY FOR A TRIMMER","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2119 SILVER SLICER","dims_cm":"30x41x30","weight":"4,43","volume":"36900"},{"product":"SKU2121 MINI OVEN","dims_cm":"34x32x39","weight":"5,16","volume":"42432"},{"product":"SKU2122 TOPPER","dims_cm":"46x30x20","weight":"1,66","volume":"27600"},{"product":"SKU2124 BATTERY FOR A SCREWDRIVER","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2130 SMARTWATCH","dims_cm":"21x11,5x2","weight":"0,17","volume":"483"},{"product":"SKU2131 WAIST TRAINER","dims_cm":"21x4x30","weight":"0,23","volume":"2520"},{"product":"SKU2133 BATTERY FOR SCISSORS","dims_cm":"","weight":"0,3","volume":"0"},{"product":"SKU2149 SLICER SHREDDER","dims_cm":"28x10x11,5","weight":"0,65","volume":"3220"},{"product":"SKU2153 SUPHUM FOCUS MEMORY","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2154 SUPHUM HAIR GROWTH","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2155 SUPHUM WEIGHT LOSS","dims_cm":"7x7x11","weight":"0,05","volume":"539"},{"product":"SKU2159 HAMMOCK","dims_cm":"30x14x15","weight":"1,08","volume":"6300"},{"product":"SKU2160 ELECTRIC GRILL BBQ","dims_cm":"36x9x47","weight":"2,3","volume":"15228"},{"product":"SKU2165 CLOTHES HANGER SET","dims_cm":"40x16,5x6,5","weight":"0,53","volume":"4290"},{"product":"SKU2169 SPORT BLENDER","dims_cm":"24x22x17","weight":"1,88","volume":"8976"},{"product":"SKU2170 GRASS TRIMMER BLADES","dims_cm":"19x1x17","weight":"0,19","volume":"323"},{"product":"SKU2171 LAMP WITH CHARGER","dims_cm":"14x7x35","weight":"0,7","volume":"3430"},{"product":"SKU2178 FOLDING FAN","dims_cm":"9x18x17","weight":"0,71","volume":"2754"},{"product":"SKU2183 THERMAL BAG","dims_cm":"","weight":"0,44","volume":"0"},{"product":"SKU2185 COOLING INSERT FOR AIR CONDITIONER","dims_cm":"8x4x14","weight":"0,1","volume":"448"},{"product":"SKU2195 3 IN 1 BREAKFAST MAKER","dims_cm":"50x23x25","weight":"3,41","volume":"28750"},{"product":"SKU2197 CAMPING HAMMOCK","dims_cm":"32x18x9","weight":"0,76","volume":"5184"},{"product":"SKU2199 BLOWER BATTERY 48V","dims_cm":"","weight":"0,49","volume":"0"},{"product":"SKU2202 SPARE SCISSOR BLADES","dims_cm":"11x1x13","weight":"0,06","volume":"143"},{"product":"SKU2205 CHRISTMAS LASER LIGHT","dims_cm":"21x12x27","weight":"0,51","volume":"6804"},{"product":"SKU2211 CHRISTMAS TRAIN","dims_cm":"30x5x37","weight":"0,55","volume":"5550"},{"product":"SKU2217 SEWING MACHINE TABLE","dims_cm":"26x13x21","weight":"0,95","volume":"7098"},{"product":"SKU2218 AIR HUMIDIFIER WITH FLAME EFECT","dims_cm":"10x8x18","weight":"0,35","volume":"1440"},{"product":"SKU2220 MATTRESS PUMP","dims_cm":"11x13x10","weight":"0,29","volume":"1430"},{"product":"SKU2221 USB CABLE","dims_cm":"10x2x15","weight":"0,05","volume":"300"},{"product":"SKU2228 TANKLESS ELECTRIC WATER HEATER","dims_cm":"28x12x27","weight":"1,21","volume":"9072"},{"product":"SKU2234 NAIL DRILL","dims_cm":"10x21x20","weight":"0,5","volume":"4200"},{"product":"SKU2237 PLASTIC WELDING MACHINE","dims_cm":"29x23x5","weight":"0,8","volume":"3335"},{"product":"SKU2238 KNIFE SHARPENER","dims_cm":"6,5x17,5x9,5","weight":"0,15","volume":"1080,625"},{"product":"SKU279 TRIMMER","dims_cm":"19x5x12","weight":"0,21","volume":"1140"},{"product":"SKU290 TACTICAL FLASHLIGHT","dims_cm":"20x13x4,5","weight":"0,24","volume":"1170"},{"product":"SKU294 ROTATING CAMERA","dims_cm":"18,5x18,5x12","weight":"0,7","volume":"4107"},{"product":"SKU301 CAR HANDSFREE BLUETOOTH V3.0","dims_cm":"12x4x17","weight":"0,15","volume":"816"},{"product":"SKU311 WATERPROOF SOLAR LAMP","dims_cm":"12,5x18,5x11,5","weight":"0,59","volume":"2659,375"},{"product":"SKU312 GLASSES ONE POWER","dims_cm":"6x16x9","weight":"0,04","volume":"864"},{"product":"SKU317 SWEEPING ROBOT","dims_cm":"23x23x8","weight":"0,48","volume":"4232"},{"product":"SKU329 FOOD QUICK DEFROSTING TRAY","dims_cm":"24x18x2","weight":"0,38","volume":"864"},{"product":"SKU350 DISK LIGHTS","dims_cm":"20x13x12","weight":"0,14","volume":"3120"},{"product":"SKU352 SOLAR POWER BANK","dims_cm":"4x3x19","weight":"0,1","volume":"228"},{"product":"SKU357 GRILLING TOOLS","dims_cm":"38x12x5","weight":"0,85","volume":"2280"},{"product":"SKU360 GARDEN FOUNTAIN","dims_cm":"17x17x4","weight":"0,24","volume":"1156"},{"product":"SKU361 VIDEODOMOFON","dims_cm":"14x9,5x3,5","weight":"0,108","volume":"465,5"},{"product":"SKU364 WIRELESS SCREW CAMERA","dims_cm":"17x8x7","weight":"0,23","volume":"952"},{"product":"SKU375 WIRELESS HEADPHONE","dims_cm":"10x3x10","weight":"0,08","volume":"300"},{"product":"SKU380 CORDLESS ELECTRIC CLEANING BRUSH","dims_cm":"55,5x13x10,5","weight":"0,7","volume":"7575,75"},{"product":"SKU384 STARTER KIT","dims_cm":"19x7,5x28","weight":"0,76","volume":"3990"},{"product":"SKU390 CAR CAMERA","dims_cm":"11x20x7","weight":"0,36","volume":"1540"},{"product":"SKU393 COOKWARE SET","dims_cm":"50x28x20","weight":"7","volume":"28000"},{"product":"SKU395 SCREWDRIVER","dims_cm":"34x30x10","weight":"2,7","volume":"10200"},{"product":"SKU4000 CONJUNTO DE 10 PANOS MICROFIBRA MULTIUSOS 30X30","dims_cm":"17x3x19","weight":"0,2","volume":"969"},{"product":"SKU4004 APARADOR DE NARIZ","dims_cm":"","weight":"0,07","volume":"0"},{"product":"SKU4005 CONJUNTO DE LÂMINAS","dims_cm":"16x3x26","weight":"0,15","volume":"1248"},{"product":"SKU4009 MOPA TRIANGULAR","dims_cm":"54x25x12","weight":"0,49","volume":"16200"},{"product":"SKU403 SILICONE BAG FOR DOUGH","dims_cm":"","weight":"0,09","volume":"0"},{"product":"SKU412 MINI LANTERNA DE BOLSO","dims_cm":"6x3x10","weight":"0,05","volume":"180"},{"product":"SKU413 POWERBANK SOLAR DE BOLSO","dims_cm":"9x4x17","weight":"0,08","volume":"612"},{"product":"SKU419 HEADLAMP","dims_cm":"11x12x10","weight":"0,27","volume":"1320"},{"product":"SKU421 BAGLESS VACUUM","dims_cm":"43x22x17","weight":"2,6","volume":"16082"},{"product":"SKU424 RETRO CONSOLE","dims_cm":"14x10x5","weight":"0,15","volume":"700"},{"product":"SKU430 ENERGY SAVER","dims_cm":"7x10x7","weight":"0,2","volume":"490"},{"product":"SKU431 PRESSURE WASHER","dims_cm":"38x27x12","weight":"2","volume":"12312"},{"product":"SKU435 VEGETABLE CHOPPER","dims_cm":"21x10,5x13","weight":"0,41","volume":"2866,5"},{"product":"SKU436 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU438 CAR VACUUM CLEANER","dims_cm":"22x16x7","weight":"0,45","volume":"2464"},{"product":"SKU439 BATTERY 21V","dims_cm":"5x8x12","weight":"0,3","volume":"480"},{"product":"SKU454 MOSQUITO NET 2X1","dims_cm":"27x18x5","weight":"0,24","volume":"2430"},{"product":"SKU456 GRASS TRIMMER","dims_cm":"84,5x18x7,5","weight":"2,3","volume":"11407,5"},{"product":"SKU460 GRINDER AND DRILL","dims_cm":"28x29,5x7,5","weight":"2,9","volume":"6195"},{"product":"SKU461 LIQUID SEALING SPRAY","dims_cm":"3,5x3x10","weight":"0,04","volume":"105"},{"product":"SKU464 DESIGN PORTABLE BLENDER","dims_cm":"25x10x9","weight":"0,45","volume":"2250"},{"product":"SKU466 CORDLESS SCISSORS","dims_cm":"32x8x24","weight":"2","volume":"6144"},{"product":"SKU470 INTEX INFLATABLE MATTRESS","dims_cm":"37x19x45,5","weight":"6,36","volume":"31986,5"},{"product":"SKU474 MULTICOOKER","dims_cm":"30x29,5x29","weight":"3,2","volume":"25665"},{"product":"SKU475 S POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 M POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 L POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XXL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU475 XXXL POSTURE CORRECTOR","dims_cm":"18x2x33","weight":"0,1","volume":"1188"},{"product":"SKU484 ADAPTER","dims_cm":"12x5x12","weight":"0,08","volume":"720"},{"product":"SKU486 CORDLESS IRON","dims_cm":"35x17x15","weight":"1,07","volume":"8925"},{"product":"SKU497 CONSOLE","dims_cm":"17x10x11","weight":"0,33","volume":"1870"},{"product":"SKU498 WI-FI SIGNAL BOOSTER","dims_cm":"11x7x10","weight":"0,14","volume":"770"},{"product":"SKU503 GAMEPAD COLOR","dims_cm":"18x6x15","weight":"0,23","volume":"1620"},{"product":"SKU506 ASTRONAUT PROJECTOR","dims_cm":"24x11x13","weight":"0,57","volume":"3432"},{"product":"SKU507 (X2) SOLAR STREET LAMP","dims_cm":"27x12x6","weight":"0,38","volume":"1944"},{"product":"SKU510 PORTABLE TRAVEL GRILL","dims_cm":"32x32x11","weight":"1,56","volume":"11264"},{"product":"SKU520 PASTA MACHINE","dims_cm":"19x221x14,8","weight":"2,6","volume":"62145,2"},{"product":"SKU521 SINK POPUP FILTER","dims_cm":"6x6x9","weight":"0,06","volume":"324"},{"product":"SKU523 SPRAYER","dims_cm":"38x19,5x47,5","weight":"5,45","volume":"35197,5"},{"product":"SKU532 INFLATABLE BED","dims_cm":"41x34x15","weight":"6","volume":"20910"},{"product":"SKU534 MAGNETIC BAND","dims_cm":"13x3x10","weight":"0,1","volume":"390"},{"product":"SKU537 SPRAY GUN","dims_cm":"20x26x19","weight":"1,37","volume":"9880"},{"product":"SKU546 COOLING AND HEATING AIR CONDITIONER","dims_cm":"28x24,5x76","weight":"4,69","volume":"52136"},{"product":"SKU552 TRANSLATOR","dims_cm":"13x6x3","weight":"0,13","volume":"234"},{"product":"SKU563 PROTECTIVE BAG FOR FOLDING GLASSES","dims_cm":"9x,5x17","weight":"0,002","volume":"76,5"},{"product":"SKU6014 LAUNDRY DRYER CABINET","dims_cm":"29,3x22,6x13","weight":"1,7","volume":"8608,34"},{"product":"SKU6071 GRAY SOCKET HEATER","dims_cm":"12x11x19","weight":"0,5","volume":"2508"},{"product":"SKU6073 BLACK HEATER IMITATING FIRE","dims_cm":"17x10x26","weight":"0,9","volume":"4420"},{"product":"SKU6093 SMARTWATCH V17","dims_cm":"17x7x3","weight":"0,13","volume":"357"},{"product":"SKU6093-1 SMARTWATCH FILMS","dims_cm":"12x,5x25","weight":"0,01","volume":"150"},{"product":"SKU7007 HEDGE TRIMMERS","dims_cm":"82x18x11","weight":"2,55","volume":"16236"},{"product":"SKU7019 SOLAR POWERBANK","dims_cm":"14x10x3","weight":"0,25","volume":"420"},{"product":"SKUAD1199 KARAOKE SPEAKER","dims_cm":"15,5x17,5x10","weight":"0,71","volume":"2712,5"},{"product":"SKUAD2943 HAIR RAZOR","dims_cm":"16x6x20","weight":"0,51","volume":"1920"},{"product":"SKUAD2944 HAIR CARE KIT","dims_cm":"19x8x24","weight":"0,55","volume":"3648"},{"product":"SKUAD4226 PLANETARY ROBOT","dims_cm":"37,5x22,5x31","weight":"4,1","volume":"26156,25"},{"product":"SKUAD7036.1 FILTER FOR HAND VACUUM CLEANER","dims_cm":"9x9x7","weight":"0,1","volume":"567"},{"product":"SKUAD7860 DEHUMIDIFIER","dims_cm":"34,5x24,5x15,5","weight":"2,7","volume":"13101,375"},{"product":"SKUCR4457 CHOCOLATE FOUNTAIN","dims_cm":"17,5x17,5x28,5","weight":"1,36","volume":"8728,125"},{"product":"SKUEKM 033 MEAT MINCER","dims_cm":"20x35x26","weight":"3,05","volume":"18200"},{"product":"SKUMS2152 FOOT CARE MASSAGER","dims_cm":"37,5x22,5x43","weight":"1,52","volume":"36281,25"},{"product":"SKURB9281 KITCHEN KNIVES","dims_cm":"22x3x37","weight":"0,46","volume":"2442"},{"product":"SKUZL7055 MARBLE POTS","dims_cm":"28x29x24","weight":"6,85","volume":"19488"},{"product":"SKU7015 BATTERY CHARGER","dims_cm":"15x5x10","weight":"0,2","volume":"750"},{"product":"SKU7021 FOLDING WASHING MACHINE","dims_cm":"31x31x16","weight":"1,42","volume":"15376"},{"product":"SKU2190 XL CAR PROTECTOR","dims_cm":"45x30x5","weight":"1,04","volume":"6750"},{"product":"SKU2190 L CAR PROTECTOR","dims_cm":"45x30x5","weight":"1,04","volume":"6750"},{"product":"SKU2175 AUTOMATIC SPRINKLER","dims_cm":"23x5x23","weight":"0,16","volume":"2645"},{"product":"SKU7055 WINDOW CLEANING ROBOT","dims_cm":"15x16x30","weight":"0,18","volume":"7200"},{"product":"SKU7017 TRANSLATOR EARBUDS","dims_cm":"10x4x14","weight":"0,14","volume":"560"},{"product":"SKU180 ANTI-CELLUITE MASSAGER","dims_cm":"29x9x24","weight":"0,54","volume":"6264"},{"product":"SKU7012 LASER HAIR REMOVAL KIT","dims_cm":"12x9x17","weight":"0,56","volume":"1836"},{"product":"SKU7032 LIQUID LAWN","dims_cm":"23,5x12,5x20","weight":"0,39","volume":"5875"},{"product":"SKU2134 EYE MASSAGER","dims_cm":"20x7x10","weight":"0,19","volume":"1400"},{"product":"SKU416-5 USB CAMERA","dims_cm":"12x4x13","weight":"0,12","volume":"624"},{"product":"SKU437 MOSQUITO LAMP","dims_cm":"11x11x17","weight":"0,2","volume":"2057"},{"product":"SKU354 SLICER","dims_cm":"13x12x33","weight":"0,79","volume":"5148"},{"product":"SKU7036 S SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"SKU7036 M SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"SKU7036 L SHOE INSERTS","dims_cm":"14x2x37","weight":"0,09","volume":"1036"},{"product":"WARRANTY ES","dims_cm":"","weight":"","volume":"0"},{"product":"WARRANTY PT","dims_cm":"","weight":"","volume":"0"},{"product":"SKU7001 BODY MASSAGER","dims_cm":"29x18x13","weight":"1,274","volume":"6786"},{"product":"SKU2079 S/M HEATED VEST","dims_cm":"36x2,5x58","weight":"0,08","volume":"5220"},{"product":"SKU2079 L HEATED VEST","dims_cm":"36x2,5x58","weight":"0,082","volume":"5220"},{"product":"SKU2079 XL/XXL HEATED VEST","dims_cm":"36x2,5x58","weight":"0,085","volume":"5220"},{"product":"SKU436 +1,5 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +2 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +2,5 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU436 +3 FOLDING GLASSES","dims_cm":"4x1x8","weight":"0,091","volume":"32"},{"product":"SKU387 HAIR SET BRUSH CURLER DRYER","dims_cm":"24x6x30","weight":"0,67","volume":"4320"},{"product":"SKU083 ZOOM LENS TELESCOPE + TRIPOD","dims_cm":"17x7x10","weight":"0,4","volume":"1190"},{"product":"SKU533 BIG SOLAR LAMP","dims_cm":"52x52x11","weight":"2,85","volume":"29744"},{"product":"SKU551 PLANETARY MIXER","dims_cm":"37,5x23x30","weight":"3,8","volume":"25875"},{"product":"SKU327 MOSQUITO KILLER","dims_cm":"19x13x10,5","weight":"0,24","volume":"2593,5"},{"product":"SKU2129 FURNITURE ROLLERS","dims_cm":"26x20x10","weight":"0,88","volume":"5200"},{"product":"SKU2122-2 TOPPER 180x200","dims_cm":"42x25x12","weight":"1,79","volume":"12600"},{"product":"SKU125 POWERFUL GUN MASSAGER","dims_cm":"32x22x7,5","weight":"0,94","volume":"5280"},{"product":"SKU2248 SET OF LAMP AND CAMERA IN A BULB","dims_cm":"35x17x18","weight":"0,8","volume":"10710"},{"product":"SKU513 MEAT MINCER","dims_cm":"32,5x24x22","weight":"2,66","volume":"17160"},{"product":"SKUAD3223 TOASTER","dims_cm":"26,5x15x19,5","weight":"1,14","volume":"7751,25"},{"product":"SKU146 CAMERA MINI FULL HD","dims_cm":"10x10x3,5","weight":"0,05","volume":"350"},{"product":"SKU6094 AIR COMPRESOR","dims_cm":"6,5x12x20,5","weight":"0,54","volume":"1599"},{"product":"SKU2152 WELDING MACHINE","dims_cm":"28x17x20","weight":"2,76","volume":"9520"},{"product":"SKU7006 GLUE GUN","dims_cm":"22x8,5x21","weight":"1,05","volume":"3927"},{"product":"SKU422 ROTATING MOP","dims_cm":"","weight":"0,53","volume":"0"},{"product":"SKU2244 COVER FOR TRANSPORTING ANIMALS","dims_cm":"34x20x10","weight":"0,95","volume":"6800"},{"product":"SKU090 PET NAIL FILE","dims_cm":"26x14,5x5","weight":"0,21","volume":"1885"},{"product":"SKU016 PORTABLE DOG WATER BOTTLE","dims_cm":"23x8x8","weight":"0,2","volume":"1472"},{"product":"SKU7003 LED FACE MASK","dims_cm":"24x24x15","weight":"0,93","volume":"8640"},{"product":"SKU559 FLAT SPIN MOP INSERT","dims_cm":"","weight":"0,03","volume":"0"},{"product":"SKU7027 SET OF KEYS","dims_cm":"39x27x8","weight":"6,4","volume":"8424"},{"product":"SKU2053 REFIL FILTER FOR VACUUM CLEANER","dims_cm":"5x5x5","weight":"0,001","volume":"125"},{"product":"SKU7034 ELECTRIC WASHER","dims_cm":"88x17x10","weight":"2,67","volume":"14960"},{"product":"SKU6074 WHITE HEATER WITH IMITATION FIRE","dims_cm":"32x22x42","weight":"2,15","volume":"29568"},{"product":"SKU137 PORTABLE MINI HEATER","dims_cm":"14x12x14","weight":"0,38","volume":"2352"},{"product":"SKU6072 ELECTRIC NECK WARMER","dims_cm":"20x8x23","weight":"0,35","volume":"3680"},{"product":"SKU459 MASSAGER","dims_cm":"16x7x3","weight":"0,05","volume":"336"},{"product":"SKU441 FOOD SEALER","dims_cm":"36x7x9","weight":"0,52","volume":"2268"},{"product":"SKU2250 FLASHLIGHT+MINI SAW+PRECATEUR","dims_cm":"35x26x25","weight":"3,97","volume":"22750"},{"product":"SKU2138 MULTI-TOOL","dims_cm":"19x11x3,5","weight":"0,42","volume":"731,5"},{"product":"SKU457 TOURIST COOKER","dims_cm":"34,5x31x10","weight":"1,78","volume":"10695"},{"product":"SKU3002 SHOE INSERTS","dims_cm":"28x10x5","weight":"0,07","volume":"1400"},{"product":"SKU2210 SMART LIGHTS","dims_cm":"18x16x4","weight":"0,12","volume":"1152"},{"product":"SKU7028 SCOODIE - R - HOODED SCARF","dims_cm":"27x19x11","weight":"0,6","volume":"5643"},{"product":"SKU7028 SCOODIE - L - HOODED SCARF","dims_cm":"27x19x11","weight":"0,6","volume":"5643"},{"product":"SKU473 AUTOMATIC WASTE BIN","dims_cm":"","weight":"","volume":"0"},{"product":"SKU2057 FAN HEATER LED","dims_cm":"","weight":"","volume":"0"},{"product":"SKUEKA001 FAT-FREE FRYER","dims_cm":"","weight":"","volume":"0"}];
 
-  // Mantemos as mesmas chaves "v3" para não perder dados já guardados no browser
+  // Mantemos as mesmas keys "v3" para não perder dados já guardados no browser
   const STORAGE_PRODUCTS = "simple_cost_products_v3";
   const STORAGE_MATERIALS = "simple_cost_materials_v3";
   const STORAGE_PURCHASES = "simple_cost_purchases_v3";
@@ -1481,8 +1481,8 @@ function n(v) {
     return UNIT_TYPES.map(u => `<option value="${u.value}" ${u.value===selected?"selected":""}>${u.label}</option>`).join("");
   }
   function preferredUsedUnit(baseUnit) {
-    // Preferências para facilitar introdução em produtos:
-    // - se compras estão em m/m², é comum introduzir em cm/cm² nos produtos
+    // Preferências para facilitar introdução em products:
+    // - se compras estão em m/m², é comum introduzir em cm/cm² nos products
     if (baseUnit === "m") return "cm";
     if (baseUnit === "m2") return "cm2";
     return baseUnit || "un";
@@ -1490,7 +1490,7 @@ function n(v) {
   function convertQty(qty, fromUnit, toUnit) {
     const q = n(qty);
 
-    // Normaliza unidades (importações/edições antigas podem ter 'm²', 'cm²', espaços, etc.)
+    // Normaliza units (importações/edições antigas podem ter 'm²', 'cm²', espaços, etc.)
     const norm = (u) => {
       if (!u) return "";
       let s = String(u).trim().toLowerCase();
@@ -1525,7 +1525,7 @@ function n(v) {
     return null;
   }
 
-  // CSV parsing (produtos)
+  // CSV parsing (products)
   function detectDelimiter(text) {
     const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
     const sample = (lines[0] || "");
@@ -1563,7 +1563,7 @@ function n(v) {
   }
   function looksLikeHeader(row0) {
     const h = row0.map(x => String(x).toLowerCase());
-    return h.some(x => x.includes("produto") || x.includes("product") || x.includes("dimens"));
+    return h.some(x => x.includes("product") || x.includes("product") || x.includes("dimens"));
   }
 
   // Products
@@ -1598,7 +1598,7 @@ function n(v) {
     }
     const meta = loadProductsMeta();
     const updated = meta?.updatedAt ? new Date(meta.updatedAt).toLocaleString("pt-PT") : "—";
-    $("prodStatus").textContent = `Produtos: ${products.length} · Atualizado: ${updated}`;
+    $("prodStatus").textContent = `Products: ${products.length} · Updated: ${updated}`;
   }
   function findProductName(name) {
     const q = String(name || "").trim().toLowerCase();
@@ -2032,7 +2032,7 @@ function n(v) {
     whRender();
 
     if (unknown.length){
-      alert("Recover: nomes não reconhecidos ("+unknown.length+"): " + unknown.slice(0,20).join(", ") + (unknown.length>20?"…":""));
+      alert("Recover: unrecognized names ("+unknown.length+"): " + unknown.slice(0,20).join(", ") + (unknown.length>20?"…":""));
     }
   }
 
@@ -2055,15 +2055,15 @@ function n(v) {
     });
   }
 
-  // Consumíveis: puxar automaticamente do módulo Produto + Vendas (mês)
+  // Consumables: puxar automaticamente do módulo Product + Sales (month)
   function whProductConsumables(p){
-    // Consumíveis por produto: usa exatamente o que está no separador "Tudo"
-    // = custo de materiais/linhas da receita (packaging/consumíveis) + variáveis ativas
+    // Consumables por product: usa exatamente o que está no separador "All"
+    // = custo de materiais/linhas da recipe (packaging/consumables) + variables ativas
     try{
       const name = String(p?.product || p?.name || p?.nome || "").trim();
       if (!name) return 0;
 
-      // Receitas/linhas por produto (definidas no "Tudo")
+      // Receitas/linhas por product (definidas no "All")
       const rec = (typeof loadRecipes === "function") ? loadRecipes() : (typeof recipes === "object" ? recipes : {});
       const lines = (rec && Array.isArray(rec[name])) ? rec[name] : [];
 
@@ -2073,7 +2073,7 @@ function n(v) {
         matTotal += (typeof computeRecipeLineCost === "function") ? (computeRecipeLineCost(ln).cost || 0) : 0;
       }
 
-      // Variáveis ativas (também usadas no "Tudo")
+      // Variables ativas (também usadas no "All")
       let varsTotal = 0;
       if (Array.isArray(vars)){
         for (const v of vars){
@@ -2263,7 +2263,7 @@ function whAutoFillFromSales(){
         }
       }
 
-      // Preencher campos do Armazém
+      // Preencher campos do Warehouse
       const set = (id, val)=>{ const el=document.getElementById(id); if(el) el.value = String(Math.max(0, Math.round(val||0))); };
       set("wh_soldMonthly", soldTotal);
       set("wh_returnsMonthly", returnsTotal);
@@ -2312,7 +2312,7 @@ function whAutoFillFromSales(){
 
     warehouse.op.ohMonthly = overhead;
     warehouse.op.officeMonthly = office;
-    // Guardar custos gerais no mês atual (debounce)
+    // Guardar custos gerais no month atual (debounce)
     try {
       clearTimeout(window.__whMonthSaveT);
       window.__whMonthSaveT = setTimeout(()=>{ try { whSaveMonthProfile(whMonthKey()); } catch(e) {} }, 300);
@@ -2327,7 +2327,7 @@ function whAutoFillFromSales(){
 
     if (warehouse.op.costLines.length === 0){
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td class="muted" colspan="4">Sem linhas. Clica “Adicionar defaults” ou “+ Adicionar linha”.</td>`;
+      tr.innerHTML = `<td class="muted" colspan="4">No lines. Click “Add defaults” or “+ Add line”.</td>`;
       tb.appendChild(tr);
       whComputeCostTotals();
       return;
@@ -2341,7 +2341,7 @@ function whAutoFillFromSales(){
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><input data-cli="${idx}" data-clc="desc" value="${escapeHtml(desc)}" placeholder="ex.: Renda / Energia / WMS"></td>
+        <td><input data-cli="${idx}" data-clc="desc" value="${escapeHtml(desc)}" placeholder="e.g. Rent / Energy / WMS"></td>
         <td>
           <select data-cli="${idx}" data-clc="group">
             <option value="overhead" ${group==="overhead"?"selected":""}>Overhead</option>
@@ -2414,8 +2414,8 @@ function whAutoFillFromSales(){
 
   function whAddDefaultCostLines(){
     const defaults = [
-      {desc:"Renda", group:"overhead", value:0},
-      {desc:"Energia", group:"overhead", value:0},
+      {desc:"Rent", group:"overhead", value:0},
+      {desc:"Energy", group:"overhead", value:0},
       {desc:"WMS / Software", group:"overhead", value:0},
       {desc:"Limpeza / Manutenção", group:"overhead", value:0},
       {desc:"Seguros", group:"overhead", value:0},
@@ -2518,7 +2518,7 @@ function whBind(){
   }
 
   function getConsumablesForProduct(p){
-    // Consumíveis €/unid devem vir do separador "Tudo" (receita/materiais + variáveis)
+    // Consumables €/unid devem vir do separador "All" (recipe/materials + variables)
     try{
       if (typeof whProductConsumables === "function") {
         return whProductConsumables(p);
@@ -2570,9 +2570,9 @@ function whBind(){
         if (m) parts = [m[1], m[2]];
       }
       if (!parts || parts.length < 2){
-        // Permitir colar só o nome (1 por linha) => assume valor 1
+        // Allow pasting just the name (1 per line) => assumes value 1
         const nameOnly = line.trim();
-        if (!nameOnly){ items.push({ok:false, line, reason:"Nome vazio"}); continue; }
+        if (!nameOnly){ items.push({ok:false, line, reason:"Name vazio"}); continue; }
         items.push({ok:true, name: nameOnly, sold: 1, returns: 0, refunds: 0, line});
         continue;
       }
@@ -2584,7 +2584,7 @@ function whBind(){
       const returns = Number(returnsRaw);
       const refunds = Number(refundsRaw);
       if (!name){
-        items.push({ok:false, line, reason:"Nome vazio"});
+        items.push({ok:false, line, reason:"Name vazio"});
         continue;
       }
       if (!Number.isFinite(sold)){
@@ -2650,8 +2650,8 @@ function whBind(){
     salesRender();
 
     const msgs = [];
-    if (Object.keys(updates).length) msgs.push(`Aplicado (${section}): ${Object.keys(updates).length} produtos.`);
-    if (unknown.length) msgs.push(`Não reconhecidos (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
+    if (Object.keys(updates).length) msgs.push(`Aplicado (${section}): ${Object.keys(updates).length} products.`);
+    if (unknown.length) msgs.push(`Unrecognized (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
     if (bad.length) msgs.push(`Linhas inválidas (${bad.length}):\n- ${bad.slice(0,10).join("\n- ")}${bad.length>10?"\n…":""}`);
     if (msgs.length) alert(msgs.join("\n\n"));
   }
@@ -2689,8 +2689,8 @@ function salesApplyBulk(){
     salesRender();
 
     const msgs = [];
-    if (Object.keys(updates).length) msgs.push(`Aplicado: ${Object.keys(updates).length} produtos.`);
-    if (unknown.length) msgs.push(`Não reconhecidos (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
+    if (Object.keys(updates).length) msgs.push(`Aplicado: ${Object.keys(updates).length} products.`);
+    if (unknown.length) msgs.push(`Unrecognized (${unknown.length}): ${unknown.slice(0,20).join(", ")}${unknown.length>20?"…":""}`);
     if (bad.length) msgs.push(`Linhas inválidas (${bad.length}):\n- ${bad.slice(0,10).join("\n- ")}${bad.length>10?"\n…":""}`);
     if (msgs.length) alert(msgs.join("\n\n"));
 
@@ -2764,7 +2764,7 @@ function salesRender(){
     const list = Array.isArray(products) ? products : [];
 
     if (list.length === 0){
-      tbody.innerHTML = '<tr><td class="muted" colspan="4">Sem produtos ainda.</td></tr>';
+      tbody.innerHTML = '<tr><td class="muted" colspan="4">No products yet.</td></tr>';
       document.getElementById("sales_total_units").textContent = "0";
       document.getElementById("sales_total_consumables").textContent = salesFmtEUR(0);
       document.getElementById("sales_avg_consumables").textContent = salesFmtEUR(NaN);
@@ -2779,7 +2779,7 @@ function salesRender(){
     const rows = [];
     for (const p of list){
       const pid = getProductId(p);
-      const name = String(p.name || p.nome || pid || "Produto");
+      const name = String(p.name || p.nome || pid || "Product");
       const cons = getConsumablesForProduct(p);
 
       const nameKey = String(p.product || p.name || p.nome || pid || "").trim();
@@ -2954,7 +2954,7 @@ function salesRender(){
         const saveNoRerender = () => {
           materials[i][c] = el.value;
           saveMaterials(materials);
-          // Atualiza selects/valores noutros separadores sem destruir o campo que estás a escrever
+          // Updates selects/values in other tabs without destroying the field you are typing in
           refreshPurchaseMaterialSelect();
           withFocusPreserved(() => renderPurchases());
           withFocusPreserved(() => renderRecipe());
@@ -3013,7 +3013,7 @@ for (const k of Object.keys(recipes)) {
     if (!f) return;
     try {
       const arr = await importJsonFile(f);
-      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      if (!Array.isArray(arr)) throw new Error("Invalid format");
       materials = arr.map(m => ({ id: m.id || uuid(), name: m.name||"", baseUnit: m.baseUnit||"un" }));
       saveMaterials(materials);
 
@@ -3024,9 +3024,9 @@ for (const k of Object.keys(recipes)) {
       refreshPurchaseMaterialSelect();
       withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
         calcSelected();
-      alert("Materiais importados.");
+      alert("Materials importados.");
     } catch {
-      alert("Não consegui importar este JSON de materiais.");
+      alert("Could not import this materials JSON.");
     }
     e.target.value = "";
   });
@@ -3046,7 +3046,7 @@ for (const k of Object.keys(recipes)) {
     tb.innerHTML = "";
     const sorted = purchases.slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
     if (sorted.length === 0) {
-      tb.innerHTML = `<tr><td colspan="8" class="muted">Sem compras registadas.</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="8" class="muted">No purchases recorded.</td></tr>`;
       return;
     }
 
@@ -3127,7 +3127,7 @@ for (const k of Object.keys(recipes)) {
 
   $("addPurchase").addEventListener("click", () => {
     const materialId = $("purchaseMaterial").value;
-    if (!materialId) { alert("Escolhe um material."); return; }
+    if (!materialId) { alert("Choose a material."); return; }
     const date = $("purchaseDate").value || todayDateStr();
     const priceMode = ($("purchasePriceMode")?.value || "total");
     const priceInput = n($("purchasePrice").value);
@@ -3135,7 +3135,7 @@ for (const k of Object.keys(recipes)) {
     const unit = $("purchaseUnit").value;
     const note = $("purchaseNote").value || "";
 
-    if (priceInput <= 0 || qty <= 0) { alert("Preço e quantidade têm de ser > 0."); return; }
+    if (priceInput <= 0 || qty <= 0) { alert("Price and quantity must be > 0."); return; }
 
     // Converter para total (mantemos p.price como total para não quebrar o resto do sistema)
     const totalPrice = (priceMode === "total") ? priceInput : (priceInput * qty);
@@ -3159,16 +3159,16 @@ for (const k of Object.keys(recipes)) {
     if (!f) return;
     try {
       const arr = await importJsonFile(f);
-      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      if (!Array.isArray(arr)) throw new Error("Invalid format");
       const ids = new Set(materials.map(m => m.id));
       purchases = arr.filter(p => ids.has(p.materialId))
         .map(p => ({ id: p.id || uuid(), materialId: p.materialId, date: p.date||"", price: p.price||0, qty: p.qty||0, unit: p.unit||"un", note: p.note||"" }));
       savePurchases(purchases);
       withFocusPreserved(() => { withFocusPreserved(() => renderMaterials()); withFocusPreserved(() => renderPurchases()); renderRecipe(); });
         calcSelected();
-      alert("Compras importadas.");
+      alert("Purchases importadas.");
     } catch {
-      alert("Não consegui importar este JSON de compras.");
+      alert("Could not import this purchases JSON.");
     }
     e.target.value = "";
   });
@@ -3209,8 +3209,8 @@ for (const k of Object.keys(recipes)) {
     const unitCost = d.unitCost || 0;
 
     const usedInBase = convertQty(line.usedQty, line.usedUnit, m.baseUnit);
-    if (usedInBase === null) return { cost: 0, warning: `Unidades incompatíveis (${line.usedUnit} → ${m.baseUnit})` };
-    if (unitCost <= 0) return { cost: 0, warning: "Sem compras registadas" };
+    if (usedInBase === null) return { cost: 0, warning: `Incompatible units (${line.usedUnit} → ${m.baseUnit})` };
+    if (unitCost <= 0) return { cost: 0, warning: "No purchases recorded" };
     return { cost: unitCost * usedInBase, warning: "" };
   }
   function renderRecipe() {
@@ -3220,13 +3220,13 @@ for (const k of Object.keys(recipes)) {
     $("selectedProductTop").textContent = p ? p : "—";
 
     if (!p) {
-      tb.innerHTML = `<tr><td colspan="5" class="muted">Escolhe um produto para editar a receita.</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5" class="muted">Choose a product to edit the recipe.</td></tr>`;
       return;
     }
 
     const lines = getRecipeFor(p);
     if (lines.length === 0) {
-      tb.innerHTML = `<tr><td colspan="5" class="muted">Sem linhas. Clica “Adicionar linha”.</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5" class="muted">No lines. Click “Add line”.</td></tr>`;
       return;
     }
 
@@ -3277,7 +3277,7 @@ for (const k of Object.keys(recipes)) {
         }
 
         setRecipeFor(p2, lines2);
-        // Para "QTD usada": não re-renderizar a cada tecla (evita o cursor saltar). Atualiza no blur.
+        // Para "QTD usada": não re-renderizar a cada tecla (evita o cursor saltar). Updates on blur.
         if (c === "usedQty") {
           calcSelected();
           clearTimeout(window.__recipeQtyT);
@@ -3307,7 +3307,7 @@ for (const k of Object.keys(recipes)) {
 
   $("addRecipeLine").addEventListener("click", () => {
     const p = getSelectedProduct();
-    if (!p) { alert("Escolhe primeiro um produto."); return; }
+    if (!p) { alert("Choose a product first."); return; }
     const lines = getRecipeFor(p);
     const first = materials[0];
     lines.push({ materialId: first?.id || "", usedQty: 1, usedUnit: preferredUsedUnit(first?.baseUnit || "un") });
@@ -3319,25 +3319,25 @@ for (const k of Object.keys(recipes)) {
   $("clearRecipe").addEventListener("click", () => {
     const p = getSelectedProduct();
     if (!p) return;
-    if (!confirm("Limpar a receita deste produto?")) return;
+    if (!confirm("Clear a recipe deste product?")) return;
     setRecipeFor(p, []);
     withFocusPreserved(() => renderRecipe());
     calcSelected();
   });
 
-  $("exportRecipes").addEventListener("click", () => downloadJson("receitas_por_produto.json", loadRecipes()));
+  $("exportRecipes").addEventListener("click", () => downloadJson("recipes_by_product.json", loadRecipes()));
   $("importRecipes").addEventListener("change", async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     try {
       const obj = await importJsonFile(f);
-      if (typeof obj !== "object" || obj === null) throw new Error("Formato inválido");
+      if (typeof obj !== "object" || obj === null) throw new Error("Invalid format");
       saveRecipes(obj);
       withFocusPreserved(() => renderRecipe());
       calcSelected();
-      alert("Receitas importadas.");
+      alert("Recipes imported.");
     } catch {
-      alert("Não consegui importar este JSON de receitas.");
+      alert("Could not import this recipes JSON.");
     }
     e.target.value = "";
   });
@@ -3346,7 +3346,7 @@ for (const k of Object.keys(recipes)) {
   function loadVars() {
     try {
       const raw = localStorage.getItem(STORAGE_VARS);
-      if (!raw) return [{ id: uuid(), name: "Taxa fixa", value: 0, enabled: false }];
+      if (!raw) return [{ id: uuid(), name: "Fixed fee", value: 0, enabled: false }];
       const arr = JSON.parse(raw);
       return Array.isArray(arr) ? arr : [];
     } catch { return []; }
@@ -3367,7 +3367,7 @@ for (const k of Object.keys(recipes)) {
         <td>
           <select data-vi="${idx}" data-vc="enabled">
             <option value="true" ${v.enabled ? "selected":""}>Sim</option>
-            <option value="false" ${!v.enabled ? "selected":""}>Não</option>
+            <option value="false" ${!v.enabled ? "selected":""}>No</option>
           </select>
         </td>
         <td class="num"><button type="button" class="secondary" data-delv="${idx}">✕</button></td>
@@ -3385,7 +3385,7 @@ for (const k of Object.keys(recipes)) {
       withFocusPreserved(() => renderVars());
       calcSelected();
 
-      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      // Se a tabela "todos os products" já foi gerada, atualiza-a também
       if (document.getElementById("allProductsTbody")?.children?.length) {
         calcAllProducts();
       }
@@ -3398,12 +3398,12 @@ for (const k of Object.keys(recipes)) {
       btn.addEventListener("click", () => {
         const i = Number(btn.getAttribute("data-delv"));
         vars.splice(i, 1);
-        if (vars.length === 0) vars.push({ id: uuid(), name: "Variável", value: 0, enabled: false });
+        if (vars.length === 0) vars.push({ id: uuid(), name: "Variable", value: 0, enabled: false });
         saveVars(vars);
       withFocusPreserved(() => renderVars());
       calcSelected();
 
-      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      // Se a tabela "todos os products" já foi gerada, atualiza-a também
       if (document.getElementById("allProductsTbody")?.children?.length) {
         calcAllProducts();
       }
@@ -3412,36 +3412,36 @@ for (const k of Object.keys(recipes)) {
   }
 
   $("addVar").addEventListener("click", () => {
-    vars.push({ id: uuid(), name: "Variável", value: 0, enabled: true });
+    vars.push({ id: uuid(), name: "Variable", value: 0, enabled: true });
     saveVars(vars);
       withFocusPreserved(() => renderVars());
       calcSelected();
 
-      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      // Se a tabela "todos os products" já foi gerada, atualiza-a também
       if (document.getElementById("allProductsTbody")?.children?.length) {
         calcAllProducts();
       }
       });
 
-  $("exportVars").addEventListener("click", () => downloadJson("variaveis.json", vars));
+  $("exportVars").addEventListener("click", () => downloadJson("variables.json", vars));
   $("importVars").addEventListener("change", async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     try {
       const arr = await importJsonFile(f);
-      if (!Array.isArray(arr)) throw new Error("Formato inválido");
+      if (!Array.isArray(arr)) throw new Error("Invalid format");
       vars = arr.map(v => ({ id: v.id || uuid(), name: v.name||"", value: v.value||0, enabled: !!v.enabled }));
       saveVars(vars);
       withFocusPreserved(() => renderVars());
       calcSelected();
 
-      // Se a tabela "todos os produtos" já foi gerada, atualiza-a também
+      // Se a tabela "todos os products" já foi gerada, atualiza-a também
       if (document.getElementById("allProductsTbody")?.children?.length) {
         calcAllProducts();
       }
-      alert("Variáveis importadas.");
+      alert("Variables importadas.");
     } catch {
-      alert("Não consegui importar este JSON de variáveis.");
+      alert("Could not import this variables JSON.");
     }
     e.target.value = "";
   });
@@ -3456,7 +3456,7 @@ for (const k of Object.keys(recipes)) {
       $("materialsCost").textContent = "€ 0,00";
       $("varsCost").textContent = "€ 0,00";
       $("totalCost").textContent = "€ 0,00";
-      $("breakdownTbody").innerHTML = `<tr><td class="muted" colspan="2">Escolhe um produto.</td></tr>`;
+      $("breakdownTbody").innerHTML = `<tr><td class="muted" colspan="2">Choose a product.</td></tr>`;
       return 0;
     }
 
@@ -3477,7 +3477,7 @@ for (const k of Object.keys(recipes)) {
       if (v.enabled) {
         const c = n(v.value);
         varsTotal += c;
-        breakdown.push({ label: v.name || "Variável", cost: c });
+        breakdown.push({ label: v.name || "Variable", cost: c });
       }
     }
 
@@ -3493,7 +3493,7 @@ for (const k of Object.keys(recipes)) {
     const bt = $("breakdownTbody");
     bt.innerHTML = "";
     if (breakdown.length === 0) {
-      bt.innerHTML = `<tr><td class="muted" colspan="2">Sem itens.</td></tr>`;
+      bt.innerHTML = `<tr><td class="muted" colspan="2">No items.</td></tr>`;
     } else {
       for (const b of breakdown) {
         const tr = document.createElement("tr");
@@ -3554,7 +3554,7 @@ for (const k of Object.keys(recipes)) {
         return v.toFixed(2).replace(".", ",");
       };
 
-      const header = ["Produto","Materiais","Variáveis","Total"].join(";");
+      const header = ["Product","Materials","Variables","Total"].join(";");
       const rows = all.map(r => [r.name, fmt(r.matTotal), fmt(r.varsTotal), fmt(r.total)].join(";"));
       const csv = [header, ...rows].join("\n");
 
@@ -3563,14 +3563,14 @@ for (const k of Object.keys(recipes)) {
       const a = document.createElement("a");
       const url = URL.createObjectURL(blob);
       a.href = url;
-      a.download = "custos_por_produto.csv";
+      a.download = "custos_por_product.csv";
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
       setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
     }catch(err){
-      console.error("Export CSV falhou:", err);
-      alert("Export CSV falhou. Abre a consola (F12) para ver o erro.");
+      console.error("CSV export failed:", err);
+      alert("CSV export failed. Open the console (F12) to see the error.");
     }
   }
 
@@ -3594,7 +3594,7 @@ for (const k of Object.keys(recipes)) {
     if (!f) return;
     const text = await f.text();
     const rows = parseCsv(text);
-    if (!rows.length) { alert("CSV vazio ou inválido."); return; }
+    if (!rows.length) { alert("Empty or invalid CSV."); return; }
     const start = looksLikeHeader(rows[0]) ? 1 : 0;
     const newArr = [];
     for (let i=start; i<rows.length; i++) {
@@ -3602,16 +3602,16 @@ for (const k of Object.keys(recipes)) {
       if (!r || !r[0]) continue;
       newArr.push({ product: r[0], dims_cm: r[1]||"", weight: r[2]||"", volume: r[3]||"" });
     }
-    if (!newArr.length) { alert("Não encontrei produtos na Coluna A."); return; }
+    if (!newArr.length) { alert("Could not find products in Column A."); return; }
     products = newArr;
     saveProducts(products);
     refreshProductsUI();
-    alert("Produtos atualizados.");
+    alert("Products atualizados.");
     e.target.value = "";
   });
 
   $("exportProducts").addEventListener("click", () => {
-    const header = ["PRODUTO","DIMENSOES_CM","PESO","VOLUME"];
+    const header = ["PRODUCT","DIMENSIONS_CM","WEIGHT","VOLUME"];
     const lines = [header.join(";")];
     for (const p of products) {
       const row = [p.product||"", p.dims_cm||"", p.weight||"", p.volume||""].map(v => `"${String(v).replace(/"/g,'""')}"`);
@@ -3620,17 +3620,17 @@ for (const k of Object.keys(recipes)) {
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "produtos.csv";
+    a.href = url; a.download = "products.csv";
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
   });
 
   $("resetProducts").addEventListener("click", () => {
-    if (!confirm("Repor a lista de produtos original?")) return;
+    if (!confirm("Reset the original product list?")) return;
     products = DEFAULT_PRODUCTS;
     saveProducts(products);
     refreshProductsUI();
-    alert("Produtos repostos.");
+    alert("Products repostos.");
   });
 
   $("productSearch").addEventListener("change", () => {
@@ -3670,7 +3670,7 @@ for (const k of Object.keys(recipes)) {
     return String(value);
   }
 
-  function exportAllDataCsv(){
+  function exportAllDateCsv(){
     try {
       const products = Array.isArray(loadProducts()) ? loadProducts() : [];
       const materials = Array.isArray(loadMaterials()) ? loadMaterials() : [];
@@ -3678,22 +3678,22 @@ for (const k of Object.keys(recipes)) {
       const warehouse = loadWarehouse() && typeof loadWarehouse() === "object" ? loadWarehouse() : {};
       const sales = loadSales() && typeof loadSales() === "object" ? loadSales() : {};
 
-      const productRows = [["idx", "campo", "valor"]];
+      const productRows = [["idx", "campo", "value"]];
       products.forEach((item, idx) => {
         Object.entries(item || {}).forEach(([k, v]) => productRows.push([String(idx), k, valueToCsvCell(v)]));
       });
 
-      const materialRows = [["idx", "campo", "valor"]];
+      const materialRows = [["idx", "campo", "value"]];
       materials.forEach((item, idx) => {
         Object.entries(item || {}).forEach(([k, v]) => materialRows.push([String(idx), k, valueToCsvCell(v)]));
       });
 
-      const purchaseRows = [["idx", "campo", "valor"]];
+      const purchaseRows = [["idx", "campo", "value"]];
       purchases.forEach((item, idx) => {
         Object.entries(item || {}).forEach(([k, v]) => purchaseRows.push([String(idx), k, valueToCsvCell(v)]));
       });
 
-      const warehouseRows = [["secao", "chave", "subchave", "valor"]];
+      const warehouseRows = [["section", "key", "subkey", "value"]];
       Object.entries(warehouse).forEach(([k, v]) => {
         if (k === "byMonth" && v && typeof v === "object") {
           Object.entries(v).forEach(([monthKey, monthObj]) => {
@@ -3712,7 +3712,7 @@ for (const k of Object.keys(recipes)) {
         }
       });
 
-      const salesRows = [["secao", "chave", "subchave", "valor"]];
+      const salesRows = [["section", "key", "subkey", "value"]];
       Object.entries(sales).forEach(([k, v]) => {
         if (k === "months" && v && typeof v === "object") {
           Object.entries(v).forEach(([monthKey, monthObj]) => {
@@ -3731,25 +3731,25 @@ for (const k of Object.keys(recipes)) {
         }
       });
 
-      downloadCsvFile('produtos.csv', productRows);
-      setTimeout(() => downloadCsvFile('materiais.csv', materialRows), 150);
-      setTimeout(() => downloadCsvFile('compras.csv', purchaseRows), 300);
+      downloadCsvFile('products.csv', productRows);
+      setTimeout(() => downloadCsvFile('materials.csv', materialRows), 150);
+      setTimeout(() => downloadCsvFile('purchases.csv', purchaseRows), 300);
       setTimeout(() => downloadCsvFile('warehouse.csv', warehouseRows), 450);
       setTimeout(() => downloadCsvFile('sales.csv', salesRows), 600);
     } catch (err) {
-      console.error('Export CSV separado falhou:', err);
-      alert('Export CSV separado falhou. Abre a consola (F12) para ver o erro.');
+      console.error('Separate CSV export failed:', err);
+      alert('Separate CSV export failed. Open the console (F12) to see the error.');
     }
   }
 
-  function buildSeparatedCsvData(){
+  function buildSeparatedCsvDate(){
     const products = loadProducts();
     const materials = loadMaterials();
     const purchases = loadPurchases();
     const warehouse = loadWarehouse();
     const sales = loadSales();
 
-    const productRows = [["produto", "dimensoes", "peso_kg", "volume_m3"]];
+    const productRows = [["product", "dimensoes", "peso_kg", "volume_m3"]];
     (products || []).forEach(p => productRows.push([
       valueToCsvCell(p?.name || ""),
       valueToCsvCell(p?.dims || ""),
@@ -3757,7 +3757,7 @@ for (const k of Object.keys(recipes)) {
       valueToCsvCell(p?.volume ?? "")
     ]));
 
-    const materialRows = [["material", "unidade_base", "custo_manual", "ultima_compra"]];
+    const materialRows = [["material", "base_unit", "custo_manual", "ultima_compra"]];
     (materials || []).forEach(m => materialRows.push([
       valueToCsvCell(m?.name || ""),
       valueToCsvCell(m?.unit || ""),
@@ -3780,7 +3780,7 @@ for (const k of Object.keys(recipes)) {
       ]);
     });
 
-    const warehouseRows = [["secao", "chave", "subchave", "valor"]];
+    const warehouseRows = [["section", "key", "subkey", "value"]];
     Object.entries(warehouse || {}).forEach(([k, v]) => {
       if (k === "byMonth" && v && typeof v === "object") {
         Object.entries(v).forEach(([monthKey, monthObj]) => {
@@ -3799,7 +3799,7 @@ for (const k of Object.keys(recipes)) {
       }
     });
 
-    const salesRows = [["secao", "chave", "subchave", "valor"]];
+    const salesRows = [["section", "key", "subkey", "value"]];
     Object.entries(sales || {}).forEach(([k, v]) => {
       if (k === "months" && v && typeof v === "object") {
         Object.entries(v).forEach(([monthKey, monthObj]) => {
@@ -3822,46 +3822,46 @@ for (const k of Object.keys(recipes)) {
   }
 
   function exportOneSeparatedCsv(kind){
-    const data = buildSeparatedCsvData();
-    if (kind === 'products') downloadCsvFile('produtos.csv', data.productRows);
-    else if (kind === 'materials') downloadCsvFile('materiais.csv', data.materialRows);
-    else if (kind === 'purchases') downloadCsvFile('compras.csv', data.purchaseRows);
+    const data = buildSeparatedCsvDate();
+    if (kind === 'products') downloadCsvFile('products.csv', data.productRows);
+    else if (kind === 'materials') downloadCsvFile('materials.csv', data.materialRows);
+    else if (kind === 'purchases') downloadCsvFile('purchases.csv', data.purchaseRows);
     else if (kind === 'warehouse') downloadCsvFile('warehouse.csv', data.warehouseRows);
     else if (kind === 'sales') downloadCsvFile('sales.csv', data.salesRows);
   }
 
-  function exportAllDataAsSeparatedCsv(){
+  function exportAllDateAsSeparatedCsv(){
     try {
-      const data = buildSeparatedCsvData();
-      downloadCsvFile('produtos.csv', data.productRows);
-      setTimeout(() => downloadCsvFile('materiais.csv', data.materialRows), 150);
-      setTimeout(() => downloadCsvFile('compras.csv', data.purchaseRows), 300);
+      const data = buildSeparatedCsvDate();
+      downloadCsvFile('products.csv', data.productRows);
+      setTimeout(() => downloadCsvFile('materials.csv', data.materialRows), 150);
+      setTimeout(() => downloadCsvFile('purchases.csv', data.purchaseRows), 300);
       setTimeout(() => downloadCsvFile('warehouse.csv', data.warehouseRows), 450);
       setTimeout(() => downloadCsvFile('sales.csv', data.salesRows), 600);
     } catch (err) {
-      console.error('Export CSV separado falhou:', err);
-      alert('Export CSV separado falhou. Abre a consola (F12) para ver o erro.');
+      console.error('Separate CSV export failed:', err);
+      alert('Separate CSV export failed. Open the console (F12) to see the error.');
     }
   }
 
   function exportMonthlyOperationsCsv(){
     try {
-      const warehouseData = loadWarehouse() || {};
-      const salesData = loadSales() || {};
+      const warehouseDate = loadWarehouse() || {};
+      const salesDate = loadSales() || {};
       const monthKeys = new Set();
-      Object.keys((salesData && salesData.months) || {}).forEach(k => monthKeys.add(k));
-      Object.keys((warehouseData && warehouseData.byMonth) || {}).forEach(k => monthKeys.add(k));
-      Object.keys((warehouseData && warehouseData.recoverMonths) || {}).forEach(k => monthKeys.add(k));
+      Object.keys((salesDate && salesDate.months) || {}).forEach(k => monthKeys.add(k));
+      Object.keys((warehouseDate && warehouseDate.byMonth) || {}).forEach(k => monthKeys.add(k));
+      Object.keys((warehouseDate && warehouseDate.recoverMonths) || {}).forEach(k => monthKeys.add(k));
       const months = Array.from(monthKeys).sort();
 
       const rows = [[
-        'mês','vendidos_mês','returns_mês','recover_mês','stock_médio_paletes',
-        'custo_pick_pack_eur','custo_consumíveis_eur','custo_returns_eur','custo_recover_eur','custo_armazenagem_eur',
-        'custo_total_eur','custo_total_por_produto_eur','consumíveis_por_produto_eur'
+        'month','vendidos_month','returns_month','recover_month','average_stock_pallets',
+        'pick_pack_cost_eur','consumables_cost_eur','returns_cost_eur','recover_cost_eur','storage_cost_eur',
+        'total_cost_eur','total_cost_per_product_eur','consumables_per_product_eur'
       ]];
 
       months.forEach(monthKey => {
-        const monthSales = ((salesData.months || {})[monthKey]) || {};
+        const monthSales = ((salesDate.months || {})[monthKey]) || {};
         let sold = 0;
         let returns = 0;
         Object.values(monthSales).forEach(v => {
@@ -3873,9 +3873,9 @@ for (const k of Object.keys(recipes)) {
           }
         });
 
-        const snap = ((warehouseData.byMonth || {})[monthKey]) || {};
-        const recoverObj = ((warehouseData.recoverMonths || {})[monthKey]) || {};
-        const opBase = (warehouseData.op && typeof warehouseData.op === 'object') ? warehouseData.op : {};
+        const snap = ((warehouseDate.byMonth || {})[monthKey]) || {};
+        const recoverObj = ((warehouseDate.recoverMonths || {})[monthKey]) || {};
+        const opBase = (warehouseDate.op && typeof warehouseDate.op === 'object') ? warehouseDate.op : {};
         const op = { ...opBase, ...snap };
         const recover = Number(recoverObj.totalUnits ?? op.recoverMonthly ?? 0) || 0;
         const avgStock = Number(op.avgStockPallets ?? 0) || 0;
@@ -3902,10 +3902,10 @@ for (const k of Object.keys(recipes)) {
         ].map(valueToCsvCell));
       });
 
-      downloadCsvFile('mensal_vendas_returns_recover_custos.csv', rows);
+      downloadCsvFile('monthly_sales_returns_recover_costs.csv', rows);
     } catch (err) {
-      console.error('Export mensal falhou:', err);
-      alert('Export mensal falhou. Abre a consola (F12) para ver o erro.');
+      console.error('Monthly export failed:', err);
+      alert('Monthly export failed. Open the console (F12) to see the error.');
     }
   }
 
@@ -3913,15 +3913,15 @@ for (const k of Object.keys(recipes)) {
     return String(p?.product || p?.name || p?.nome || p?.title || p?.sku || '').trim();
   }
 
-  function buildConsumablesExportData(){
+  function buildConsumablesExportDate(){
     const prods = Array.isArray(loadProducts()) ? loadProducts() : [];
     const rec = (typeof loadRecipes === 'function') ? loadRecipes() : {};
     const activeVars = Array.isArray(vars) ? vars.filter(v => v && v.enabled) : [];
     const rowsSummary = [[
-      'produto','consumíveis_total_eur_un','materiais_eur_un','variáveis_eur_un','número_componentes_materiais','número_variáveis_ativas'
+      'product','total_consumables_eur_unit','materials_eur_unit','variables_eur_unit','number_material_components','number_active_variables'
     ]];
     const rowsComponents = [[
-      'produto','tipo','componente','quantidade_usada','unidade_usada','unidade_base','custo_unitário_base_eur','custo_da_linha_eur'
+      'product','type','component','used_quantity','used_unit','base_unit','base_unit_cost_eur','line_cost_eur'
     ]];
 
     prods.forEach(p => {
@@ -3951,7 +3951,7 @@ for (const k of Object.keys(recipes)) {
       activeVars.forEach(v => {
         rowsComponents.push([
           productName,
-          'variavel',
+          'variable',
           valueToCsvCell(v?.name || ''),
           '',
           '',
@@ -3976,21 +3976,21 @@ for (const k of Object.keys(recipes)) {
 
   function exportConsumablesSummaryCsv(){
     try {
-      const data = buildConsumablesExportData();
-      downloadCsvFile('consumiveis_por_produto.csv', data.rowsSummary);
+      const data = buildConsumablesExportDate();
+      downloadCsvFile('consumables_by_product.csv', data.rowsSummary);
     } catch (err) {
-      console.error('Export consumíveis por produto falhou:', err);
-      alert('Export consumíveis por produto falhou. Abre a consola (F12) para ver o erro.');
+      console.error('Export consumables by product failed:', err);
+      alert('Export consumables by product failed. Open the console (F12) to see the error.');
     }
   }
 
   function exportConsumablesComponentsCsv(){
     try {
-      const data = buildConsumablesExportData();
-      downloadCsvFile('componentes_consumiveis_por_produto.csv', data.rowsComponents);
+      const data = buildConsumablesExportDate();
+      downloadCsvFile('consumables_components_by_product.csv', data.rowsComponents);
     } catch (err) {
-      console.error('Export componentes consumíveis falhou:', err);
-      alert('Export componentes consumíveis falhou. Abre a consola (F12) para ver o erro.');
+      console.error('Export consumables components failed:', err);
+      alert('Export consumables components failed. Open the console (F12) to see the error.');
     }
   }
 
@@ -4007,7 +4007,7 @@ for (const k of Object.keys(recipes)) {
       warehouse: loadWarehouse(),
       sales: loadSales()
     };
-    downloadJson("backup_custo_produto.json", payload);
+    downloadJson("backup_custo_product.json", payload);
   });
 
   $("exportMonthlyOpsCsv").addEventListener("click", exportMonthlyOperationsCsv);
@@ -4019,7 +4019,7 @@ for (const k of Object.keys(recipes)) {
     if (!f) return;
     try {
       const payload = await importJsonFile(f);
-      if (!payload || typeof payload !== "object") throw new Error("Formato inválido");
+      if (!payload || typeof payload !== "object") throw new Error("Invalid format");
 
       if (Array.isArray(payload.products)) { products = payload.products; saveProducts(products); }
       if (Array.isArray(payload.materials)) { materials = payload.materials; saveMaterials(materials); }
@@ -4045,16 +4045,16 @@ for (const k of Object.keys(recipes)) {
       withFocusPreserved(() => renderRecipe());
       calcSelected();
 
-      alert("Backup importado.");
+      alert("Backup imported.");
     } catch {
-      alert("Não consegui importar este backup.");
+      alert("Could not import this backup.");
     }
     e.target.value = "";
   });
 
   // Init
   async function init() {
-    // Inicializa Firebase (carrega dados da nuvem -> localStorage)
+    // Initializes Firebase (loads cloud data -> localStorage)
     await firebaseInit(CLOUD_STORAGE_KEYS);
 
     ui = loadUI();
@@ -4076,7 +4076,7 @@ for (const k of Object.keys(recipes)) {
     salesBind();
     salesRender();
 
-    // Depois de carregar Vendas (mês), preencher Armazém/Simulador automaticamente
+    // Depois de carregar Sales (month), preencher Warehouse/Simulador automaticamente
     try { whAutoFillFromSales(); } catch(e) {}
     try { whRender(); } catch(e) {}
 
@@ -4098,13 +4098,13 @@ for (const k of Object.keys(recipes)) {
     const exists = document.getElementById(preferred);
     showTab(exists ? preferred : "tab-tudo");
 
-    // Garante que existe doc na nuvem (mesmo na 1ª vez)
+    // Ensures a cloud doc exists (even the 1st time)
     cloudRequestSave(CLOUD_STORAGE_KEYS, true);
   }
   init();
 
-  // Garantir gravação quando o utilizador fecha/atualiza a página
-  // Nota: browsers podem limitar async no beforeunload; por isso também usamos pagehide/visibilitychange.
+  // Ensure saving when the user closes/refreshes the page
+  // Note: browsers may limit async on beforeunload; that is why we also use pagehide/visibilitychange.
   window.addEventListener("beforeunload", () => { try { cloudRequestSaveNow(); } catch(e) {} });
   window.addEventListener("pagehide", () => { try { cloudRequestSaveNow(); } catch(e) {} });
   document.addEventListener("visibilitychange", () => {
